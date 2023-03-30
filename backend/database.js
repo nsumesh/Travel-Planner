@@ -41,11 +41,11 @@ class Database
         {
             query += ``; // create this query based on the info in param prefs
         }
-        else if(type === "Hotels")
+        if(type === "Lodging")
         {
             query += ``;
         }
-        else
+        if(type === "Internal Transport")
         {
             query += ``;
         }
@@ -68,11 +68,11 @@ class Database
         {
             query += ``; // should involve adding param data to db
         }
-        else if(type === "Hotels")
+        if(type === "Lodging")
         {
             query += ``;
         }
-        else
+        if(type === "Internal Transport")
         {
             query += ``;
         }
