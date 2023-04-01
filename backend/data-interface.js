@@ -1,6 +1,9 @@
+import { API } from './api.js'
+import { Database } from './database.js'
+
 const mysql = require('mysql2/promise'); // now each function will return a promise
 
-class DataInterface
+export class DataInterface
 {
     constructor()
     {

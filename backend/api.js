@@ -1,4 +1,4 @@
-class API
+export class API
 {
     constructor()
     {

@@ -1,3 +1,5 @@
+import { DataInterface } from './data-interface';
+
 const express = require('express');
 const app = express();
 

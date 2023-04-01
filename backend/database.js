@@ -1,4 +1,4 @@
-class Database
+export class Database
 {
     // The db should be created in DataInterface.js
     constructor(db)
