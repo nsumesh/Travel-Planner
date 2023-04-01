@@ -1,4 +1,4 @@
-export class API
+class API
 {
     constructor()
     {
@@ -23,3 +23,5 @@ export class API
         }
     }
 }
+
+module.exports = API;

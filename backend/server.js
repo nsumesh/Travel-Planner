@@ -1,4 +1,4 @@
-import { DataInterface } from './data-interface';
+const DataInterface = require('./data-interface.js');
 
 const express = require('express');
 const app = express();
@@ -15,8 +15,8 @@ app.get('/flights', (req, res) => {
 	res.send('Flights!');
 })
 
-app.get('/hotels', (req, res) => {
-	res.send('Hotels!');
+app.get('/lodging', (req, res) => {
+	res.send('Lodging!');
 })
 
 app.get('/transport', (req, res) => {

@@ -1,9 +1,9 @@
-import { API } from './api.js'
-import { Database } from './database.js'
+const API = require('./api.js');
+const Database = require('./database.js');
 
 const mysql = require('mysql2/promise'); // now each function will return a promise
 
-export class DataInterface
+class DataInterface
 {
     constructor()
     {
@@ -45,3 +45,5 @@ export class DataInterface
         return results;
     }
 }
+
+module.exports = DataInterface;

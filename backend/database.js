@@ -1,4 +1,4 @@
-export class Database
+class Database
 {
     // The db should be created in DataInterface.js
     constructor(db)
@@ -87,3 +87,5 @@ export class Database
         }
     }
 }
+
+module.exports = Database;
