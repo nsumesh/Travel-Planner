@@ -1,8 +1,11 @@
+const DataInterface = require('./backend/data-interface.js');
+
 const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-	res.send('Prefs!');
+	// res.send('Prefs!');
+	res.sendFile(__dirname + '/frontend/index.html');
 })
 
 app.get('/cards', (req, res) => {
@@ -13,12 +16,12 @@ app.get('/flights', (req, res) => {
 	res.send('Flights!');
 })
 
-app.get('/hotels', (req, res) => {
-	res.send('Hotels!');
+app.get('/lodging', (req, res) => {
+	res.send('Lodging!');
 })
 
-app.get('/transport', (req, res) => {
-	res.send('Transport!');
+app.get('/internal-transport', (req, res) => {
+	res.send('Internal Transport!');
 })
 
 app.get('/summary', (req, res) => {
