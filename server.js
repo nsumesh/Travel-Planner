@@ -5,8 +5,8 @@ const DataInterface = require('./backend/data-interface.js');
 // middleware that puts incoming data into req.body
 app.use(express.json());
 
-// serves static files to browser
-app.use(express.static('frontend'));
+// serves static files of the homepage to browser
+app.use('/', express.static('frontend/homepage-static'));
 
 app.post('/initial-preferences', (req, res) => {
     let package = req.body;
