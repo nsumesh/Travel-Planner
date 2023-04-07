@@ -2,11 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <!-- Line 6 fixes some MIME error -->
+    <meta http-equiv="Content-Type" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Getaway</title>
+	  <link href="https://fonts.googleapis.com/css?family=Nunito Sans" rel="stylesheet">
+	  <link href="https://fonts.googleapis.com/css?family=Judson" rel="stylesheet">
+    <link rel="stylesheet" href="./main.css">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <script src="grabber.js"></script>
   </head>
 
-  <body>
-    <h1>Homepage</h1>
-    <p>This is the starting page of this web app.</p>
+  <body class="background-image">
+    <main>
+        <h1 class="title">Getaway</h1>
+		<form>
+			<div class="input-line">
+				<input type="text" id="start-place" placeholder="From where?"></input>
+				<input type="text" id="end-place" placeholder="Where to?"></input>
+				<input type="text" id="depart-date" placeholder="Depart - Return"></input>
+			</div>
+			<div class="input-line">
+				<input type="text" id="budget" placeholder="Budget"></input>
+				<input type="text" id="adult-count" placeholder="1 adult"></input>
+			</div>
+		</form>
+		<button class="submit-button" id="start-button">Start!</button>
+    </main>
   </body>
 </html>

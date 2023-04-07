@@ -1,32 +1,17 @@
-const DataInterface = require('./backend/data-interface.js');
-
 const express = require('express');
 const app = express();
+const DataInterface = require('./backend/data-interface.js');
 
-app.get('/', (req, res) => {
-	// res.send('Prefs!');
-	res.sendFile(__dirname + '/frontend/index.html');
-})
+// middleware that puts incoming data into req.body
+app.use(express.json());
 
-app.get('/cards', (req, res) => {
-	res.send('Cards!');
-})
+// serves static files to browser
+app.use(express.static('frontend'));
 
-app.get('/flights', (req, res) => {
-	res.send('Flights!');
-})
-
-app.get('/lodging', (req, res) => {
-	res.send('Lodging!');
-})
-
-app.get('/internal-transport', (req, res) => {
-	res.send('Internal Transport!');
-})
-
-app.get('/summary', (req, res) => {
-	res.send('Summary!');
-})
+app.post('/initial-preferences', (req, res) => {
+    let package = req.body;
+    res.send(package);
+});
 
 app.listen(3000, () => {
     console.log("Server started on port 3000");
