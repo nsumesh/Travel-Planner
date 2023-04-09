@@ -1,6 +1,5 @@
 const API = require('./api.js');
 const Database = require('./database.js');
-
 const mysql = require('mysql2/promise'); // now each function will return a promise
 
 class DataInterface
@@ -20,29 +19,29 @@ class DataInterface
         this.api = new API();
     }
 
-    async getUserPrefs(cookie)
+    getUserPrefs(cookie) 
     {
-        let prefs = await this.db.getUserPrefs(cookie);
-        return prefs;
+        return this.db.getUserPrefs(cookie)
     }
 
-    async updateUserPrefs(cookie, data)
+    updateUserPrefs(cookie, data) 
     {
-        await this.db.updateUserPrefs(cookie, data);
+        return this.db.updateUserPrefs(cookie, data);
     }
-    
-    async get_results(type, prefs)
+
+    getFlights(preferences)
     {
-        let results = await this.db.getListData(type, prefs);
-        if(!results)
-        {
-            // will change this url implementation later on
-            let url = type === "Flights" ? this.api.FLIGHT_URL : (type === "Lodging" ? this.api.LODGING_URL: this.api.INTRANSPORT_URL);
-            let apiData = await this.api.getFromAPI(url);
-            await this.db.updateListData(type, apiData);
-            results = await this.db.getListData(type, prefs);
-        }
-        return results;
+        return this.api.getFlights(preferences);
+    }
+
+    getUserItinerary(cookie)
+    {
+        return this.db.getUserItinerary(cookie);
+    }
+
+    updateUserItinerary(cookie, data) 
+    {
+        return this.db.updateUserItinerary(cookie, data);
     }
 }
 

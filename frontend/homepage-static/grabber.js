@@ -5,11 +5,11 @@ function grabPreferences()
   let departDate = document.getElementById("depart-date").value;
   let adultCount = document.getElementById("adult-count").value;
   
-  let package = {
-    start: start,
-    end: end,
-    departDate: departDate,
-    adultCount: adultCount
+  let package = { 
+    originLocationCode: start,
+    destinationLocationCode: end,
+    departureDate: departDate,
+    adults: adultCount
   };
 
   fetch('/initial-preferences', {
@@ -24,7 +24,7 @@ function grabPreferences()
     console.log(data);
   })
   .catch(error => {
-    console.error('ERROR: ', error);
+    console.error('ERROR IN FETCHING DATA: ', error);
   });
 }
 

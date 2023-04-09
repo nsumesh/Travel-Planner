@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const DataInterface = require('./backend/data-interface.js');
 
+let manager = new DataInterface();
+
 // middleware that puts incoming data into req.body
 app.use(express.json());
 
@@ -10,6 +12,9 @@ app.use('/', express.static('frontend/homepage-static'));
 
 app.post('/initial-preferences', (req, res) => {
     let package = req.body;
+    let results = manager.getFlights(package)
+        .then(data => console.log(data))
+        .catch(err => console.error("ERROR IN FETCHING DATA: ", err));
     res.send(package);
 });
 
