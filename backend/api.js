@@ -1,27 +1,27 @@
 const Amadeus = require('amadeus');
 
-class API
-{
-    constructor()
-    {
-        // Amadeus API connection
-        this.amadeus = new Amadeus({
-            clientId: 'mXUCuCKB5fiaj9GLrCvZmA0Er5HrteeT',
-            clientSecret: 'jC0nFnaUu0CptD1e'
-        });
-    }
+class API {
+  constructor() 
+  {
+    // Amadeus API connection
+    this.amadeus = new Amadeus({
+      clientId: 'mXUCuCKB5fiaj9GLrCvZmA0Er5HrteeT',
+      clientSecret: 'jC0nFnaUu0CptD1e'
+    });
+  }
 
-    getFlights(preferences)
+  async getFlights(preferences) 
+  {
+    try 
     {
-        return this.amadeus.shopping.flightOffersSearch.get(preferences)
-            .then(response => response.data)
-            .catch(err => console.error("ERROR IN FETCHING DATA: ", err));
+      let response = await this.amadeus.shopping.flightOffersSearch.get(preferences);
+      return response.data;
+    } 
+    catch(error) 
+    {
+      console.error("ERROR IN FETCHING DATA: ", error);
     }
+  }
 }
 
 module.exports = API;
-
-// let obj = new API();
-// obj.getFlights({ originLocationCode: 'SYD', destinationLocationCode: 'BKK', departureDate: '2023-05-01', adults: '2' })
-//     .then(data => console.log(data))
-//     .catch(err => console.error("ERROR IN FETCHING DATA: ", err));

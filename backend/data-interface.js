@@ -1,10 +1,10 @@
 const API = require('./api.js');
 const Database = require('./database.js');
-const mysql = require('mysql2/promise'); // now each function will return a promise
+const mysql = require('mysql2/promise');
 
-class DataInterface
+class DataInterface 
 {
-    constructor()
+    constructor() 
     {
         // creates db connection
         this.database = mysql.createPool({
@@ -19,29 +19,69 @@ class DataInterface
         this.api = new API();
     }
 
-    getUserPrefs(cookie) 
+    async getUserPrefs(cookie) 
     {
-        return this.db.getUserPrefs(cookie)
+        try 
+        {
+            let prefs = await this.db.getUserPrefs(cookie);
+            return prefs;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN GETTING PREFS: ', error);
+        }
     }
 
-    updateUserPrefs(cookie, data) 
+    async updateUserPrefs(cookie, data) 
     {
-        return this.db.updateUserPrefs(cookie, data);
+        try 
+        {
+            await this.db.updateUserPrefs(cookie, data);
+            console.log('PREFERENCES UPDATED');
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN UPDATING PREFS: ', error);
+        }
     }
 
-    getFlights(preferences)
+    async getFlights(preferences) 
     {
-        return this.api.getFlights(preferences);
+        try 
+        {
+            let flights = await this.api.getFlights(preferences);
+            return flights;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING FLIGHTS: ', error);
+        }
     }
 
-    getUserItinerary(cookie)
+    async getUserItinerary(cookie) 
     {
-        return this.db.getUserItinerary(cookie);
+        try 
+        {
+            let trip = await this.db.getUserItinerary(cookie);
+            return trip;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN GETTING ITINERARY: ', error);
+        }
     }
 
-    updateUserItinerary(cookie, data) 
+    async updateUserItinerary(cookie, data) 
     {
-        return this.db.updateUserItinerary(cookie, data);
+        try 
+        {
+            await this.db.updateUserItinerary(cookie, data);
+            console.log('ITINERARY UPDATED');
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN UPDATING ITINERARY: ', error);
+        }
     }
 }
 
