@@ -1,21 +1,28 @@
-body {
-	--bg-color: white;
-	--txt-color-dark: #27273F;
-	--txt-color-light: #6E7491;
-	--line-color: #C1C0D1;
-	font-family: 'Nunito Sans', 'Roboto', Arial;
+html {
+	height: 100vh;
 }
 
-.background-image {
+body {
+	--bg-color: white;
+	--line-color: #C1C0D1;
+	font-family: 'Nunito Sans', 'Roboto', Arial;
+	color: #27273F;
+	min-height: 90%;
+}
+
+body.start-page {
 	background-image: url("./background.jpg");
 	background-size: cover;
 	background-repeat: no-repeat;
+	background-color: #f8f8f8;
 }
 
 h1.title {
 	font-family: 'Judson', Times;
 	font-weight: bold;
+	font-size: 60px;
 	color: #C86D18;
+	margin: 1em;
 }
 
 main {
@@ -26,10 +33,9 @@ main {
 	margin: auto;
 }
 
-.input-line {
+.round-box {
 	border-radius: 4px;
 	border: 1px solid var(--line-color);
-	margin: 4em 0;
 }
 
 input {
@@ -37,9 +43,61 @@ input {
 	border: none;
 	background-color: transparent;
 	padding: 0;
+}
+
+input::placeholder {
+	color: #6E7491;
+	opacity: 1;
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.input-line {
 	display: flex;
-	flex-direction: row;
+	flex-flow: column nowrap;
 	justify-content: space-between;
+	margin: 2em 0;
+	border: 1px solid var(--line-color);
+	box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+	background-color: white;
+	border-radius: 4px;
+}
+
+.input-line :is(label, input) {
+	flex-grow: 1;
+}
+
+.input-line label {
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+.input-line > input, .input-line > label > * {
+	padding: 4px;
+}
+
+.input-line > *:not(:last-child) {
+	border-bottom: 1px solid var(--line-color);
+	border-right-width: 0px;
+}
+
+@media (min-width: 960px) {
+	
+    .input-line {
+        flex-direction: row;
+    }
+	
+	.input-line > :not(:last-child) {
+		border-right: 1px solid var(--line-color);
+		border-bottom-width: 0px;
+	}
 }
 
 .submit-button {
@@ -52,6 +110,11 @@ input {
 
 .submit-button:active {
 	background-color: #4947BF;
-	
+}
+
+ul.listings, ul.filters {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
 }
 
