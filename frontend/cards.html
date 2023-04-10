@@ -4,45 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Itinerary</title>
+	<link href="https://fonts.googleapis.com/css?family=Nunito Sans" rel="stylesheet">
     <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./cards.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
   <body>
     <main>
-		<div class="input-line">
-			<input name="origin" type="text" disabled></input>
-			<input name="destination" type="text" disabled></input>
-			<label> 
-				<span>Depart</span>
-				<input name="depart" type="date" disabled></input>
-			</label>
-			<label> 
-				<span>Return</span>
-				<input name="return" type="date" disabled></input>
-			</label>
-		</div>
-		<div class="input-line">
-			<label> 
-				<span>$</span>
-				<input name="budget" type="number" disabled></input>
-			</label>
-			<label>
-				<input name="people" type="number" disabled></input>
-				<span>People</span>
-			</label>
-		</div>
-		<ul class="listings">
-			<li>TODO js listings</i>
-		</ul>
-		<form class="filters">
-			<input type="range">
-				<label>Price TODO double sided range</label>
-				
-			</input>
-			<input type="range">
-				<label>Price TODO double sided range</label>
-			</input>
+		<form id="start-form">
+			<div class="input-line">
+				<input name="origin" type="text" disabled></input>
+				<input name="destination" type="text" disabled></input>
+				<label> 
+					<span>Depart</span>
+					<input name="depart" type="date" disabled></input>
+				</label>
+				<label> 
+					<span>Return</span>
+					<input name="return" type="date" disabled></input>
+				</label>
+			</div>
+			<div class="input-line">
+				<label> 
+					<span>$</span>
+					<input name="budget" type="number" disabled></input>
+				</label>
+				<label>
+					<input name="people" type="number" disabled></input>
+					<span>People</span>
+				</label>
+			</div>
 		</form>
+		<h1>Configure your Getaway</h1>
+		<div id="cards">
+			<div class="card" id="transportation-card">
+				<h2 class="card-title">Transportation</h2>
+				<div class="card-info"></div>
+				<button class="submit-button" onclick="chooseFlight()">Search for Transportation</button>
+			</div>
+		</div>
     </main>
 	<script src="main.js"></script>
   </body>

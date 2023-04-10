@@ -10,21 +10,6 @@ body {
 	min-height: 90%;
 }
 
-body.start-page {
-	background-image: url("./background.jpg");
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-color: #f8f8f8;
-}
-
-h1.title {
-	font-family: 'Judson', Times;
-	font-weight: bold;
-	font-size: 60px;
-	color: #C86D18;
-	margin: 1em;
-}
-
 main {
 	width: 80%;
 	max-width: 1080px;
@@ -39,6 +24,7 @@ main {
 }
 
 input {
+	font-family: 'Nunito Sans', 'Roboto', Arial;
 	border-radius: 0px;
 	border: none;
 	background-color: transparent;
@@ -110,11 +96,5 @@ input[type=number] {
 
 .submit-button:active {
 	background-color: #4947BF;
-}
-
-ul.listings, ul.filters {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
 }
 

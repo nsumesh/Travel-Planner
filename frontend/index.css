@@ -1,0 +1,13 @@
+body {
+	background-image: url("./background.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+h1 {
+	font-family: 'Judson', Times;
+	font-weight: bold;
+	font-size: 60px;
+	color: #C86D18;
+	margin: 1em;
+}
