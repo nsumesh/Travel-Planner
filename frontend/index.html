@@ -14,14 +14,22 @@
     <main>
         <h1 class="title">Getaway</h1>
 		<form>
-			<div class="input-line">
-				<input type="text" placeholder="From where?"></input>
+			<div>
+				<input type="text" placeholder="From where?"></input><br>
 				<input type="text" placeholder="Where to?"></input>
-				<input type="text" placeholder="Depart - Return"></input>
+				<label for = "Depart">Departure</label> 
+				<input type="date" name = "source" value = "Depart"></input>
+				<!--<label for = "Depart">Departure</label>-->
+				<input type = "checkbox" name ="source" value = "One Way?" ></input>
+				<label for = "One Way?">One Way?</label>
+				<input type = "date" name = "source" value = "Return" data-show-if="One Way?==true"></input>
 			</div>
-			<div class="input-line">
+		</form>
+		<form class = "form-inline">
+			<div>
 				<input type="text" placeholder="Budget"></input>
 				<input type="text" placeholder="1 adult"></input>
+				</div>
 			</div>
 		</form>
 		<button class="submit-button">Start</button>
