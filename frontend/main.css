@@ -8,6 +8,7 @@ body {
 	font-family: 'Nunito Sans', 'Roboto', Arial;
 	color: #27273F;
 	min-height: 90%;
+	background-color: #F8F8F8;
 }
 
 main {
@@ -16,13 +17,6 @@ main {
 	min-width: 540px;
 	text-align: center;
 	margin: auto;
-}
-
-
-
-.round-box {
-	border-radius: 4px;
-	border: 1px solid var(--line-color);
 }
 
 input {

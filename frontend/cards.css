@@ -6,22 +6,30 @@
 
 .card {
 	flex-grow: 1;
+	border-radius: 8px;
 	border: 1px solid var(--line-color);
 	box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 	background-color: white;
 	display: flex;
 	flex-flow: column nowrap;
-	justify-content: space-evenly;
+	justify-content: space-between;
+	padding: 20px;
+	max-width: 320px;
 }
 
 .card .card-title {
 	
 }
 
-.card .card-info {
+.card .card-details {
 	flex-grow: 1;
 }
 
 .card .submit-button {
 	
+	margin: 20px;
+}
+
+.card img {
+	object-fit: contain;
 }
