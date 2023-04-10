@@ -1,5 +1,55 @@
-ul.listings, ul.filters {
+ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
+}
+
+.content {
+	display: flex;
+	flex-flow: row-reverse wrap;
+	align-items: flex-start;
+}
+
+.content > * {
+}
+
+.content > *:not(:first-child) {
+	margin-right: 30px;
+	flex-grow: 1;
+}
+
+.listings, .filters {
+	border-radius: 8px;
+	border: 1px solid var(--line-color);
+	box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+	padding: 10px;
+	background-color: white;
+}
+
+:is(.listings, .filters) > *:not(:last-child) {
+	border-bottom: 1px solid var(--line-color); 
+}
+
+.listings {
+	
+}
+
+ul.listings li {
+	
+}
+
+fieldset {
+	border-width: 0;
+	padding: 0.5em 0;
+	float: top;
+}
+
+fieldset > legend {
+	float: left;
+	padding: 0.5em 0;
+}
+
+fieldset > label{
+	display: block;
+	text-align: left;
 }

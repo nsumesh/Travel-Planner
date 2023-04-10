@@ -90,6 +90,10 @@ input[type=number] {
 	padding: 0.75em 1em;
 }
 
+.submit-button:hover {
+	background-color: #5552C4;
+}
+
 .submit-button:active {
 	background-color: #4947BF;
 }

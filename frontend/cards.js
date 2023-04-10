@@ -13,20 +13,6 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function createGenericElement(data, tag) {
-	
-	let element = document.createElement(tag);
-	element.innerHTML = data;
-	return element;
-}
-
-function createImageElement(data) {
-	
-	let icon = document.createElement("img");
-	icon.src = data;
-	return icon;
-}
-
 function loadCards() {
 	
 	for (const [card, components] of Object.entries(cards)) {
@@ -47,7 +33,7 @@ function loadCards() {
 	}
 }
 
-function chooseFlight() {
+function chooseTransportation() {
 	
 	window.location.href="./flights.html"; //TODO change once attached to backend
 }

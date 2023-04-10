@@ -12,3 +12,17 @@ function loadStartData() {
 		}
 	}
 }
+
+function createGenericElement(data, tag) {
+	
+	let element = document.createElement(tag);
+	element.innerHTML = data;
+	return element;
+}
+
+function createImageElement(data) {
+	
+	let icon = document.createElement("img");
+	icon.src = data;
+	return icon;
+}

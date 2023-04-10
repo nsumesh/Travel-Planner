@@ -1,7 +1,7 @@
 #cards {
 	display: flex;
 	flex-flow: row wrap;
-	justify-content: space-between;
+	justify-content: space-evenly;
 }
 
 .card {
@@ -13,12 +13,8 @@
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: space-between;
-	padding: 20px;
-	max-width: 320px;
-}
-
-.card .card-title {
-	
+	padding: 40px;
+	max-width: 280px;
 }
 
 .card .card-details {
@@ -26,10 +22,10 @@
 }
 
 .card .submit-button {
-	
-	margin: 20px;
+	margin-top: 20px;
 }
 
 .card img {
 	object-fit: contain;
+	width: 100%;
 }

@@ -35,19 +35,36 @@
 				</label>
 			</div>
 		</form>
-		<ul class="listings">
-			<li>TODO js listings</i>
-		</ul>
-		<form class="filters">
-			<input type="range">
-				<label>Price TODO double sided range</label>
-				
-			</input>
-			<input type="range">
-				<label>Price TODO double sided range</label>
-			</input>
-		</form>
+		<div class="content">
+			<form class="filters">
+				<fieldset name="price">
+					<legend>Price</legend>
+					<label>
+						<input type="range" name="price"></input>
+					</label>
+				</fieldset>
+				<fieldset name="stops">
+					<legend>Maximum No. Stops</legend>
+					<label>
+						<input type="radio" name="stops" value=0 checked></input>
+						0
+					</label>
+					<label>
+						<input type="radio" name="stops" value=1></input>
+						1
+					</label>
+					<label>
+						<input type="radio" name="stops" value=2></input>
+						2+
+					</label>
+				</fieldset>
+			</form>
+			<ul class="listings">
+				Loading listings...
+			</ul>
+		</div>
     </main>
 	<script src="main.js"></script>
+	<script src="flights.js"></script>
   </body>
 </html>
