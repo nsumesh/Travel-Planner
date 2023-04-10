@@ -8,9 +8,7 @@ ul {
 	display: flex;
 	flex-flow: row-reverse wrap;
 	align-items: flex-start;
-}
-
-.content > * {
+	padding-bottom: 30px;
 }
 
 .content > *:not(:first-child) {
@@ -18,24 +16,56 @@ ul {
 	flex-grow: 1;
 }
 
-.listings, .filters {
+#listings, #filters {
 	border-radius: 8px;
 	border: 1px solid var(--line-color);
 	box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-	padding: 10px;
 	background-color: white;
 }
 
-:is(.listings, .filters) > *:not(:last-child) {
+.listing-container:not(:last-child) .listing, #filters > *:not(:last-child) {
 	border-bottom: 1px solid var(--line-color); 
 }
 
-.listings {
-	
+.listing-container {
+	padding: 0 15px;
 }
 
-ul.listings li {
-	
+.listing-container:hover {
+	background-color: #F0F0F0;
+}
+
+.listing-container:active {
+	background-color: #E0E0E0;
+}
+
+.listing-container:first-child {
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+.listing-container:last-child {
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+
+.listing {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	padding: 30px 15px;
+}
+
+.listing > * {
+	text-align: left;
+}
+
+.listing > :nth-child(n+4) {
+	text-align: right;
+}
+
+#filters {
+	padding: 10px;
 }
 
 fieldset {

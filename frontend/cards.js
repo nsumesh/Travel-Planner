@@ -1,6 +1,6 @@
 const cards = {//TODO add others
 	transportation: [
-		{key: "iata", factory: (data) => createImageElement(`https://daisycon.io/images/airline/?iata=${data}`)},
+		{key: "iata", factory: createAirlineIconElement},
 		{key: "name", factory: (data) => createGenericElement(data, "h3")},
 		{key: "info", factory: (data) => createGenericElement(data, "div")}
 	]

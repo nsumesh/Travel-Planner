@@ -20,9 +20,28 @@ function createGenericElement(data, tag) {
 	return element;
 }
 
-function createImageElement(data) {
+function createImageElement(url) {
 	
 	let icon = document.createElement("img");
-	icon.src = data;
+	icon.src = url;
 	return icon;
+}
+
+function createAirlineIconElement(iata, ...additional) {
+	
+	let url = `https://daisycon.io/images/airline/?iata=${iata}`;
+	if (additional) {
+		url += "&" + additional.join("&");
+	}
+	return createImageElement(url);
+}
+
+function getDoubleRangeValues(name) {
+	
+	return {min: 0, max: 10000}; //TODO
+}
+
+function getRadioValue(name) {
+	
+	return document.querySelector(`#filters input[name=${name}]:checked`).value;
 }
