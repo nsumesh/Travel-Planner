@@ -8,7 +8,7 @@ let manager = new DataInterface();
 app.use(express.json());
 
 // serves static files of the homepage to browser
-app.use('/', express.static('frontend/homepage-static'));
+app.use('/', express.static('frontend'));
 
 app.post('/initial-preferences', async (req, res) => {
     try 
@@ -16,6 +16,7 @@ app.post('/initial-preferences', async (req, res) => {
         let package = req.body;
         let results = await manager.getFlights(package);
         res.send(results);
+        // res.render('flights', { res: results });
     } 
     catch(error) 
     {
