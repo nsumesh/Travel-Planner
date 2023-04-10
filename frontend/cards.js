@@ -1,31 +1,39 @@
-const cards = ["flight"]; //TODO add others
+const cards = {//TODO add others
+	transportation: [
+		{key: "iata", factory: createAirlineIconElement},
+		{key: "name", factory: (data) => createGenericElement(data, "h3")},
+		{key: "info", factory: (data) => createGenericElement(data, "div")}
+	]
+};
 
-loadCardData();
+loadCards();
 
 function capitalizeFirstLetter(string) {
+	
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function loadCardData() {
+function loadCards() {
 	
-	for (const card of cards) {
-		let data = localStorage.getItem(field);
+	for (const [card, components] of Object.entries(cards)) {
 		let id = `#${card}-card `;
-		let info = document.querySelector(id + ".card-info");
+		let details = document.querySelector(id + ".card-details");
 		let button = document.querySelector(id + ".submit-button");
-		if (!info || !button) {
+		if (!details || !button) {
 			continue;
 		}
-		if (data) {
-			button.innerHTML = "Change " + capitalizeFirstLetter(card); //TODO
-			
+		if (components.every(comp => localStorage[card + "_" + comp.key])) {
+			for (const component of components) {
+				details.appendChild(component.factory(localStorage[card + "_" + component.key]));
+			}
+			button.innerHTML = "Change " + capitalizeFirstLetter(card);
 		} else {
-			
+			details.appendChild(createImageElement(`./${card}-icon.png`));
 		}
 	}
 }
 
-function chooseFlight() {
+function chooseTransportation() {
 	
 	window.location.href="./flights.html"; //TODO change once attached to backend
 }
