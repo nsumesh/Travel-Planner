@@ -10,30 +10,36 @@
     <link rel="stylesheet" href="./main.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
-  <body class="background-image">
+  <body class="start-page">
     <main>
         <h1 class="title">Getaway</h1>
-		<form>
-			<div>
-				<input type="text" placeholder="From where?"></input><br>
-				<input type="text" placeholder="Where to?"></input>
-				<label for = "Depart">Departure</label> 
-				<input type="date" name = "source" value = "Depart"></input>
-				<!--<label for = "Depart">Departure</label>-->
-				<input type = "checkbox" name ="source" value = "One Way?" ></input>
-				<label for = "One Way?">One Way?</label>
-				<input type = "date" name = "source" value = "Return" data-show-if="One Way?==true"></input>
+		<form id="start-form">
+			<div class="input-line">
+				<input name="origin" type="text" placeholder="From where?"></input>
+				<input name="destination" type="text" placeholder="Where to?"></input>
+				<label> 
+					<span>Depart</span>
+					<input name="depart" type="date"></input>
+				</label>
+				<label> 
+					<span>Return</span>
+					<input name="return" type="date"></input>
+				</label>
+			</div>
+			<div class="input-line">
+				<label> 
+					<span>$</span>
+					<input name="budget" type="number" min=1 placeholder="Budget"></input>
+				</label>
+				<label>
+					<input name="people" type="number" value=1 min=1></input>
+					<span>People</span>
+				</label>
 			</div>
 		</form>
-		<form class = "form-inline">
-			<div>
-				<input type="text" placeholder="Budget"></input>
-				<input type="text" placeholder="1 adult"></input>
-				</div>
-			</div>
-		</form>
-		<button class="submit-button">Start</button>
+		<button id="start-submit" class="submit-button" onclick="submit()">Start</button>
     </main>
+	<script src="main.js"></script>
 	<script src="index.js"></script>
   </body>
 </html>
