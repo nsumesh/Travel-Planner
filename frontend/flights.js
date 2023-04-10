@@ -26,8 +26,6 @@ function getStopsPredicate() {
 
 function fetchListings() {
 	//TODO Ishan - assign api output to flights variable
-	
-	flights = [];
 }
 
 function loadListings() {
@@ -42,6 +40,7 @@ function loadListings() {
 			let container = document.createElement("li");
 			container.classList.add("listing-container");
 			let listing = document.createElement("div");
+			container.addEventListener("click", () => selectFlight(listing));
 			listing.classList.add("listing");
 			container.appendChild(listing);
 			listing.dataset.index = i;
@@ -49,9 +48,8 @@ function loadListings() {
 			let itinerary = flight.itineraries[0];
 			let duration = formatDuration(itinerary.duration) + "<br>" + getAirlineName(flight);
 			listing.appendChild(createGenericElement(duration, "div"));
-			//TODO time
-			//let time = 
-			//listing.appendChild(createGenericElement(, "div"));
+			let time = itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
+			listing.appendChild(createGenericElement(time, "div"));
 			listing.appendChild(createGenericElement(appendUnits(getNumberStops(itinerary), "stop"), "div"));
 			let price = "$" + flight.price.grandTotal + "<br>" + (flight.oneWay ? "one way" : "round trip");
 			listing.appendChild(createGenericElement(price, "div"));
@@ -82,6 +80,18 @@ function formatDuration(raw) {
 		hours += 24 * parseInt(days[1]);
 	}
 	return `${hours}h ${minutes}m`;
+}
+
+function formatTime(time) {
+	
+	time = new Date(time);
+	let hours = time.getHours();
+	let suffix = hours >= 12 ? " PM" : " AM";
+	hours = hours % 12;
+	hours = hours ? hours : 12;
+	let minutes = time.getMinutes();
+	minutes = minutes < 10 ? "0" + minutes : minutes;
+	return hours + ":" + minutes + suffix;
 }
 
 function getAirlineName(flight) {
