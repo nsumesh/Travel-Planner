@@ -27,13 +27,9 @@ function createImageElement(url) {
 	return icon;
 }
 
-function createAirlineIconElement(iata, ...additional) {
-	
-	let url = `https://daisycon.io/images/airline/?iata=${iata}`;
-	if (additional) {
-		url += "&" + additional.join("&");
-	}
-	return createImageElement(url);
+function createAirlineIconElement(iata, width, height) {
+
+	return createImageElement(`https://daisycon.io/images/airline/?iata=${iata}&width=${width}&height=${height}`);
 }
 
 function getDoubleRangeValues(name) {

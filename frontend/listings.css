@@ -33,6 +33,7 @@ ul {
 
 .listing-container:hover {
 	background-color: #F0F0F0;
+	cursor: pointer;
 }
 
 .listing-container:active {
@@ -65,7 +66,7 @@ ul {
 }
 
 #filters {
-	padding: 10px;
+	padding: 0 10px;
 }
 
 fieldset {

@@ -1,6 +1,6 @@
 const cards = {//TODO add others
 	transportation: [
-		{key: "iata", factory: createAirlineIconElement},
+		{key: "iata", factory: (iata) => createAirlineIconElement(iata, 200, 80)},
 		{key: "name", factory: (data) => createGenericElement(data, "h3")},
 		{key: "info", factory: (data) => createGenericElement(data, "div")}
 	]
@@ -22,9 +22,9 @@ function loadCards() {
 		if (!details || !button) {
 			continue;
 		}
-		if (components.every(comp => localStorage[card + "_" + comp.key])) {
+		if (components.every(comp => localStorage.getItem(card + "_" + comp.key))) {
 			for (const component of components) {
-				details.appendChild(component.factory(localStorage[card + "_" + component.key]));
+				details.appendChild(component.factory(localStorage.getItem(card + "_" + component.key)));
 			}
 			button.innerHTML = "Change " + capitalizeFirstLetter(card);
 		} else {
