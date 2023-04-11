@@ -4,10 +4,13 @@ const filters = [
 ];
 
 let flights = [];
+let carrierDetails = {};
 
 async function main() 
 {
 	await fetchListings();
+	console.log(flights);
+	console.log(carrierDetails);
 	loadListings();
 	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", loadListings));
 }
@@ -61,7 +64,9 @@ async function fetchListings() {
 			},
 			body: JSON.stringify(package)
 		});
-		flights = await response.json();
+		let extracted = await response.json();
+		flights = extracted["result"]["data"].sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
+		carrierDetails = extracted["result"]["dictionaries"]["carriers"];
 	}
 	catch(error)
 	{

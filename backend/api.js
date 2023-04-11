@@ -16,8 +16,9 @@ class API {
     {
       let response = await this.amadeus.shopping.flightOffersSearch.get(preferences);
       // sorts the list of flights in ascending order of total price
-      let sortedList = response.data.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
-      return sortedList;
+      // let sortedList = response.data.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
+      // return sortedList;
+      return response;
     } 
     catch(error) 
     {

@@ -16,7 +16,6 @@ app.post('/initial-preferences', async (req, res) => {
         let package = req.body;
         let results = await manager.getFlights(package);
         res.send(results);
-        // res.render('flights', { res: results });
     } 
     catch(error) 
     {
