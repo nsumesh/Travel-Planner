@@ -9,8 +9,8 @@ let carrierDetails = {};
 async function main() 
 {
 	await fetchListings();
-	console.log(flights);
-	console.log(carrierDetails);
+	// console.log(flights);
+	// console.log(carrierDetails);
 	loadListings();
 	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", loadListings));
 }
@@ -48,7 +48,8 @@ async function fetchListings() {
 		package.returnDate = localStorage.getItem("return");
 	}
 
-	try {
+	try 
+	{
 		let response = await fetch('/initial-preferences', {
 			method: 'POST',
 			headers: {
@@ -56,9 +57,13 @@ async function fetchListings() {
 			},
 			body: JSON.stringify(package)
 		});
-		flights = await response.json();
+		let extracted = await response.json();
+        flights = extracted["result"]["data"].sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
+        carrierDetails = extracted["result"]["dictionaries"]["carriers"];
 		flights.forEach((flight, i) => flight.index = i);
-	} catch(error) {
+	} 
+	catch(error) 
+	{
 		console.error('ERROR IN FETCHING DATA: ', error);
 	}
 }
@@ -169,5 +174,5 @@ function appendUnits(value, units) {
 
 function getAirlineName(iata) {
 	
-	return "TODO " + iata + " name";
+	return carrierDetails[iata.toUpperCase()];
 }
