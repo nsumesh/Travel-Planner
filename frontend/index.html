@@ -27,10 +27,9 @@
 					<input name="depart" id="depart-date" type="date"></input>
 				</label>
 				<label>
-					<span>One Way?</span>
-					<input name = "One Way?" id="one-way" type="checkbox"></input>
+					<span>One Way</span>
+					<input name="one-way" id="one-way" type="checkbox"></input>
 				</label>
-				<!-- Removed cbtrue id -->
 				<label> 
 					<span>Return</span>
 					<input name="return" id="return-date" type="date"></input>
@@ -39,10 +38,10 @@
 			<div class="input-line">
 				<label> 
 					<span>$</span>
-					<input name="budget" id="budget" type="number" min=1 placeholder="Budget"></input>
+					<input name="budget" id="budget" type="number" min=1 placeholder="Budget" step=0.01></input>
 				</label>
 				<label>
-					<input name="people" id="adult-count" type="number" value=1 min=1></input>
+					<input name="people" id="adult-count" type="number" value=1 min=1 step=1></input>
 					<span>Person(s)</span>
 				</label>
 			</div>

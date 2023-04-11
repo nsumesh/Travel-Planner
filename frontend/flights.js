@@ -9,13 +9,12 @@ let carrierDetails = {};
 async function main() 
 {
 	await fetchListings();
-	// console.log(flights);
-	// console.log(carrierDetails);
 	loadListings();
 	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", loadListings));
 }
 
 main();
+priceRangeValidation();
 
 function getPricePredicate() {
 	
@@ -44,7 +43,7 @@ async function fetchListings() {
 	};
 
 	// checks user's one-way choice in local storage
-	if(localStorage.getItem("one-way") === "false") {
+	if (localStorage.getItem("one-way") === "false") {
 		package.returnDate = localStorage.getItem("return");
 	}
 
@@ -110,18 +109,12 @@ function selectFlight(listing) {
 	localStorage.setItem("transportation_name", formatFlightName(flight));
 	localStorage.setItem("transportation_info", formatFlightInfo(flight));
 	localStorage.setItem("transportation_price", flight.price.grandTotal);
-	window.location.href="./cards.html"; //TODO change once attached to backend
+	window.location.href="./cards.html";
 }
 
 function formatDuration(raw) {
 	
-	let hours = parseInt(raw.match(/(\d+)H/)[1]);
-	let minutes = parseInt(raw.match(/(\d+)M/)[1]);
-	let days = raw.match(/(\d+)D/);
-	if (days) {
-		hours += 24 * parseInt(days[1]);
-	}
-	return `${hours}h ${minutes}m`;
+	return [...raw.matchAll(/\d+[A-Z]/g)].join(" ").toLowerCase();
 }
 
 function formatTime(time) {
@@ -138,15 +131,14 @@ function formatTime(time) {
 
 function formatFlightName(flight) {
 	
-	let numbers = flight.itineraries[0].segments.map(seg => seg.number);
-	numbers = (numbers.length > 1 ? " flights " :  " flight ") + numbers.join(", ");
 	return getAirlineName(flight.validatingAirlineCodes[0]);
 }
 
 function formatFlightInfo(flight) {
 	
-	let itinerary = flight.itineraries[0];
-	let segments = itinerary.segments;
+	let segments = flight.itineraries[0].segments;
+	let numbers = segments.map(seg => seg.number);
+	numbers = (numbers.length > 1 ? "Flights #" :  "Flight #") + numbers.join(", #");
 	let stops = segments.slice(1).map(seg => seg.departure.iataCode);
 	if (stops.length > 0) {
 		stops = appendUnits(stops.length, "stop") + " in " + stops.join(", ");
@@ -155,7 +147,7 @@ function formatFlightInfo(flight) {
 	}
 	let time = formatTime(segments[0].departure.at) + " - " + formatTime(segments[segments.length - 1].arrival.at);
 	let price = "$" + flight.price.grandTotal;
-	return [time, stops, price].join("<br>");
+	return [numbers, time, stops, price].join("<br>");
 }
 
 function getNumberStops(itinerary) {
@@ -174,5 +166,5 @@ function appendUnits(value, units) {
 
 function getAirlineName(iata) {
 	
-	return carrierDetails[iata.toUpperCase()];
+	return titleCase(carrierDetails[iata.toUpperCase()]);
 }

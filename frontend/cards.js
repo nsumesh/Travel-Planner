@@ -1,6 +1,6 @@
 const cards = {//TODO add others
 	transportation: [
-		{key: "iata", factory: (iata) => createAirlineIconElement(iata, 200, 80)},
+		{key: "iata", factory: (iata) => createAirlineIconElement(iata, 400, 160)},
 		{key: "name", factory: (data) => createGenericElement(data, "h3")},
 		{key: "info", factory: (data) => createGenericElement(data, "div")}
 	]
