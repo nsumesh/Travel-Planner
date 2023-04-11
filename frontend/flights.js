@@ -33,30 +33,22 @@ function getStopsPredicate() {
 }
 
 async function fetchListings() {
-	let start = document.getElementById("start-place").value;
-	let end = document.getElementById("end-place").value;
-	let departDate = document.getElementById("depart-date").value;
-	let returnDate = document.getElementById("return-date").value;
-	let maxAmount = document.getElementById("budget").value;
-	let adultCount = document.getElementById("adult-count").value;
 	
 	let package = { 
-		originLocationCode: start,
-		destinationLocationCode: end,
-		departureDate: departDate,
-		maxPrice: maxAmount,
-		adults: adultCount,
+		originLocationCode: localStorage.getItem("origin"),
+		destinationLocationCode: localStorage.getItem("destination"),
+		departureDate: localStorage.getItem("depart"),
+		maxPrice: localStorage.getItem("budget"), //TODO price filter
+		adults: localStorage.getItem("people"),
 		currencyCode: 'USD',
 	};
 
 	// checks user's one-way choice in local storage
-	if(localStorage.getItem("one-way") === "false")
-	{
-		package["returnDate"] = returnDate;
+	if(localStorage.getItem("one-way") === "false") {
+		package.returnDate = localStorage.getItem("return");
 	}
 
-	try
-	{
+	try {
 		let response = await fetch('/initial-preferences', {
 			method: 'POST',
 			headers: {
@@ -64,12 +56,9 @@ async function fetchListings() {
 			},
 			body: JSON.stringify(package)
 		});
-		let extracted = await response.json();
-		flights = extracted["result"]["data"].sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
-		carrierDetails = extracted["result"]["dictionaries"]["carriers"];
-	}
-	catch(error)
-	{
+		flights = await response.json();
+		flights.forEach((flight, i) => flight.index = i);
+	} catch(error) {
 		console.error('ERROR IN FETCHING DATA: ', error);
 	}
 }
@@ -82,17 +71,18 @@ function loadListings() {
 	}
 	let predicates = filters.map(supplier => supplier());
 	let newListings = flights.filter(flight => predicates.every(p => p(flight)))
-		.map((flight, i) => {
+		.map((flight) => {
 			let container = document.createElement("li");
 			container.classList.add("listing-container");
 			let listing = document.createElement("div");
 			container.addEventListener("click", () => selectFlight(listing));
 			listing.classList.add("listing");
 			container.appendChild(listing);
-			listing.dataset.index = i;
-			listing.appendChild(createAirlineIconElement(flight.validatingAirlineCodes[0].toLowerCase(), "height=60", "width=150"));
+			listing.dataset.index = flight.index;
+			let iata = flight.validatingAirlineCodes[0].toLowerCase()
+			listing.appendChild(createAirlineIconElement(iata, 150, 60));
 			let itinerary = flight.itineraries[0];
-			let duration = formatDuration(itinerary.duration) + "<br>" + getAirlineName(flight);
+			let duration = formatDuration(itinerary.duration) + "<br>" + getAirlineName(iata);
 			listing.appendChild(createGenericElement(duration, "div"));
 			let time = itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
 			listing.appendChild(createGenericElement(time, "div"));
@@ -111,9 +101,10 @@ function loadListings() {
 function selectFlight(listing) {
 	
 	let flight = flights[listing.dataset.index];
-	localStorage.transportation_iata = flight.validatingAirlineCodes[0].toLowerCase();
-	localStorage.transportation_name = getAirlineName(flight);
-	localStorage.transportation_info = "TODO info";
+	localStorage.setItem("transportation_iata", flight.validatingAirlineCodes[0].toLowerCase());
+	localStorage.setItem("transportation_name", formatFlightName(flight));
+	localStorage.setItem("transportation_info", formatFlightInfo(flight));
+	localStorage.setItem("transportation_price", flight.price.grandTotal);
 	window.location.href="./cards.html"; //TODO change once attached to backend
 }
 
@@ -140,9 +131,26 @@ function formatTime(time) {
 	return hours + ":" + minutes + suffix;
 }
 
-function getAirlineName(flight) {
+function formatFlightName(flight) {
 	
-	return "TODO airline name";
+	let numbers = flight.itineraries[0].segments.map(seg => seg.number);
+	numbers = (numbers.length > 1 ? " flights " :  " flight ") + numbers.join(", ");
+	return getAirlineName(flight.validatingAirlineCodes[0]);
+}
+
+function formatFlightInfo(flight) {
+	
+	let itinerary = flight.itineraries[0];
+	let segments = itinerary.segments;
+	let stops = segments.slice(1).map(seg => seg.departure.iataCode);
+	if (stops.length > 0) {
+		stops = appendUnits(stops.length, "stop") + " in " + stops.join(", ");
+	} else {
+		stops = "Nonstop";
+	}
+	let time = formatTime(segments[0].departure.at) + " - " + formatTime(segments[segments.length - 1].arrival.at);
+	let price = "$" + flight.price.grandTotal;
+	return [time, stops, price].join("<br>");
 }
 
 function getNumberStops(itinerary) {
@@ -157,4 +165,9 @@ function appendUnits(value, units) {
 		out += "s";
 	}
 	return out;
+}
+
+function getAirlineName(iata) {
+	
+	return "TODO " + iata + " name";
 }
