@@ -1,22 +1,22 @@
 const API = require('./api.js');
 const Database = require('./database.js');
-const mysql = require('mysql2/promise');
 
 class DataInterface 
 {
     constructor() 
     {
-        // creates db connection
-        this.database = mysql.createPool({
-            host: 'localhost',
-            user: 'root',
-            password: 'getaway',
-            database: 'travel-data'
-        });
-        // for doing CRUD on db
-        this.db = new Database(this.database);
+        // set up the database interface
+        this.db = new Database();
         // to get data from APIs
         this.api = new API();
+    }
+
+    async initDatabase()
+    {
+        let success = await this.db.initDatabase()
+        if (success) {
+            console.log('Database successfully initialized')
+        }
     }
 
     async getUserPrefs(cookie) 

@@ -1,9 +1,18 @@
+const { sequelize, Trips } =  require('../models')
 class Database 
 {
-    constructor(db) 
+    async initDatabase() 
     {
-      // The db should be created in the DataInterface object
-      this.db = db;
+      try
+      {
+        await sequelize.sync()
+        return true
+      } 
+      catch(error) 
+      {
+        console.log('ERROR IN INITIALIZING DATABASE: ', error)
+        return false
+      }
     }
   
     async getUserPrefs(cookie) 
