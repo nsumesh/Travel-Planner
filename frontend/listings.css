@@ -99,3 +99,13 @@ fieldset > label > input {
 	margin: 2px;
 	padding: 0 2px;
 }
+
+.logo
+{
+	text-indent: -999999px;
+	background : url("./Main Logo 2.png");
+	width : 200px;
+	height: 75px;
+	margin-left : auto;
+	margin-right: auto;
+}
