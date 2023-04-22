@@ -29,3 +29,13 @@
 	object-fit: contain;
 	width: 100%;
 }
+
+.logo
+{
+	text-indent: -999999px;
+	background : url("./Main Logo.png");
+	width : 400px;
+	height: 257px;
+	top : 0;
+	left : 0;
+}
