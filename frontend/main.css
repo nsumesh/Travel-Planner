@@ -104,4 +104,7 @@ label:has(input:checked[name="one-way"][type=checkbox]) + label {
 	background-color: #4947BF;
 }
 
-
+.submit-button:disabled {
+	background-color: grey;
+	cursor: not-allowed;
+}
