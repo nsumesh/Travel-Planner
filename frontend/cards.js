@@ -37,3 +37,8 @@ function chooseTransportation() {
 	
 	window.location.href="./flights.html"; //TODO change once attached to backend
 }
+
+function chooseLodging()
+{
+	window.location.href = "./lodging.html";
+}
