@@ -1,11 +1,10 @@
 const API = require('./api.js');
 const Database = require('./database.js');
+const mysql = require('mysql2/promise');
 
-const mysql = require('mysql2/promise'); // now each function will return a promise
-
-class DataInterface
+class DataInterface 
 {
-    constructor()
+    constructor() 
     {
         // creates db connection
         this.database = mysql.createPool({
@@ -20,29 +19,69 @@ class DataInterface
         this.api = new API();
     }
 
-    async getUserPrefs(cookie)
+    async getUserPrefs(cookie) 
     {
-        let prefs = await this.db.getUserPrefs(cookie);
-        return prefs;
+        try 
+        {
+            let prefs = await this.db.getUserPrefs(cookie);
+            return prefs;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN GETTING PREFS: ', error);
+        }
     }
 
-    async updateUserPrefs(cookie, data)
+    async updateUserPrefs(cookie, data) 
     {
-        await this.db.updateUserPrefs(cookie, data);
-    }
-    
-    async get_results(type, prefs)
-    {
-        let results = await this.db.getListData(type, prefs);
-        if(!results)
+        try 
         {
-            // will change this url implementation later on
-            let url = type === "Flights" ? this.api.FLIGHT_URL : (type === "Lodging" ? this.api.LODGING_URL: this.api.INTRANSPORT_URL);
-            let apiData = await this.api.getFromAPI(url);
-            await this.db.updateListData(type, apiData);
-            results = await this.db.getListData(type, prefs);
+            await this.db.updateUserPrefs(cookie, data);
+            console.log('PREFERENCES UPDATED');
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN UPDATING PREFS: ', error);
         }
-        return results;
+    }
+
+    async getFlights(preferences) 
+    {
+        try 
+        {
+            let flights = await this.api.getFlights(preferences);
+            return flights;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING FLIGHTS: ', error);
+        }
+    }
+
+    async getUserItinerary(cookie) 
+    {
+        try 
+        {
+            let trip = await this.db.getUserItinerary(cookie);
+            return trip;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN GETTING ITINERARY: ', error);
+        }
+    }
+
+    async updateUserItinerary(cookie, data) 
+    {
+        try 
+        {
+            await this.db.updateUserItinerary(cookie, data);
+            console.log('ITINERARY UPDATED');
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN UPDATING ITINERARY: ', error);
+        }
     }
 }
 

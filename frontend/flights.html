@@ -13,25 +13,35 @@
     <main>
 		<form id="start-form">
 			<div class="input-line">
-				<input name="origin" type="text" disabled></input>
-				<input name="destination" type="text" disabled></input>
+				<label> 
+					<span>From</span>
+					<input name="origin" id="start-place" type="text" disabled></input>
+				</label>
+				<label> 
+					<span>To</span>
+					<input name="destination" id="end-place" type="text" disabled></input>
+				</label>
 				<label> 
 					<span>Depart</span>
-					<input name="depart" type="date" disabled></input>
+					<input name="depart" id="depart-date" type="date" disabled></input>
+				</label>
+				<label>
+					<span>One Way</span>
+					<input name="one-way" type="checkbox" disabled></input>
 				</label>
 				<label> 
 					<span>Return</span>
-					<input name="return" type="date" disabled></input>
+					<input name="return" id="return-date" type="date" disabled></input>
 				</label>
 			</div>
 			<div class="input-line">
 				<label> 
 					<span>$</span>
-					<input name="budget" type="number" disabled></input>
+					<input name="budget" id="budget" type="number" disabled></input>
 				</label>
 				<label>
-					<input name="people" type="number" disabled></input>
-					<span>People</span>
+					<input name="people" id="adult-count" type="number" disabled></input>
+					<span>Person(s)</span>
 				</label>
 			</div>
 		</form>
@@ -40,7 +50,11 @@
 				<fieldset name="price">
 					<legend>Price</legend>
 					<label>
-						<input type="range" name="price"></input>
+						$<input type="number" name="price" class="range-min" value=0></input>
+						to
+					</label>
+					<label>
+						$<input type="number" name="price" class="range-max"></input>
 					</label>
 				</fieldset>
 				<fieldset name="stops">

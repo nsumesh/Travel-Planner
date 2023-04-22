@@ -1,32 +1,28 @@
-const DataInterface = require('./backend/data-interface.js');
-
 const express = require('express');
 const app = express();
+const DataInterface = require('./backend/data-interface.js');
 
-app.get('/', (req, res) => {
-	// res.send('Prefs!');
-	res.sendFile(__dirname + '/frontend/index.html');
-})
+let manager = new DataInterface();
 
-app.get('/cards', (req, res) => {
-	res.send('Cards!');
-})
+// middleware that puts incoming data into req.body
+app.use(express.json());
 
-app.get('/flights', (req, res) => {
-	res.send('Flights!');
-})
+// serves static files of the homepage to browser
+app.use('/', express.static('frontend'));
 
-app.get('/lodging', (req, res) => {
-	res.send('Lodging!');
-})
-
-app.get('/internal-transport', (req, res) => {
-	res.send('Internal Transport!');
-})
-
-app.get('/summary', (req, res) => {
-	res.send('Summary!');
-})
+app.post('/initial-preferences', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        let results = await manager.getFlights(package);
+        res.send(results);
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
 
 app.listen(3000, () => {
     console.log("Server started on port 3000");
