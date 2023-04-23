@@ -36,7 +36,48 @@
                 <input name="people" id="adult-count" type="number"></input>
                 <span>Person(s)</span>
               </label>
+              <label>
+                <input name = "Rooms" id="room-count" type="number"></input>
+                <span>Room(s)</span>
+              </label>
             </div>
         </form>
+        <div class = "content">
+          <form id = "filters">
+            <fieldset name="price">
+              <legend>Price</legend>
+              <label>
+                $<input type="number" name="price" class="range-min" value=0></input>
+                to
+              </label>
+              <label>
+                $<input type="number" name="price" class="range-max"></input>
+              </label>
+            </fieldset>
+            <fieldset name="boarding">
+              <legend>Type of Boarding</legend>
+              <label>
+                <input type="radio" name="board" value=0 checked></input>
+                Room only
+              </label>
+              <label>
+                <input type="radio" name="board" value =  0 checked></input>
+                Breakfast + Room
+              </label>
+              <label>
+                <input type="radio" name="board" value =  0 checked></input>
+                Half Board (Room + 2 meals included)
+              </label>
+              <label>
+                <input type="radio" name="board" value =  0 checked></input>
+                Full Board (Room + 3 meals included)
+              </label>
+              <label>
+                <input type="radio" name="board" value =  0 checked></input>
+                All Inclusive (Room + Everything Included)
+              </label>
+            </fieldset>
+          </form>
+        </div>
     </main>    
   </body>
