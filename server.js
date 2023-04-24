@@ -28,8 +28,9 @@ app.post('/lodging-preferences', async (req, res) => {
     try 
     {
         let package = req.body;
-        let results = await manager.getLodging(package);
-        res.send(results);
+        res.send(package);
+        // let results = await manager.getLodging(package);
+        // res.send(results);
     } 
     catch(error) 
     {
