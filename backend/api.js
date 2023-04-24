@@ -69,8 +69,7 @@ class API {
                 amadeus.shopping.hotelOffersSearch.get(preferences)
                 	.then(response => console.log(response.data))
                     .catch(err => console.error("ERROR IN FETCHING DATA:", err));
-            })
-            .catch(err => console.error("ERROR IN FETCHING DATA:", err));
+            }).catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
 
     async getEntertainment(preferences) {
