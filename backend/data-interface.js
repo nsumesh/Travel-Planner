@@ -58,6 +58,19 @@ class DataInterface
         }
     }
 
+    async getLodging(preferences) 
+    {
+        try 
+        {
+            let lodgingData = await this.api.getLodging(preferences);
+            return lodgingData;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING LODGING DATA: ', error);
+        }
+    }
+
     async getUserItinerary(cookie) 
     {
         try 

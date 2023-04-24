@@ -37,7 +37,7 @@ async function fetchListings() {
 		originLocationCode: localStorage.getItem("origin"),
 		destinationLocationCode: localStorage.getItem("destination"),
 		departureDate: localStorage.getItem("depart"),
-		maxPrice: localStorage.getItem("budget"), //TODO price filter
+		maxPrice: localStorage.getItem("budget"),
 		adults: localStorage.getItem("people"),
 		currencyCode: 'USD',
 	};
