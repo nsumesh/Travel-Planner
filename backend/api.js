@@ -5,8 +5,8 @@ class API {
   {
     // Amadeus API connection
     this.amadeus = new Amadeus({
-      clientId: 'mXUCuCKB5fiaj9GLrCvZmA0Er5HrteeT',
-      clientSecret: 'jC0nFnaUu0CptD1e'
+      clientId: '80B4rAGUjIF5uHUeOe6W2USRyUGFO0ug',
+      clientSecret: 'NILxAX1ZQT8v9WPP'
     });
   }
 
@@ -16,19 +16,17 @@ class API {
     {
       let details = { keyword: cityName, subType: Amadeus.location.city }
       let response = await this.amadeus.referenceData.locations.get(details);
-      // making sure that the input city name matches the fetched data
-      for(let elem of response.data)
+      // high prob that first entry is a match
+      if(response.data.length != 0)
       {
-        if(cityName.toUpperCase() === elem.name)
-        {
-          return { iata: elem.iataCode, cityCode: elem.address.cityCode };
-        }
+        let elem = response.data[0];
+        return { iata: elem.iataCode, cityCode: elem.address.cityCode };
       }
       return "CITY CODES NOT FOUND";
     } 
     catch(error) 
     {
-      console.error("ERROR IN FETCHING DATA: ", error);
+      console.error("ERROR IN FETCHING CITY CODES DATA: ", error);
     }
   }
   
@@ -46,7 +44,7 @@ class API {
     } 
     catch(error) 
     {
-      console.error("ERROR IN FETCHING DATA: ", error);
+      console.error("ERROR IN FETCHING FLIGHT DATA: ", error);
     }
   }
 }
