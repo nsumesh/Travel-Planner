@@ -21,8 +21,8 @@ class WebScrape {
         })
         .then(response => response.json())
         // getting only necessary data and putting it in a nested array
-        .then(res => console.log((res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString] : console.log("Specified keys not found"))))
-        .catch(err => console.log(`UBER API err: ${err}`));
+        .then(res => (res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString] : console.log("Specified keys not found")))
+        .catch(err => console.log(`UBER API error: ${err}`));
     }
     // Testing
     //uberPrices(42.385150, -72.525290, 42.039370, -72.613620);
@@ -38,7 +38,7 @@ class WebScrape {
                 priceStr = "$"+ obj.estimated_cost_cents_min + "-" + obj.estimated_cost_cents_max;
             }
             return [obj.display_name, priceStr] // same format as uber function
-        }))).catch(err => console.log(`Lyft API err: ${err}`));
+        }))).catch(err => console.log(`Lyft API error: ${err}`));
     }
     // Testing
     //lyftPrices(42.387119, -72.526435, 42.038042, -72.617054);
