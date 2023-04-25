@@ -3,7 +3,7 @@ class WebScrape {
         fetch("https://www.uber.com/api/loadFEEstimates?localeCode=en", {
             method: 'POST',
             body: JSON.stringify({
-                "origin": {
+                "pickup": {
                     "latitude": pickupLat,
                     "longitude": pickupLong
                 },
@@ -21,7 +21,7 @@ class WebScrape {
         })
         .then(response => response.json())
         // getting only necessary data and putting it in a nested array
-        .then(res => (res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString] : console.log("Specified keys not found")))
+        .then(res => console.log((res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString] : console.log("Specified keys not found"))))
         .catch(err => console.log(`UBER API error: ${err}`));
     }
     // Testing
