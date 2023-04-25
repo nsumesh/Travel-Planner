@@ -26,6 +26,7 @@ function amadeusInit() {
 	let token = null;
 	return async () => {
 		if (!attempted) {
+			attempted = true;
 			token = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
 				method: 'POST',
 				headers: {
@@ -34,7 +35,7 @@ function amadeusInit() {
 				body: "grant_type=client_credentials&client_id=80B4rAGUjIF5uHUeOe6W2USRyUGFO0ug&client_secret=NILxAX1ZQT8v9WPP"
 			})
 			.then(response => response.json())
-			.then(data => 'Bearer ' + data.access_token);
+			.then(data => data.token_type + " " + data.access_token);
 		}
 		if (!token) {
 			throw new Error("Failed to authenticate Amadeus!");
@@ -114,4 +115,9 @@ function priceRangeValidation() {
 function formatDollarAmount(amount) {
 	
 	return amount.toFixed(2).replace(/[.,]00$/, "");
+}
+
+function timeout(ms) {
+	
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -7,21 +7,24 @@ let flights = [];
 let carrierDetails = {};
 
 async function main() {
-	
-	let origin = localStorage.getItem("transportation_origin");
-	if (!origin) {
-		origin = await closestAirport(localStorage.getItem("origin"));
-		localStorage.setItem("transportation_origin", origin);
-	}
-	let destination = localStorage.getItem("transportation_destination");
-	if (!destination) {
-		destination = await closestAirport(localStorage.getItem("destination"));
-		localStorage.setItem("transportation_destination", destination);
-	}
+
 	let oneWay = localStorage.getItem("one-way") === "true";
-	await fetchListings(origin, destination, oneWay);
-	loadListings(origin, destination, oneWay);
-	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", event => loadListings(origin, destination)));
+	let storedOrigin = localStorage.getItem("transportation_origin");
+	Promise.resolve(storedOrigin ? Promise.resolve(storedOrigin) : closestAirport(localStorage.getItem("origin")))
+		.then(origin => {
+			localStorage.setItem("transportation_origin", origin);
+			let storedDest = localStorage.getItem("transportation_destination");
+			timeout(100)
+				.then(() => storedDest ? Promise.resolve(storedDest) : closestAirport(localStorage.getItem("destination")))
+				.then(dest => {
+					localStorage.setItem("transportation_destination", dest);
+					fetchListings(origin, dest, oneWay)
+						.finally(() => {
+							loadListings(origin, dest, oneWay);
+							document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", event => loadListings(origin, dest, oneWay)));
+						});
+				});
+		});
 }
 
 main();
@@ -45,18 +48,17 @@ function getStopsPredicate() {
 async function closestAirport(location) {
 	
 	const city = location.split(', ')[0];
-	return await amadeusToken().then(token => 
-			fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}})
-			.then(response => response.json())
-			.then(body => body?.data?.[0]?.geoCode)
-			.then(geo => {
-				if (!geo) {
-					return Promise.reject(`No matches found for ${location}!`);
-				}
-				return fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${geo.latitude}&longitude=${geo.longitude}`, {headers: {'Authorization': token}});
-			}).then(response => response.json())
-			.then(body => body?.data?.[0]?.iataCode)
-		);
+	return await amadeusToken().then(token => fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}})
+		.then(response => response.json())
+		.then(body => body?.data?.[0]?.geoCode)
+		.then(geo => {
+			if (!geo) {
+				return Promise.reject(`No matches found for ${location}!`);
+			}
+			return fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${geo.latitude}&longitude=${geo.longitude}`, {headers: {'Authorization': token}});
+		}).then(response => response.json())
+		.then(body => body?.data?.[0]?.iataCode)
+	);
 }
 
 async function fetchListings(origin, destination, oneWay) {
