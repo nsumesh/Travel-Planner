@@ -18,8 +18,9 @@ async function main() {
 		destination = await closestAirport(localStorage.getItem("destination"));
 		localStorage.setItem("transportation_destination", destination);
 	}
-	await fetchListings(origin, destination);
-	loadListings(origin, destination);
+	let oneWay = localStorage.getItem("one-way") === "true";
+	await fetchListings(origin, destination, oneWay);
+	loadListings(origin, destination, oneWay);
 	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", event => loadListings(origin, destination)));
 }
 
@@ -58,7 +59,7 @@ async function closestAirport(location) {
 		);
 }
 
-async function fetchListings(origin, destination) {
+async function fetchListings(origin, destination, oneWay) {
 	
 	let package = { 
 		originLocationCode: origin,
@@ -69,8 +70,7 @@ async function fetchListings(origin, destination) {
 		currencyCode: 'USD',
 	};
 
-	// checks user's one-way choice in local storage
-	if (localStorage.getItem("one-way") === "false") {
+	if (!oneWay) {
 		package.returnDate = localStorage.getItem("return");
 	}
 
@@ -94,7 +94,7 @@ async function fetchListings(origin, destination) {
 	}
 }
 
-function loadListings(origin, destination) {
+function loadListings(origin, destination, oneWay) {
 	
 	let route = origin + " → " + destination;
 	let listings = document.querySelector("#listings");
@@ -119,7 +119,7 @@ function loadListings(origin, destination) {
 			let time = formatDuration(itinerary.duration) + "<br>" + itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
 			listing.appendChild(createGenericElement(time, "div"));
 			listing.appendChild(createGenericElement(appendUnits(getNumberStops(itinerary), "stop"), "div"));
-			let price = "$" + flight.price.grandTotal + "<br>" + (flight.oneWay ? "one way" : "round trip");
+			let price = "$" + flight.price.grandTotal + "<br>" + (oneWay ? "one way" : "round trip");
 			listing.appendChild(createGenericElement(price, "div"));
 			return container;
 		});
