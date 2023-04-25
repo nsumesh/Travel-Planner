@@ -2,6 +2,9 @@ const startFields = ["origin", "destination", "depart", "one-way", "return", "bu
 
 loadStartData();
 
+// Returns promise with Amadeus auth token
+const amadeusToken = amadeusInit();
+
 function loadStartData() {
 	
 	for (const field of startFields) {
@@ -15,6 +18,29 @@ function loadStartData() {
 			}
 		}
 	}
+}
+
+function amadeusInit() {
+	
+	let attempted = false;
+	let token = null;
+	return async () => {
+		if (!attempted) {
+			token = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: "grant_type=client_credentials&client_id=80B4rAGUjIF5uHUeOe6W2USRyUGFO0ug&client_secret=NILxAX1ZQT8v9WPP"
+			})
+			.then(response => response.json())
+			.then(data => 'Bearer ' + data.access_token);
+		}
+		if (!token) {
+			throw new Error("Failed to authenticate Amadeus!");
+		}
+		return token;
+	};
 }
 
 function titleCase(str) {

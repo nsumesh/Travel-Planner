@@ -6,11 +6,21 @@ const filters = [
 let flights = [];
 let carrierDetails = {};
 
-async function main() 
-{
-	await fetchListings();
-	loadListings();
-	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", loadListings));
+async function main() {
+	
+	let origin = localStorage.getItem("transportation_origin");
+	if (!origin) {
+		origin = await closestAirport(localStorage.getItem("origin"));
+		localStorage.setItem("transportation_origin", origin);
+	}
+	let destination = localStorage.getItem("transportation_destination");
+	if (!destination) {
+		destination = await closestAirport(localStorage.getItem("destination"));
+		localStorage.setItem("transportation_destination", destination);
+	}
+	await fetchListings(origin, destination);
+	loadListings(origin, destination);
+	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", event => loadListings(origin, destination)));
 }
 
 main();
@@ -31,11 +41,28 @@ function getStopsPredicate() {
 	return flight => value >= getNumberStops(flight.itineraries[0]);
 }
 
-async function fetchListings() {
+async function closestAirport(location) {
+	
+	const city = location.split(', ')[0];
+	return await amadeusToken().then(token => 
+			fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}})
+			.then(response => response.json())
+			.then(body => body?.data?.[0]?.geoCode)
+			.then(geo => {
+				if (!geo) {
+					return Promise.reject(`No matches found for ${location}!`);
+				}
+				return fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${geo.latitude}&longitude=${geo.longitude}`, {headers: {'Authorization': token}});
+			}).then(response => response.json())
+			.then(body => body?.data?.[0]?.iataCode)
+		);
+}
+
+async function fetchListings(origin, destination) {
 	
 	let package = { 
-		originLocationCode: localStorage.getItem("origin"),
-		destinationLocationCode: localStorage.getItem("destination"),
+		originLocationCode: origin,
+		destinationLocationCode: destination,
 		departureDate: localStorage.getItem("depart"),
 		maxPrice: localStorage.getItem("budget"),
 		adults: localStorage.getItem("people"),
@@ -67,8 +94,9 @@ async function fetchListings() {
 	}
 }
 
-function loadListings() {
+function loadListings(origin, destination) {
 	
+	let route = origin + " → " + destination;
 	let listings = document.querySelector("#listings");
 	if (!listings) {
 		return;
@@ -86,9 +114,9 @@ function loadListings() {
 			let iata = flight.validatingAirlineCodes[0].toLowerCase()
 			listing.appendChild(createAirlineIconElement(iata, 150, 60));
 			let itinerary = flight.itineraries[0];
-			let duration = formatDuration(itinerary.duration) + "<br>" + getAirlineName(iata);
-			listing.appendChild(createGenericElement(duration, "div"));
-			let time = itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
+			let airline = getAirlineName(iata) + "<br>" + route;
+			listing.appendChild(createGenericElement(airline, "div"));
+			let time = formatDuration(itinerary.duration) + "<br>" + itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
 			listing.appendChild(createGenericElement(time, "div"));
 			listing.appendChild(createGenericElement(appendUnits(getNumberStops(itinerary), "stop"), "div"));
 			let price = "$" + flight.price.grandTotal + "<br>" + (flight.oneWay ? "one way" : "round trip");
@@ -139,15 +167,10 @@ function formatFlightInfo(flight) {
 	let segments = flight.itineraries[0].segments;
 	let numbers = segments.map(seg => seg.number);
 	numbers = (numbers.length > 1 ? "Flights #" :  "Flight #") + numbers.join(", #");
-	let stops = segments.slice(1).map(seg => seg.departure.iataCode);
-	if (stops.length > 0) {
-		stops = appendUnits(stops.length, "stop") + " in " + stops.join(", ");
-	} else {
-		stops = "Nonstop";
-	}
+	let stops = [segments[0].departure.iataCode].concat(segments.map(seg => seg.arrival.iataCode)).join(" → ");
 	let time = formatTime(segments[0].departure.at) + " - " + formatTime(segments[segments.length - 1].arrival.at);
 	let price = "$" + flight.price.grandTotal;
-	return [numbers, time, stops, price].join("<br>");
+	return [numbers, stops, time, price].join("<br>");
 }
 
 function getNumberStops(itinerary) {
