@@ -130,7 +130,7 @@ class API {
     async getRentalCars(preferences){
 
         // ALL THE PARAMETRS WE NEED 
-        // var parameters = {
+        // let preferences = {
         //   currency:"USD",
         //   locale:"en-us",
         //   drop_off_latitude:"50.08773",
@@ -157,8 +157,8 @@ class API {
         
         let response = await fetch(url, options).catch(err => console.error("ERROR IN FETCHING DATA:", err));
         
-        let data = await response.text(); 
-      
+        let data = await response.json(); 
+	return data;
         //console.log(data); 
     }
     
