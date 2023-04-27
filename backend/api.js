@@ -11,7 +11,7 @@ class API {
     
     async getCityCodes(cityName) {
 		try {
-			let details = { keyword: cityName, subType: Amadeus.location.city }
+			let details = { keyword: cityName, subType: Amadeus.location.any }
 			let response = await this.amadeus.referenceData.locations.get(details);
 			// high prob that first entry is a match
 			if(response.data.length != 0) {
