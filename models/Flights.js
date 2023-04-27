@@ -30,6 +30,10 @@ module.exports = function(sequelize, DataTypes) {
     arrival_location: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    price: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false
     }
   }, {
     sequelize,

@@ -1,6 +1,7 @@
-const { sequelize, Trips } =  require('../models')
+const { sequelize, Trips, Lodgings, Transportation, Flights, GroupedFlights } =  require('../models')
 class Database 
 {
+
     async initDatabase() 
     {
       try
@@ -14,63 +15,204 @@ class Database
         return false
       }
     }
-  
-    async getUserPrefs(cookie) 
+
+    async getTrips(id)
     {
-      let query = ``; // should get preferences associated with the cookie
-      try 
+      let trips = await Trips.findAll({
+        where: {
+          id: id
+        }
+      })
+
+      return trips
+    }
+
+    /* format of trip information:
+      JSON format
+      first key represents table name, second key represents column and then value will be column val
+      "grouped" flights will be handled differently
+      EX:
+      [ 
+        "Trips":
+        {
+          "budget": 300
+          "depart_date": 01-21-2201 (might need to be JS DateTime object)
+          "return_date": ...
+          "location": ...
+          "num_people": ,,,
+        }
+        "Lodgings":
+        {
+          "name": ...
+          "location" ..
+        }
+        "Flights":
+        {
+          "departing":
+            [
+              {
+                "airline": ...,
+                "flight_number": ...,
+                "departure_time": ...,
+                "arrival_time": ...
+                these are columsn within the table
+              }
+            ]
+          "returning":
+          [
+
+          ]
+        }
+      ]
+    */
+    async createTrip(tripInformation)
+    {
+      // create Trip instance first, need the ID for these other ones
+      // todo: add more verification stuff here
+      if (!("Trips" in tripInformation)) 
       {
-        let prefs = await this.db.query(query);
-        return prefs;
-      } 
-      catch(error) 
-      {
-        console.error('ERROR IN GETTING PREFS: ', error);
+        return {"success": false, "error": "Trip information not given."}
       }
+
+      let trip = await Trips.create(tripInformation["Trips"])
+      let tripID = trip.id
+
+      for (const key in tripInformation) 
+      {
+        switch (key) 
+        {
+          case "Flights":
+            let flight_info = tripInformation[key]
+            for (let flight_type in flight_info) {
+              // isolate list of flights
+              let flights = flight_info[flight_type]
+              
+              // insert correspnoding flights, and also create grouped_flights
+              let first_group_id = await this._insertFlights(flights)
+
+              // update this trip's information, depending on if this was a departing or returning flight
+              // create the "update" update
+              let column = `${flight_type}_grouped_flights_id`
+              let info = {}
+              info[column] = first_group_id
+            
+              // do the update
+              await Trips.update(
+                info,
+                {
+                  "where": 
+                  {
+                    "id": tripID
+                  }
+                }
+              )
+            }
+            break
+          case "Transportation":
+            break
+          case "Lodgings":
+            break
+          case "Trips":
+            // trips table was already made, can skip
+            continue
+        }
+      }
+      return true
+    }
+
+    // flights is array of flights
+    // returns first_group_id of this group of flights
+    async _insertFlights(flights) 
+    {
+      let first_group_id = null
+      for(let idx = 0; idx < flights.length; idx++) {
+        let flight = flights[idx]
+        // insert row into flights table
+        let new_flight = await Flights.create(flight)
+        let info = {
+          "flight_id": new_flight.id,
+        }
+
+        // create row in grouped flights
+        let new_grouped_flight = await GroupedFlights.create(info)
+        if (first_group_id === null) first_group_id = new_grouped_flight.group_id
+        // update the first_group_id of this grouped_flight
+        await GroupedFlights.update({
+            "first_group_id": first_group_id
+          },
+          {
+            where: {
+              "group_id": new_grouped_flight.group_id
+            }
+          }
+        )
+      }
+      return first_group_id
     }
   
-    // the param "data" is the preferences we need to add to the db
-    async updateUserPrefs(cookie, data) 
+    // for a given tripID, return the corresponding flight and all information
+    // return type is JSON, where key is Table name in the backend (Trip, Lodging, etc.)
+    // "second layer" key is column name, and then value is the corresponding value for that row
+    // same format as the input for createTrip
+    async getTrip(tripID) 
     {
-      let query = ``; // should update the cookie's preferences with "data"
-      try 
-      {
-        await this.db.query(query);
-        console.log('PREFERENCES UPDATED');
-      } 
-      catch(error) 
-      {
-        console.error('ERROR IN UPDATING PREFS: ', error);
+      let result = {}
+      // get the tripTable information
+      let trip = await Trips.findByPk(tripID)
+      let departing_flights = await this._getFlights(trip.departing_grouped_flights_id)
+      let returning_flights = await this._getFlights(trip.returning_grouped_flights_id)
+      // format flight information and trip information
+      result['Trips'] = trip.dataValues
+
+      result['Flights'] = {
+        'departing': departing_flights.map((flight) => flight.dataValues), 
+        'returning': returning_flights.map((flight) => flight.dataValues)
       }
+
+      return result
     }
-  
-    async getUserItinerary(cookie) 
-    {
-      let query = ``; // should get full itinerary associated with the cookie
-      try 
-      {
-        let trip = await this.db.query(query);
-        return trip;
-      } 
-      catch(error) 
-      {
-        console.error('ERROR IN GETTING ITINERARY: ', error);
+
+    // returns array of rows of the Flight table
+    // the rows of Flights correspond to the ones that are associated with the grouped_flights_id
+    // output ex:
+    // [
+    // {
+    //     id: 3,
+    //     airline: 'Delta',
+    //     flight_number: 3023,
+    //     departure_time: 2023-04-22T20:20:11.000Z,
+    //     arrival_time: 2023-04-22T20:20:11.000Z,
+    //     departure_location: 'NYC',
+    //     arrival_location: 'BOS',
+    //     price: 324
+    //   },
+    //   {
+    //     id: 4,
+    //     airline: 'Delta',
+    //     flight_number: 3033,
+    //     departure_time: 2023-04-22T20:20:11.000Z,
+    //     arrival_time: 2023-04-22T20:20:11.000Z,
+    //     departure_location: 'BOS',
+    //     arrival_location: 'LAX',
+    //     price: 324
+    //   }
+    // ]
+    async _getFlights(grouped_flights_id) {
+      // get the corresponding group information
+      let grouped = await GroupedFlights.findAll({
+        attributes: ['flight_id'],
+        where: {
+          first_group_id: grouped_flights_id
+        },
+        order: [['group_id', 'ASC']] // ASC order to preserve order of flights
+      })
+      // get the corresponding flight and add to array
+      // ! could improve this in the future (left join)
+      let flights = []
+      for (let i = 0; i < grouped.length; i++) {
+        flights.push(await Flights.findByPk(grouped[i].flight_id))
       }
-    }
-  
-    // the param "data" is the itinerary details we need to add to the db
-    async updateUserItinerary(cookie, data) 
-    {
-      let query = ``; // should update the cookie's itinerary with "data"
-      try 
-      {
-        await this.db.query(query);
-        console.log('ITINERARY UPDATED');
-      } 
-      catch(error) 
-      {
-        console.error('ERROR IN UPDATING ITINERARY: ', error);
-      }
+      return flights
     }
   }
   

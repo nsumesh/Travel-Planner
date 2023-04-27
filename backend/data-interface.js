@@ -19,69 +19,14 @@ class DataInterface
         }
     }
 
-    async getUserPrefs(cookie) 
+    async createTrip(tripInformation)
     {
-        try 
-        {
-            let prefs = await this.db.getUserPrefs(cookie);
-            return prefs;
-        } 
-        catch(error) 
-        {
-            console.error('ERROR IN GETTING PREFS: ', error);
-        }
+        return await this.db.createTrip(tripInformation)
     }
 
-    async updateUserPrefs(cookie, data) 
+    async getTrip(tripID)
     {
-        try 
-        {
-            await this.db.updateUserPrefs(cookie, data);
-            console.log('PREFERENCES UPDATED');
-        } 
-        catch(error) 
-        {
-            console.error('ERROR IN UPDATING PREFS: ', error);
-        }
-    }
-
-    async getFlights(preferences) 
-    {
-        try 
-        {
-            let flights = await this.api.getFlights(preferences);
-            return flights;
-        } 
-        catch(error) 
-        {
-            console.error('ERROR IN FETCHING FLIGHTS: ', error);
-        }
-    }
-
-    async getUserItinerary(cookie) 
-    {
-        try 
-        {
-            let trip = await this.db.getUserItinerary(cookie);
-            return trip;
-        } 
-        catch(error) 
-        {
-            console.error('ERROR IN GETTING ITINERARY: ', error);
-        }
-    }
-
-    async updateUserItinerary(cookie, data) 
-    {
-        try 
-        {
-            await this.db.updateUserItinerary(cookie, data);
-            console.log('ITINERARY UPDATED');
-        } 
-        catch(error) 
-        {
-            console.error('ERROR IN UPDATING ITINERARY: ', error);
-        }
+        return await this.db.getTrip(tripID)
     }
 }
 

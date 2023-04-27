@@ -17,11 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     first_group_id: {
       type: DataTypes.BIGINT,
-      allowNull: false
-    },
-    price: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

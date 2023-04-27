@@ -7,10 +7,6 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    usr_cookie: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
     budget: {
       type: DataTypes.BIGINT,
       allowNull: false
