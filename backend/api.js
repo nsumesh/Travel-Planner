@@ -155,11 +155,10 @@ class API {
           }
         };
         
-        let response = await fetch(url, options).catch(err => console.error("ERROR IN FETCHING DATA:", err));
-        
-        let data = await response.json(); 
-	return data;
-        //console.log(data); 
+        fetch(url, options)
+		.then(res => res.json())
+		.then(data => console.log(data))
+		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
     
     async getPublicTranist(preferences) {
