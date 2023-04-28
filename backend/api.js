@@ -30,8 +30,11 @@ class API {
             let destCodes = await this.getCityCodes(preferences.destinationLocationCode);
             preferences.originLocationCode = departCodes.iata;
             preferences.destinationLocationCode = destCodes.iata;
+            console.log(preferences.originLocationCode);
+            console.log(preferences.destinationLocationCode);
 
-            let response = await this.amadeus.shopping.flightOffersSearch.get(preferences).then(res => console.log(res));
+            let response = await this.amadeus.shopping.flightOffersSearch.get(preferences);
+            console.log(response.data);
             return response;
         } catch(error) {
             console.error("ERROR IN FETCHING FLIGHT DATA: ", error);
@@ -39,37 +42,39 @@ class API {
      }
 
     async getLodging(preferences) {
-        /*
-        preferences = {
-            location: { // required
-                latitude: 51.50988,
-                longitude: -0.15509
-            },
-            // below params not required, but based on what we let user filter we can use below params
-            adults: '2', // 1 - 9
-            checkInDate: 'YYYY-MM-DD',
-            checkOutDate: 'YYYY-MM-DD',
-            roomQuantities: '5', // 1 - 9
-            priceRange: '100-200', // ex: 200-300 or -300 or 100
-            currency: 'EUR',
-            boardType: 'ROOM_ONLY', //ROOM_ONLY = Room Only or BREAKFAST = Breakfast
-            bestRateOnly: 'true', // true or false
-        }
-        */
+        
+        // let preferences = {
+        //     location: { // required
+        //         latitude: 51.50988,
+        //         longitude: -0.15509
+        //     },
+        //     // below params not required, but based on what we let user filter we can use below params
+        //     adults: '2', // 1 - 9
+        //     checkInDate: '2023-05-07',
+        //     checkOutDate: '2023-05-10',
+        //     roomQuantities: '5', // 1 - 9
+        //     priceRange: '100-200', // ex: 200-300 or -300 or 100
+        //     currency: 'EUR',
+        //     boardType: 'ROOM_ONLY', //ROOM_ONLY = Room Only or BREAKFAST = Breakfast
+        //     // bestRateOnly: 'true', // true or false
+        // }
+        
 
         //hotelIds: 'ADNYCCTB', // required
         let hotelIdsArr = [];
-        amadeus.referenceData.locations.hotels.byGeocode.get(preferences.location)
+        return this.amadeus.referenceData.locations.hotels.byGeocode.get(preferences.location)
             .then(response => hotelIdsArr = (response.data).map(obj => Object.hasOwn(obj, 'hotelId') ? obj.hotelId : null))
-            .then(() => {
-                delete preferences.location;
-                if (hotelIdsArr.length >= 185) {
-                    preferences['hotelIds'] = hotelIdsArr.slice(0, 185).join();
-                }
-                amadeus.shopping.hotelOffersSearch.get(preferences)
-                	.then(response => console.log(response.data))
-                    .catch(err => console.error("ERROR IN FETCHING DATA:", err));
-            }).catch(err => console.error("ERROR IN FETCHING DATA:", err));
+                .then(() => {
+                    delete preferences.location;
+                    if (hotelIdsArr.length >= 150) {
+                        preferences['hotelIds'] = hotelIdsArr.slice(0, 150).join();
+                    }
+                    return this.amadeus.shopping.hotelOffersSearch.get(preferences)
+                        .then(response => response.data)
+                        .catch(err => console.error("ERROR IN FETCHING DATA:", err));
+                    })
+                .catch(err => console.error("ERROR IN FETCHING DATA:", err))
+            .catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
 
     async getEntertainment(preferences) {

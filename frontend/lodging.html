@@ -31,7 +31,7 @@
             <div class="input-line">
               <label> 
                 <span>$</span>
-                <input name="budget" id="budget" type="number"></input>
+                <input name="budget" id="budget" type="text"></input>
               </label>
               <label>
                 <input name="people" id="adult-count" type="number"></input>
@@ -59,23 +59,23 @@
             <fieldset name="boarding">
               <legend>Type of Boarding</legend>
               <label>
-                <input type="radio" name="board" value=0 checked></input>
+                <input type="radio" name="board" id="room-radio" value=0></input>
                 Room only
               </label>
               <label>
-                <input type="radio" name="board" value =  0 checked></input>
+                <input type="radio" name="board" id="break-room-radio" value=0></input>
                 Breakfast + Room
               </label>
               <label>
-                <input type="radio" name="board" value =  0 checked></input>
+                <input type="radio" name="board" id="half-board" value=0></input>
                 Half Board (Room + 2 meals included)
               </label>
               <label>
-                <input type="radio" name="board" value =  0 checked></input>
+                <input type="radio" name="board" id="full-board" value=0></input>
                 Full Board (Room + 3 meals included)
               </label>
               <label>
-                <input type="radio" name="board" value =  0 checked></input>
+                <input type="radio" name="board" id="all-incl" value=0 checked></input>
                 All Inclusive (Room + Everything Included)
               </label>
             </fieldset>

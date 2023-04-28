@@ -9,15 +9,30 @@ async function getLodging(event)
     let budget = document.getElementById("budget").value;
     let adultCount = document.getElementById("adult-count").value;
     let roomCount = document.getElementById("room-count").value;
-
+    
     let package = {
-        destination: destination,
-        checkIn: checkIn,
-        checkOut: checkOut,
-        budget: budget,
-        adultCount: adultCount,
-        roomCount: roomCount
+        location: {
+            latitude: 51.50988,
+            longitude: -0.15509
+        },
+        adults: adultCount,
+        checkInDate: checkIn,
+        checkOutDate: checkOut,
+        roomQuantities: roomCount,
+        priceRange: budget,
+        currency: 'USD',
     };
+    
+    let radios = document.querySelectorAll('input[name="board"]');
+    let room_type_list = ["ROOM_ONLY", "BREAKFAST", "HALF_BOARD", "FULL_BOARD", "ALL_INCLUSIVE"];
+    for(let i in radios)
+    {
+        if(radios[i].checked)
+        {
+            package["board_type"] = room_type_list[i];
+            break;
+        }
+    }
 
     console.log(package);
 
@@ -28,6 +43,7 @@ async function getLodging(event)
         },
         body: JSON.stringify(package)
     });
+    console.log(response);
     let extracted = await response.json();
     console.log(extracted);
 }
