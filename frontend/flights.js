@@ -10,12 +10,12 @@ async function main() {
 
 	let oneWay = localStorage.getItem("one-way") === "true";
 	let storedOrigin = localStorage.getItem("transportation_origin");
-	Promise.resolve(storedOrigin ? Promise.resolve(storedOrigin) : closestAirport(localStorage.getItem("origin")))
+	(storedOrigin ? Promise.resolve(storedOrigin) : closestAirport("origin"))
 		.then(origin => {
 			localStorage.setItem("transportation_origin", origin);
 			let storedDest = localStorage.getItem("transportation_destination");
-			timeout(100)
-				.then(() => storedDest ? Promise.resolve(storedDest) : closestAirport(localStorage.getItem("destination")))
+			timeout(150)
+				.then(() => storedDest ? Promise.resolve(storedDest) : closestAirport("destination"))
 				.then(dest => {
 					localStorage.setItem("transportation_destination", dest);
 					fetchListings(origin, dest, oneWay)
@@ -45,20 +45,11 @@ function getStopsPredicate() {
 	return flight => value >= getNumberStops(flight.itineraries[0]);
 }
 
-async function closestAirport(location) {
+async function closestAirport(name) {
 	
-	const city = location.split(', ')[0];
-	return await amadeusToken().then(token => fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}})
+	return await amadeusToken().then(token => fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${localStorage.getItem(name + "_latitude")}&longitude=${localStorage.getItem(name + "_longitude")}`, {headers: {'Authorization': token}}))
 		.then(response => response.json())
-		.then(body => body?.data?.[0]?.geoCode)
-		.then(geo => {
-			if (!geo) {
-				return Promise.reject(`No matches found for ${location}!`);
-			}
-			return fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${geo.latitude}&longitude=${geo.longitude}`, {headers: {'Authorization': token}});
-		}).then(response => response.json())
 		.then(body => body?.data?.[0]?.iataCode)
-	);
 }
 
 async function fetchListings(origin, destination, oneWay) {

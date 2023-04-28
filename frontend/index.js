@@ -63,11 +63,33 @@ function submit() {
 			data[field] = input.value;
 		}
 	}
-	localStorage.clear();
-	for (const [field, value] of Object.entries(data)) {
-		localStorage.setItem(field, value);
+	if (!startFields.every(field => localStorage.getItem(field) === data[field].toString())) {
+		localStorage.clear();
+		for (const [field, value] of Object.entries(data)) {
+			localStorage.setItem(field, value);
+		}
+		for (const input of ["origin", "destination"]) {
+			let geo = getGeoData(localStorage.getItem(input));
+			localStorage.setItem(input + "_latitude", geo.latitude);
+			localStorage.setItem(input + "_longitude", geo.longitude);
+		}
 	}
 	window.location.href="./cards.html";
+}
+
+function getGeoData(location) {
+	
+	const city = location.split(', ')[0];
+	return amadeusToken().then(token => fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}})
+		.then(response => response.json())
+		.then(body => body?.data?.[0]?.geoCode)
+		.then(geo => {
+			if (!geo) {
+				return Promise.reject(`No matches found for ${location}!`);
+			}
+			return Promise.resolve(geo);
+		})
+	);
 }
 
 /* TODO: Check whether both dates are AFTER present day and whether
