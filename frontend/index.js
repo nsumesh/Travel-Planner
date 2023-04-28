@@ -9,6 +9,20 @@ let submitButton = document.getElementById('start-submit');
 
 initLocationAutoFill();
 
+const today = toDateString(new Date());
+departDate.setAttribute("min", today);
+returnDate.setAttribute("min", today);
+departDate.addEventListener('change', event => {
+		if (Date.parse(returnDate.value) < Date.parse(event.target.value)) {
+			returnDate.value = event.target.value;
+		}
+	});
+returnDate.addEventListener('change', event => {
+		if (Date.parse(departDate.value) > Date.parse(event.target.value)) {
+			departDate.value = event.target.value;
+		}
+	});
+
 function initLocationAutoFill() {
 	
 	amadeusToken().then(token => {
@@ -92,19 +106,28 @@ function getGeoData(location) {
 	);
 }
 
-/* TODO: Check whether both dates are AFTER present day and whether
-return date is AFTER depart date */
 function checkInputs() 
 {
-	if (origin.value === '' || destination.value === '' || departDate.value === '' || 
-		(!oneWay.checked && returnDate.value === '') || budget.value === '' || people.value === '') 
-	{
-	  	submitButton.disabled = true;
-	} 
-	else 
-	{
-	  	submitButton.disabled = false;
+	submitButton.disabled = !(validCity(origin.value) && validCity(destination.value) && validDates(departDate.value, returnDate.value, oneWay.checked) && budget.value && people.value);
+}
+
+function validCity(value) {
+	
+	const [city, code] = value.split(", ");
+	return city && code && (/^[A-Z][A-Z]$/).test(code);
+}
+
+function validDates(depart, arrive, oneWay) {
+	
+	if (oneWay) {
+		return !!depart;
 	}
+	return depart && arrive && Date.parse(depart) < Date.parse(arrive);
+}
+
+function toDateString(date) {
+	
+	return date.toISOString().split("T")[0];
 }
 
 origin.addEventListener('input', checkInputs);
