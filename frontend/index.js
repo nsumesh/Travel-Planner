@@ -83,9 +83,11 @@ function submit() {
 			localStorage.setItem(field, value);
 		}
 		for (const input of ["origin", "destination"]) {
-			let geo = getGeoData(localStorage.getItem(input));
-			localStorage.setItem(input + "_latitude", geo.latitude);
-			localStorage.setItem(input + "_longitude", geo.longitude);
+			getGeoData(localStorage.getItem(input)).then(geo => {
+				console.log(geo);
+				localStorage.setItem(input + "_latitude", geo.latitude);
+				localStorage.setItem(input + "_longitude", geo.longitude);
+			});
 		}
 	}
 	window.location.href="./cards.html";
