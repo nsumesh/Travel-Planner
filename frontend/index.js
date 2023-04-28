@@ -82,20 +82,16 @@ function submit() {
 		for (const [field, value] of Object.entries(data)) {
 			localStorage.setItem(field, value);
 		}
-		for (const input of ["origin", "destination"]) {
-			getGeoData(localStorage.getItem(input)).then(geo => {
-				console.log(geo);
-				localStorage.setItem(input + "_latitude", geo.latitude);
-				localStorage.setItem(input + "_longitude", geo.longitude);
-			});
-		}
+		Promise.all([getGeoData("origin"), getGeoData("destination")])
+			.finally(() => window.location.href = "./cards.html");
+	} else {
+		window.location.href = "./cards.html";
 	}
-	window.location.href="./cards.html";
 }
 
 function getGeoData(location) {
 	
-	const city = location.split(', ')[0];
+	const city = localStorage.getItem(location).split(', ')[0];
 	return amadeusToken().then(token => fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}})
 		.then(response => response.json())
 		.then(body => body?.data?.[0]?.geoCode)
@@ -105,7 +101,10 @@ function getGeoData(location) {
 			}
 			return Promise.resolve(geo);
 		})
-	);
+	).then(geo => {
+		localStorage.setItem(location + "_latitude", geo.latitude);
+		localStorage.setItem(location + "_longitude", geo.longitude);
+	});
 }
 
 function checkInputs() 
