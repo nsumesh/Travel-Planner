@@ -69,9 +69,14 @@ class API {
                     if (hotelIdsArr.length >= 150) {
                         preferences['hotelIds'] = hotelIdsArr.slice(0, 150).join();
                     }
+                    else
+                    {
+                        preferences['hotelIds'] = hotelIdsArr.join();
+                    }
+                    console.log(preferences['hotelIds']);
                     return this.amadeus.shopping.hotelOffersSearch.get(preferences)
                         .then(response => response.data)
-                        .catch(err => console.error("ERROR IN FETCHING DATA:", err));
+                        .catch(err => console.error("ERROR IN FETCHING LODGING DATA:", err));
                     })
                 .catch(err => console.error("ERROR IN FETCHING DATA:", err))
             .catch(err => console.error("ERROR IN FETCHING DATA:", err));
