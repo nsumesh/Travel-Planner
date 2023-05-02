@@ -137,3 +137,11 @@ function toDateString(date) {
 	
 	return date.toISOString().split("T")[0];
 }
+
+origin.addEventListener('input', checkInputs);
+destination.addEventListener('input', checkInputs);
+departDate.addEventListener('input', checkInputs);
+returnDate.addEventListener('input', checkInputs);
+oneWay.addEventListener('input', checkInputs);
+budget.addEventListener('input', checkInputs);
+people.addEventListener('input', checkInputs);
