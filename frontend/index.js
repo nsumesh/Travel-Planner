@@ -1,4 +1,3 @@
-page = "start";
 let origin = document.getElementById('start-place');
 let destination = document.getElementById('end-place');
 let departDate = document.getElementById('depart-date');
@@ -88,7 +87,7 @@ function submit() {
 			localStorage.setItem(field, value);
 		}
 		getGeoData("origin")
-			.then(() => timeout(200))
+			.then(() => timeout(500))
 			.then(() => getGeoData("destination"))
 			.then(() => window.location.href = "./cards.html")
 			.catch(console.log);

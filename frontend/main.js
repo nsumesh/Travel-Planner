@@ -1,4 +1,4 @@
-let page = null;
+const page = document.querySelector("body").id;
 const startFields = ["origin", "destination", "depart", "one-way", "return", "budget", "people"];
 
 loadStartData();
@@ -21,7 +21,7 @@ function loadStartData() {
 	}
 	const input = document.querySelector(`#start-form input[name='remaining-budget']`);
 	if (input) {
-		input.value = getRemainingBudget();
+		input.value = formatDollarAmount(getRemainingBudget());
 	}
 }
 

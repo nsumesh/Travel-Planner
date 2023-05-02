@@ -1,5 +1,3 @@
-page = "transportation";
-
 const filters = [
 	getPricePredicate,
 	getStopsPredicate
