@@ -83,7 +83,8 @@ function submit() {
 			localStorage.setItem(field, value);
 		}
 		Promise.all([getGeoData("origin"), getGeoData("destination")])
-			.finally(() => window.location.href = "./cards.html");
+			.then(() => window.location.href = "./cards.html")
+			.catch(console.log);
 	} else {
 		window.location.href = "./cards.html";
 	}
@@ -131,10 +132,10 @@ function toDateString(date) {
 	return date.toISOString().split("T")[0];
 }
 
-// origin.addEventListener('input', checkInputs);
-// destination.addEventListener('input', checkInputs);
-// departDate.addEventListener('input', checkInputs);
-// returnDate.addEventListener('input', checkInputs);
-// oneWay.addEventListener('input', checkInputs);
-// budget.addEventListener('input', checkInputs);
-// people.addEventListener('input', checkInputs);
+origin.addEventListener('input', checkInputs);
+destination.addEventListener('input', checkInputs);
+departDate.addEventListener('input', checkInputs);
+returnDate.addEventListener('input', checkInputs);
+oneWay.addEventListener('input', checkInputs);
+budget.addEventListener('input', checkInputs);
+people.addEventListener('input', checkInputs);
