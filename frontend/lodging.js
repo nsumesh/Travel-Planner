@@ -10,10 +10,22 @@ async function getData(location) {
     return { latitude: geo.latitude, longitude: geo.longitude };
 }
 
+function numDays(date1, date2)
+{
+    let d1 = new Date(date1);
+    let d2 = new Date(date2);
+    let diff = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24));
+    return diff;
+}
+
 function getPricePred() {
 	let values = getDoubleRangeValues("price");
-	return flight => values.min <= flight["offers"]["0"]["price"]["total"] && 
-            flight["offers"]["0"]["price"]["total"] <= values.max;
+
+    return function(lodging) {
+        let days = numDays(lodging["offers"]["0"]["checkInDate"], lodging["offers"]["0"]["checkOutDate"])
+        let nightlyPrice = lodging["offers"]["0"]["price"]["total"] / days;
+        return values.min <= nightlyPrice && nightlyPrice <= values.max;
+    }
 }
 
 async function getLodging()
@@ -63,55 +75,6 @@ async function getLodging()
     return sorted;
 }
 
-// async function loadLodging(data) 
-// {
-// 	let listings = document.querySelector("#listings");
-// 	if (!listings) {
-// 		return;
-// 	}
-
-//     let elements = data;
-//     let predicates = filters.map(supplier => supplier());
-//     elements = elements.filter(lodging => predicates.every(p => p(lodging)))
-//         .map((lodging) => {
-//             let container = document.createElement("li");
-//             container.classList.add("listing-container");
-//             let listing = document.createElement("div");
-//             // container.addEventListener("click", () => selectFlight(listing));
-//             listing.classList.add("listing");
-//             container.appendChild(listing);
-//             // listing.dataset.index = lodging.index;
-
-//             let nameAndBeds = lodging.hotel.name;
-//             let room = lodging["offers"]["0"]["room"];
-//             if("typeEstimated" in room)
-//             {
-//                 let roomBeds = lodging["offers"]["0"]["room"]["typeEstimated"];
-//                 {
-//                     if("beds" in roomBeds && "bedType" in roomBeds)
-//                     {
-//                         let bedType = roomBeds["bedType"].toLowerCase();
-//                         bedType = bedType.charAt(0).toUpperCase() + bedType.slice(1);
-//                         let beds = roomBeds["beds"].toString() + " " + bedType + " bed(s)";
-//                         nameAndBeds += "<br>" + beds;
-//                     }
-//                 }
-//             }
-//             listing.appendChild(createGenericElement(nameAndBeds, "div"));
-            
-//             let price = "$" + lodging["offers"]["0"]["price"]["total"] + "<br>" + "total";
-//             listing.appendChild(createGenericElement(price, "div"));
-
-//             return container;
-//         });
-
-// 	if (elements.length > 0) {
-// 		listings.replaceChildren(...elements);
-// 	} else {
-// 		listings.innerHTML = "No results found!";
-// 	}
-// }
-
 async function loadLodging(data) 
 {
 	let listings = document.querySelector("#listings");
@@ -120,38 +83,41 @@ async function loadLodging(data)
 	}
 
     let elements = data;
-    elements = elements.map((lodging) => {
-        let container = document.createElement("li");
-        container.classList.add("listing-container");
-        let listing = document.createElement("div");
-        // container.addEventListener("click", () => selectFlight(listing));
-        listing.classList.add("listing");
-        container.appendChild(listing);
-        // listing.dataset.index = lodging.index;
+    let predicates = filters.map(supplier => supplier());
+    elements = elements.filter(lodging => predicates.every(p => p(lodging)))
+        .map((lodging) => {
+            let container = document.createElement("li");
+            container.classList.add("listing-container");
+            let listing = document.createElement("div");
+            // container.addEventListener("click", () => selectFlight(listing));
+            listing.classList.add("listing");
+            container.appendChild(listing);
+            // listing.dataset.index = lodging.index;
 
-        let nameAndBeds = lodging.hotel.name;
-        let room = lodging["offers"]["0"]["room"]
-        if("typeEstimated" in room)
-        {
-            let roomBeds = lodging["offers"]["0"]["room"]["typeEstimated"];
+            let nameAndBeds = lodging.hotel.name;
+            let room = lodging["offers"]["0"]["room"];
+            if("typeEstimated" in room)
             {
-                if("beds" in roomBeds && "bedType" in roomBeds)
+                let roomBeds = lodging["offers"]["0"]["room"]["typeEstimated"];
                 {
-                    let bedType = roomBeds["bedType"].toLowerCase();
-                    bedType = bedType.charAt(0).toUpperCase() + bedType.slice(1);
-                    let beds = roomBeds["beds"].toString() + " " + bedType + " bed(s)";
-                    nameAndBeds += "<br>" + beds
-                    // listing.appendChild(createGenericElement(beds, "div"));
+                    if("beds" in roomBeds && "bedType" in roomBeds)
+                    {
+                        let bedType = roomBeds["bedType"].toLowerCase();
+                        bedType = bedType.charAt(0).toUpperCase() + bedType.slice(1);
+                        let beds = roomBeds["beds"].toString() + " " + bedType + " bed(s)";
+                        nameAndBeds += "<br>" + beds;
+                    }
                 }
             }
-        }
-        listing.appendChild(createGenericElement(nameAndBeds, "div"));
-        
-        let price = "$" + lodging["offers"]["0"]["price"]["total"] + "<br>" + "total";
-        listing.appendChild(createGenericElement(price, "div"));
+            listing.appendChild(createGenericElement(nameAndBeds, "div"));
+            
+            let days = numDays(lodging["offers"]["0"]["checkInDate"], lodging["offers"]["0"]["checkOutDate"])
+            let nightlyPrice = lodging["offers"]["0"]["price"]["total"] / days;
+            let price = "$" + Math.round(nightlyPrice) + "<br>" + "est. per night";
+            listing.appendChild(createGenericElement(price, "div"));
 
-        return container;
-    });
+            return container;
+        });
 
 	if (elements.length > 0) {
 		listings.replaceChildren(...elements);
