@@ -12,12 +12,8 @@ h1 {
 	margin: 1em;
 }
 
-.logo
+h1.logo
 {
-	text-indent: -999999px;
-	background : url("./Main Logo.png");
 	width : 500px;
 	height: 189px;
-	margin-right : auto;
-	margin-left: auto;
 }

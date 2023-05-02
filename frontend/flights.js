@@ -1,3 +1,5 @@
+page = "transportation";
+
 const filters = [
 	getPricePredicate,
 	getStopsPredicate
@@ -9,15 +11,15 @@ let carrierDetails = {};
 async function main() {
 
 	let oneWay = localStorage.getItem("one-way") === "true";
-	let storedOrigin = localStorage.getItem("transportation_origin");
-	(storedOrigin ? Promise.resolve(storedOrigin) : closestAirport("origin"))
+	let storedOrigin = localStorage.getItem(addPage("origin"));
+	(storedOrigin && storedOrigin !== "undefined" ? Promise.resolve(storedOrigin) : closestAirport("origin"))
 		.then(origin => {
-			localStorage.setItem("transportation_origin", origin);
-			let storedDest = localStorage.getItem("transportation_destination");
+			localStorage.setItem(addPage("origin"), origin);
+			let storedDest = localStorage.getItem(addPage("destination"));
 			timeout(150)
-				.then(() => storedDest ? Promise.resolve(storedDest) : closestAirport("destination"))
+				.then(() => storedDest && storedDest !== "undefined" ? Promise.resolve(storedDest) : closestAirport("destination"))
 				.then(dest => {
-					localStorage.setItem("transportation_destination", dest);
+					localStorage.setItem(addPage("destination"), dest);
 					fetchListings(origin, dest, oneWay)
 						.finally(() => {
 							loadListings(origin, dest, oneWay);
@@ -45,9 +47,9 @@ function getStopsPredicate() {
 	return flight => value >= getNumberStops(flight.itineraries[0]);
 }
 
-async function closestAirport(name) {
+function closestAirport(name) {
 	
-	return await amadeusToken().then(token => fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${localStorage.getItem(name + "_latitude")}&longitude=${localStorage.getItem(name + "_longitude")}`, {headers: {'Authorization': token}}))
+	return amadeusToken().then(token => fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${localStorage.getItem(name + "_latitude")}&longitude=${localStorage.getItem(name + "_longitude")}`, {headers: {'Authorization': token}}))
 		.then(response => response.json())
 		.then(body => body?.data?.[0]?.iataCode)
 }
@@ -126,10 +128,10 @@ function loadListings(origin, destination, oneWay) {
 function selectFlight(listing) {
 	
 	let flight = flights[listing.dataset.index];
-	localStorage.setItem("transportation_iata", flight.validatingAirlineCodes[0].toLowerCase());
-	localStorage.setItem("transportation_name", formatFlightName(flight));
-	localStorage.setItem("transportation_info", formatFlightInfo(flight));
-	localStorage.setItem("transportation_price", flight.price.grandTotal);
+	localStorage.setItem(addPage("iata"), flight.validatingAirlineCodes[0].toLowerCase());
+	localStorage.setItem(addPage("name"), formatFlightName(flight));
+	localStorage.setItem(addPage("info"), formatFlightInfo(flight));
+	localStorage.setItem(addPage("price"), flight.price.grandTotal);
 	window.location.href="./cards.html";
 }
 

@@ -1,3 +1,4 @@
+page = "cards";
 const cards = {//TODO add others
 	transportation: [
 		{key: "iata", factory: (iata) => createAirlineIconElement(iata, 400, 160)},

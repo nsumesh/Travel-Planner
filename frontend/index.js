@@ -1,3 +1,4 @@
+page = "start";
 let origin = document.getElementById('start-place');
 let destination = document.getElementById('end-place');
 let departDate = document.getElementById('depart-date');
@@ -22,6 +23,8 @@ returnDate.addEventListener('change', event => {
 			departDate.value = event.target.value;
 		}
 	});
+document.querySelectorAll(`#start-form input`).forEach(input => input.addEventListener('input', checkInputs));
+	
 
 function initLocationAutoFill() {
 	
@@ -71,10 +74,12 @@ function submit() {
 	data = {};
 	for (const field of startFields) {
 		const input = document.querySelector(`#start-form input[name='${field}']`);
-		if (input.getAttribute("type") == "checkbox") {
-			data[field] = !!input.checked;
-		} else {
-			data[field] = input.value;
+		if (input) {
+			if (input.getAttribute("type") == "checkbox") {
+				data[field] = !!input.checked;
+			} else {
+				data[field] = input.value;
+			}
 		}
 	}
 	if (!startFields.every(field => localStorage.getItem(field) === data[field].toString())) {
@@ -82,7 +87,9 @@ function submit() {
 		for (const [field, value] of Object.entries(data)) {
 			localStorage.setItem(field, value);
 		}
-		Promise.all([getGeoData("origin"), getGeoData("destination")])
+		getGeoData("origin")
+			.then(() => timeout(200))
+			.then(() => getGeoData("destination"))
 			.then(() => window.location.href = "./cards.html")
 			.catch(console.log);
 	} else {
@@ -131,11 +138,3 @@ function toDateString(date) {
 	
 	return date.toISOString().split("T")[0];
 }
-
-// origin.addEventListener('input', checkInputs);
-// destination.addEventListener('input', checkInputs);
-// departDate.addEventListener('input', checkInputs);
-// returnDate.addEventListener('input', checkInputs);
-// oneWay.addEventListener('input', checkInputs);
-// budget.addEventListener('input', checkInputs);
-// people.addEventListener('input', checkInputs);

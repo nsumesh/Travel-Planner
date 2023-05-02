@@ -10,8 +10,11 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
   <body>
-	<h1 class = "logo">Logo</h1>
     <main>
+		<div>
+			<a class="back-button" href="./cards.html">← Back</a>
+			<h1 class = "logo">Logo</h1>
+		</div>
 		<form id="start-form">
 			<div class="input-line">
 				<label> 
@@ -38,7 +41,8 @@
 			<div class="input-line">
 				<label> 
 					<span>$</span>
-					<input name="budget" id="budget" type="number" disabled></input>
+					<input name="remaining-budget" id="budget" type="number" disabled></input>
+					<span>Remaining Budget</span>
 				</label>
 				<label>
 					<input name="people" id="adult-count" type="number" disabled></input>

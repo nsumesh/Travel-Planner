@@ -1,3 +1,4 @@
+page = "lodging";
 let lodgingData = [];
 let currRadio = "ALL_INCLUSIVE";
 let room_type_list = ["ROOM_ONLY", "BREAKFAST", "HALF_BOARD", "FULL_BOARD", "ALL_INCLUSIVE"];

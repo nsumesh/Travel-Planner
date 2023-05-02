@@ -1,3 +1,4 @@
+let page = null;
 const startFields = ["origin", "destination", "depart", "one-way", "return", "budget", "people"];
 
 loadStartData();
@@ -18,6 +19,21 @@ function loadStartData() {
 			}
 		}
 	}
+	const input = document.querySelector(`#start-form input[name='remaining-budget']`);
+	if (input) {
+		input.value = getRemainingBudget();
+	}
+}
+
+function getRemainingBudget() {
+	
+	let total = parseFloat(localStorage.getItem("budget") ?? "0");
+	for (const [name, value] of Object.entries(localStorage)) {
+		if (name.endsWith("_price") && !name.startsWith(page)) {
+			total -= parseFloat(value);
+		}
+	}
+	return total;
 }
 
 function amadeusInit() {
@@ -85,7 +101,7 @@ function priceRangeValidation() {
 	let min = document.querySelector("input.range-min[type=number][name='price']");
 	let max = document.querySelector("input.range-max[type=number][name='price']");
 	if (max && min) {
-		let budget = parseFloat(localStorage.getItem("budget"));
+		let budget = getRemainingBudget();
 		max.value = formatDollarAmount(budget);
 		min.addEventListener("change", (event) => {
 			let value = parseFloat(event.target.value || 0);
@@ -126,4 +142,9 @@ function formatDollarAmount(amount) {
 function timeout(ms) {
 	
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function addPage(suffix) {
+	
+	return page + "_" + suffix;
 }
