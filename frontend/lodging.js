@@ -1,4 +1,6 @@
 let lodgingData = [];
+let currRadio = "ALL_INCLUSIVE";
+let room_type_list = ["ROOM_ONLY", "BREAKFAST", "HALF_BOARD", "FULL_BOARD", "ALL_INCLUSIVE"];
 
 const filters = [
 	getPricePred
@@ -37,20 +39,11 @@ async function getLodging()
         checkInDate: checkIn,
         checkOutDate: checkOut,
         roomQuantities: roomCount,
+        board_type: currRadio,
         currency: 'USD'
     };
-    
-    let radios = document.querySelectorAll('input[name="board"]');
-    let room_type_list = ["ROOM_ONLY", "BREAKFAST", "HALF_BOARD", "FULL_BOARD", "ALL_INCLUSIVE"];
-    for(let i in radios)
-    {
-        if(radios[i].checked)
-        {
-            package["board_type"] = room_type_list[i];
-			// console.log(room_type_list[i]);
-            break;
-        }
-    }
+
+    console.log(package);
 
     let response = await fetch('/lodging-preferences', {
         method: 'POST',
@@ -119,11 +112,29 @@ document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-lodging-button");
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
+        
+        let radios = document.querySelectorAll('input[name="board"]');
+        for(let i in radios)
+        {
+            if(radios[i].checked)
+            {
+                if(room_type_list[i] !== currRadio)
+                {
+                    console.log("RADIO CHANGE");
+                    currRadio = room_type_list[i];
+                    lodgingData = await getLodging();
+                }
+                break;
+            }
+        }
+        console.log(currRadio);
+        
         if(lodgingData.length === 0)
         {
-            console.log("GETTING DATA FROM API!!!");
+            console.log("GETTING DATA FROM API");
             lodgingData = await getLodging();
         }
+
         await loadLodging(parseInt(document.getElementById("budget").value));
     });
 });
