@@ -26,13 +26,6 @@ class API {
         
     async getFlights(preferences) {
         try {
-            let departCodes = await this.getCityCodes(preferences.originLocationCode);
-            let destCodes = await this.getCityCodes(preferences.destinationLocationCode);
-            preferences.originLocationCode = departCodes.iata;
-            preferences.destinationLocationCode = destCodes.iata;
-            console.log(preferences.originLocationCode);
-            console.log(preferences.destinationLocationCode);
-
             let response = await this.amadeus.shopping.flightOffersSearch.get(preferences);
             console.log(response.data);
             return response;
@@ -171,7 +164,7 @@ class API {
 		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
     
-    async getPublicTranist(preferences) {
+    async getPublicTransit(preferences) {
         // Create the parameters for the routing request:
         var routingParameters = {
             // The start point of the route:
