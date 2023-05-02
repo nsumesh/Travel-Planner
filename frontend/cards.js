@@ -5,7 +5,9 @@ const cards = {//TODO add others
 		{key: "info", factory: (data) => createGenericElement(data, "div")}		
 	],
 	lodging : [
-		{key : "living" , factory : (house) => createLivingIconElement(house, 400, 160)}
+		// {key : "living" , factory : (house) => createLivingIconElement(house, 400, 160)},
+		{key: "name", factory: (data) => createGenericElement(data, "h2")},
+		{key: "info", factory: (data) => createGenericElement(data, "div")}
 	]
 };
 

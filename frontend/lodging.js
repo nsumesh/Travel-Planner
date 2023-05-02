@@ -23,26 +23,6 @@ function getPricePred(budget) {
 
 async function getLodging()
 {
-    // let checkIn = document.getElementById("check-in").value;
-    // let checkOut = document.getElementById("check-out").value;
-    // let adultCount = document.getElementById("adult-count").value;
-    // let roomCount = document.getElementById("room-count").value;
-    
-    // let gridLines = { 
-    //     latitude: localStorage.getItem("destination_latitude"),
-    //     longitude: localStorage.getItem("destination_longitude") 
-    // };
-	
-	// let package = {
-    //     location: gridLines,
-    //     adults: adultCount,
-    //     checkInDate: checkIn,
-    //     checkOutDate: checkOut,
-    //     roomQuantities: roomCount,
-    //     board_type: currRadio,
-    //     currency: 'USD'
-    // };
-
     let package = {
         location: { 
             latitude: localStorage.getItem("destination_latitude"),
@@ -86,10 +66,10 @@ async function loadLodging(budget)
             let container = document.createElement("li");
             container.classList.add("listing-container");
             let listing = document.createElement("div");
-            // container.addEventListener("click", () => selectFlight(listing));
+            container.addEventListener("click", () => selectLodging(listing));
             listing.classList.add("listing");
             container.appendChild(listing);
-            // listing.dataset.index = lodging.index;
+            listing.dataset.index = lodging.index;
 
             let nameAndBeds = lodging.hotel.name;
             let room = lodging["offers"]["0"]["room"];
@@ -119,6 +99,68 @@ async function loadLodging(budget)
 	} else {
 		listings.innerHTML = "No results found!";
 	}
+}
+
+function selectLodging(listing) {
+	
+	let lodging = lodgingData[listing.dataset.index];
+    console.log(lodging);
+	localStorage.setItem("lodging_name", lodging["hotel"]["name"]);
+    localStorage.setItem("lodging_info", formatLodgingInfo(lodging));
+	localStorage.setItem("lodging_price", lodging["offers"]["0"]["price"]["total"]);
+	window.location.href="./cards.html";
+}
+
+function formatLodgingInfo(lodging) {
+    let beds = "";
+    let room = lodging["offers"]["0"]["room"];
+    if("typeEstimated" in room)
+    {
+        let roomBeds = lodging["offers"]["0"]["room"]["typeEstimated"];
+        {
+            if("beds" in roomBeds && "bedType" in roomBeds)
+            {
+                let bedType = roomBeds["bedType"].toLowerCase();
+                bedType = bedType.charAt(0).toUpperCase() + bedType.slice(1);
+                beds = roomBeds["beds"].toString() + " " + bedType + " bed(s) per room";
+            }
+        }
+    }
+
+    let numRoomsElem = document.getElementById("room-count").value === '' ? 1 : document.getElementById("room-count").value;
+    let numRooms = numRoomsElem + " room(s)";
+    let date = formatDate(lodging["offers"]["0"]["checkInDate"]) + " to " + 
+                formatDate(lodging["offers"]["0"]["checkOutDate"]);
+	let price = "$" + lodging["offers"]["0"]["price"]["total"] + " total";
+
+    if(beds === "")
+    {
+        return [date, numRooms, price].join("<br>");
+    }
+	return [date, numRooms, beds, price].join("<br>");
+}
+
+function formatDate(date) {
+    // let obj = new Date(date);
+    // let options = { month: 'long', day: 'numeric', year: 'numeric' };
+    // return obj.toLocaleDateString('en-US', options);
+
+    let months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];  
+    let elems = date.split("-");
+    return months[parseInt(elems[1]) - 1] + " " + elems[2] + ", " + elems[0];
 }
 
 document.addEventListener("DOMContentLoaded", function() {
