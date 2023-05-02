@@ -23,22 +23,35 @@ function getPricePred(budget) {
 
 async function getLodging()
 {
-    let checkIn = document.getElementById("check-in").value;
-    let checkOut = document.getElementById("check-out").value;
-    let adultCount = document.getElementById("adult-count").value;
-    let roomCount = document.getElementById("room-count").value;
+    // let checkIn = document.getElementById("check-in").value;
+    // let checkOut = document.getElementById("check-out").value;
+    // let adultCount = document.getElementById("adult-count").value;
+    // let roomCount = document.getElementById("room-count").value;
     
-    let gridLines = { 
-        latitude: localStorage.getItem("destination_latitude"),
-        longitude: localStorage.getItem("destination_longitude") 
-    };
+    // let gridLines = { 
+    //     latitude: localStorage.getItem("destination_latitude"),
+    //     longitude: localStorage.getItem("destination_longitude") 
+    // };
 	
-	let package = {
-        location: gridLines,
-        adults: adultCount,
-        checkInDate: checkIn,
-        checkOutDate: checkOut,
-        roomQuantities: roomCount,
+	// let package = {
+    //     location: gridLines,
+    //     adults: adultCount,
+    //     checkInDate: checkIn,
+    //     checkOutDate: checkOut,
+    //     roomQuantities: roomCount,
+    //     board_type: currRadio,
+    //     currency: 'USD'
+    // };
+
+    let package = {
+        location: { 
+            latitude: localStorage.getItem("destination_latitude"),
+            longitude: localStorage.getItem("destination_longitude") 
+        },
+        adults: localStorage.getItem("people").toString(),
+        checkInDate: localStorage.getItem("depart"),
+        checkOutDate: localStorage.getItem("return"),
+        roomQuantities: document.getElementById("room-count").value,
         board_type: currRadio,
         currency: 'USD'
     };
@@ -134,6 +147,8 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("GETTING DATA FROM API");
             lodgingData = await getLodging();
         }
+
+        lodgingData.forEach((lodging, i) => lodging.index = i);
 
         await loadLodging(parseInt(document.getElementById("budget").value));
     });
