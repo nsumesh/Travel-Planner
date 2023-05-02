@@ -1,28 +1,19 @@
-async function amInit() {
-	let token = null;
-	return async () => {
-        return token = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: "grant_type=client_credentials&client_id=80B4rAGUjIF5uHUeOe6W2USRyUGFO0ug&client_secret=NILxAX1ZQT8v9WPP"
-        })
-        .then(response => response.json())
-        .then(data => data.token_type + " " + data.access_token);
-	};
-}
+const filters = [
+	getPricePred
+];
 
 async function getData(location) {
-	
-	const city = location;
-    let a = await amInit();
-    let token = await a();
-    let locDetails = await fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + city, {headers: {'Authorization': token}});
+    let token = await amadeusToken();
+    let locDetails = await fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + location, {headers: {'Authorization': token}});
     let body = await locDetails.json();
     let geo = body?.data?.[0]?.geoCode;
-    let lines = { latitude: geo.latitude, longitude: geo.longitude };
-    return lines;
+    return { latitude: geo.latitude, longitude: geo.longitude };
+}
+
+function getPricePred() {
+	let values = getDoubleRangeValues("price");
+	return flight => values.min <= flight["offers"]["0"]["price"]["total"] && 
+            flight["offers"]["0"]["price"]["total"] <= values.max;
 }
 
 async function getLodging()
@@ -71,6 +62,55 @@ async function getLodging()
 
     return sorted;
 }
+
+// async function loadLodging(data) 
+// {
+// 	let listings = document.querySelector("#listings");
+// 	if (!listings) {
+// 		return;
+// 	}
+
+//     let elements = data;
+//     let predicates = filters.map(supplier => supplier());
+//     elements = elements.filter(lodging => predicates.every(p => p(lodging)))
+//         .map((lodging) => {
+//             let container = document.createElement("li");
+//             container.classList.add("listing-container");
+//             let listing = document.createElement("div");
+//             // container.addEventListener("click", () => selectFlight(listing));
+//             listing.classList.add("listing");
+//             container.appendChild(listing);
+//             // listing.dataset.index = lodging.index;
+
+//             let nameAndBeds = lodging.hotel.name;
+//             let room = lodging["offers"]["0"]["room"];
+//             if("typeEstimated" in room)
+//             {
+//                 let roomBeds = lodging["offers"]["0"]["room"]["typeEstimated"];
+//                 {
+//                     if("beds" in roomBeds && "bedType" in roomBeds)
+//                     {
+//                         let bedType = roomBeds["bedType"].toLowerCase();
+//                         bedType = bedType.charAt(0).toUpperCase() + bedType.slice(1);
+//                         let beds = roomBeds["beds"].toString() + " " + bedType + " bed(s)";
+//                         nameAndBeds += "<br>" + beds;
+//                     }
+//                 }
+//             }
+//             listing.appendChild(createGenericElement(nameAndBeds, "div"));
+            
+//             let price = "$" + lodging["offers"]["0"]["price"]["total"] + "<br>" + "total";
+//             listing.appendChild(createGenericElement(price, "div"));
+
+//             return container;
+//         });
+
+// 	if (elements.length > 0) {
+// 		listings.replaceChildren(...elements);
+// 	} else {
+// 		listings.innerHTML = "No results found!";
+// 	}
+// }
 
 async function loadLodging(data) 
 {
