@@ -92,6 +92,9 @@ function priceRangeValidation() {
 			if (value > budget) {
 				value = budget;
 			}
+			if (value < 0) {
+				value = 0;
+			}
 			let formatted = formatDollarAmount(value);
 			if (value > parseFloat(max.value)) {
 				max.value = formatted;
@@ -102,6 +105,9 @@ function priceRangeValidation() {
 			let value = parseFloat(event.target.value || 0);
 			if (value > budget) {
 				value = budget;
+			}
+			if (value < 0) {
+				value = 0;
 			}
 			let formatted = formatDollarAmount(value);
 			if (value < parseFloat(min.value)) {

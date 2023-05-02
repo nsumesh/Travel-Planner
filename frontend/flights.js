@@ -40,7 +40,7 @@ function getStopsPredicate() {
 	
 	let value = getRadioValue("stops");
 	if (value >= 2) {
-		return flight => true
+		return flight => true;
 	}
 	return flight => value >= getNumberStops(flight.itineraries[0]);
 }
