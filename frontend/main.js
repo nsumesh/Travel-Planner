@@ -48,7 +48,7 @@ function amadeusInit() {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				},
-				body: "grant_type=client_credentials&client_id=80B4rAGUjIF5uHUeOe6W2USRyUGFO0ug&client_secret=NILxAX1ZQT8v9WPP"
+				body: "grant_type=client_credentials&client_id=SYFdAtOqjAvrARH4Hn9J9i6SMfWYm38D&client_secret=FBk1wTva5JpRYf0O"
 			})
 			.then(response => response.json())
 			.then(data => data.token_type + " " + data.access_token);
