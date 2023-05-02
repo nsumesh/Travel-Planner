@@ -18,8 +18,18 @@ function numDays(date1, date2)
     return diff;
 }
 
-function getPricePred() {
+function getPricePred(budget) {
 	let values = getDoubleRangeValues("price");
+    if(!values.min)
+    {
+        values.min = 0;
+    }
+    if(!values.max)
+    {
+        console.log("YOOOO!!")
+        values.max = budget;
+    }
+    console.log(values);
 
     return function(lodging) {
         let days = numDays(lodging["offers"]["0"]["checkInDate"], lodging["offers"]["0"]["checkOutDate"])
@@ -75,7 +85,7 @@ async function getLodging()
     return sorted;
 }
 
-async function loadLodging(data) 
+async function loadLodging(data, budget)
 {
 	let listings = document.querySelector("#listings");
 	if (!listings) {
@@ -83,7 +93,7 @@ async function loadLodging(data)
 	}
 
     let elements = data;
-    let predicates = filters.map(supplier => supplier());
+    let predicates = filters.map(supplier => supplier(budget));
     elements = elements.filter(lodging => predicates.every(p => p(lodging)))
         .map((lodging) => {
             let container = document.createElement("li");
@@ -131,6 +141,6 @@ document.addEventListener("DOMContentLoaded", function() {
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
         let data = await getLodging();
-        await loadLodging(data);
+        await loadLodging(data, parseInt(document.getElementById("budget").value));
     });
 });
