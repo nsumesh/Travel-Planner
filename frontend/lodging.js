@@ -1,3 +1,5 @@
+let lodgingData = [];
+
 const filters = [
 	getPricePred
 ];
@@ -45,7 +47,7 @@ async function getLodging()
         if(radios[i].checked)
         {
             package["board_type"] = room_type_list[i];
-			console.log(room_type_list[i]);
+			// console.log(room_type_list[i]);
             break;
         }
     }
@@ -64,14 +66,14 @@ async function getLodging()
     return sorted;
 }
 
-async function loadLodging(data, budget)
+async function loadLodging(budget)
 {
 	let listings = document.querySelector("#listings");
 	if (!listings) {
 		return;
 	}
 
-    let elements = data;
+    let elements = lodgingData;
     let predicates = filters.map(supplier => supplier(budget));
     elements = elements.filter(lodging => predicates.every(p => p(lodging)))
         .map((lodging) => {
@@ -117,7 +119,11 @@ document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-lodging-button");
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
-        let data = await getLodging();
-        await loadLodging(data, parseInt(document.getElementById("budget").value));
+        if(lodgingData.length === 0)
+        {
+            console.log("GETTING DATA FROM API!!!");
+            lodgingData = await getLodging();
+        }
+        await loadLodging(parseInt(document.getElementById("budget").value));
     });
 });
