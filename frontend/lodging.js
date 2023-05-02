@@ -25,11 +25,8 @@ async function getData(location) {
     return lines;
 }
 
-async function getLodging(event)
+async function getLodging()
 {
-    // prevents reload after search button click
-    event.preventDefault();
-
     let destination = document.getElementById("destination").value;
     let checkIn = document.getElementById("check-in").value;
     let checkOut = document.getElementById("check-out").value;
@@ -38,7 +35,6 @@ async function getLodging(event)
     let roomCount = document.getElementById("room-count").value;
     
     let gridLines = await getData(destination);
-	// console.log(gridLines);
 	
 	let package = {
         location: gridLines,
@@ -62,8 +58,6 @@ async function getLodging(event)
         }
     }
 
-    // console.log(package);
-
     let response = await fetch('/lodging-preferences', {
         method: 'POST',
         headers: {
@@ -72,12 +66,65 @@ async function getLodging(event)
         body: JSON.stringify(package)
     });
     let extracted = await response.json();
-	// console.log(extracted);
 	sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
     console.log(sorted);
+
+    return sorted;
+}
+
+async function loadLodging(data) 
+{
+	let listings = document.querySelector("#listings");
+	if (!listings) {
+		return;
+	}
+
+    let elements = data;
+    elements = elements.map((lodging) => {
+        let container = document.createElement("li");
+        container.classList.add("listing-container");
+        let listing = document.createElement("div");
+        // container.addEventListener("click", () => selectFlight(listing));
+        listing.classList.add("listing");
+        container.appendChild(listing);
+        // listing.dataset.index = lodging.index;
+
+        let nameAndBeds = lodging.hotel.name;
+        let room = lodging["offers"]["0"]["room"]
+        if("typeEstimated" in room)
+        {
+            let roomBeds = lodging["offers"]["0"]["room"]["typeEstimated"];
+            {
+                if("beds" in roomBeds && "bedType" in roomBeds)
+                {
+                    let bedType = roomBeds["bedType"].toLowerCase();
+                    bedType = bedType.charAt(0).toUpperCase() + bedType.slice(1);
+                    let beds = roomBeds["beds"].toString() + " " + bedType + " bed(s)";
+                    nameAndBeds += "<br>" + beds
+                    // listing.appendChild(createGenericElement(beds, "div"));
+                }
+            }
+        }
+        listing.appendChild(createGenericElement(nameAndBeds, "div"));
+        
+        let price = "$" + lodging["offers"]["0"]["price"]["total"] + "<br>" + "total";
+        listing.appendChild(createGenericElement(price, "div"));
+
+        return container;
+    });
+
+	if (elements.length > 0) {
+		listings.replaceChildren(...elements);
+	} else {
+		listings.innerHTML = "No results found!";
+	}
 }
 
 document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-lodging-button");
-    button.addEventListener("click", (event) => getLodging(event));
+    button.addEventListener("click", async function() {
+        document.getElementById("listings").innerText = "Loading listings...";
+        let data = await getLodging();
+        await loadLodging(data);
+    });
 });

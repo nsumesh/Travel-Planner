@@ -27,7 +27,7 @@ class API {
     async getFlights(preferences) {
         try {
             let response = await this.amadeus.shopping.flightOffersSearch.get(preferences);
-            console.log(response.data);
+            // console.log(response.data);
             return response;
         } catch(error) {
             console.error("ERROR IN FETCHING FLIGHT DATA: ", error);
@@ -66,7 +66,7 @@ class API {
                     {
                         preferences['hotelIds'] = hotelIdsArr.join();
                     }
-                    console.log(preferences['hotelIds']);
+                    // console.log(preferences['hotelIds']);
                     return this.amadeus.shopping.hotelOffersSearch.get(preferences)
                         .then(response => response.data)
                         .catch(err => console.error("ERROR IN FETCHING LODGING DATA:", err));
