@@ -2,14 +2,6 @@ const filters = [
 	getPricePred
 ];
 
-function numDays(date1, date2)
-{
-    let d1 = new Date(date1);
-    let d2 = new Date(date2);
-    let diff = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24));
-    return diff;
-}
-
 function getPricePred(budget) {
 	let values = getDoubleRangeValues("price");
     if(!values.min)
@@ -20,21 +12,15 @@ function getPricePred(budget) {
     {
         values.max = budget;
     }
-    console.log(values);
 
-    return function(lodging) {
-        let days = numDays(lodging["offers"]["0"]["checkInDate"], lodging["offers"]["0"]["checkOutDate"])
-        let nightlyPrice = lodging["offers"]["0"]["price"]["total"] / days;
-        return values.min <= nightlyPrice && nightlyPrice <= values.max;
-    }
+    return lodging => values.min <= lodging["offers"]["0"]["price"]["total"] && 
+            lodging["offers"]["0"]["price"]["total"] <= values.max;
 }
 
 async function getLodging()
 {
-    let destination = document.getElementById("destination").value;
     let checkIn = document.getElementById("check-in").value;
     let checkOut = document.getElementById("check-out").value;
-    let budget = "-" + document.getElementById("budget").value;
     let adultCount = document.getElementById("adult-count").value;
     let roomCount = document.getElementById("room-count").value;
     
@@ -49,7 +35,6 @@ async function getLodging()
         checkInDate: checkIn,
         checkOutDate: checkOut,
         roomQuantities: roomCount,
-        priceRange: budget,
         currency: 'USD'
     };
     
@@ -115,9 +100,7 @@ async function loadLodging(data, budget)
             }
             listing.appendChild(createGenericElement(nameAndBeds, "div"));
             
-            let days = numDays(lodging["offers"]["0"]["checkInDate"], lodging["offers"]["0"]["checkOutDate"])
-            let nightlyPrice = lodging["offers"]["0"]["price"]["total"] / days;
-            let price = "$" + Math.round(nightlyPrice) + "<br>" + "est. per night";
+            let price = "$" + lodging["offers"]["0"]["price"]["total"] + "<br>" + "total";
             listing.appendChild(createGenericElement(price, "div"));
 
             return container;
