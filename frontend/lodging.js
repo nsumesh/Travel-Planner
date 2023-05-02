@@ -2,14 +2,6 @@ const filters = [
 	getPricePred
 ];
 
-async function getData(location) {
-    let token = await amadeusToken();
-    let locDetails = await fetch("https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY&keyword=" + location, {headers: {'Authorization': token}});
-    let body = await locDetails.json();
-    let geo = body?.data?.[0]?.geoCode;
-    return { latitude: geo.latitude, longitude: geo.longitude };
-}
-
 function numDays(date1, date2)
 {
     let d1 = new Date(date1);
@@ -26,7 +18,6 @@ function getPricePred(budget) {
     }
     if(!values.max)
     {
-        console.log("YOOOO!!")
         values.max = budget;
     }
     console.log(values);
@@ -47,7 +38,10 @@ async function getLodging()
     let adultCount = document.getElementById("adult-count").value;
     let roomCount = document.getElementById("room-count").value;
     
-    let gridLines = await getData(destination);
+    let gridLines = { 
+        latitude: localStorage.getItem("destination_latitude"),
+        longitude: localStorage.getItem("destination_longitude") 
+    };
 	
 	let package = {
         location: gridLines,
