@@ -7,8 +7,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    airline: {
+    airline_name: {
       type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    airline_iata: {
+      type: DataTypes.STRING(3),
       allowNull: false
     },
     flight_number: {
@@ -33,6 +37,10 @@ module.exports = function(sequelize, DataTypes) {
     },
     price: {
       type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false
+    },
+    airline_iata: {
+      type: DataTypes.STRING(255),
       allowNull: false
     }
   }, {
