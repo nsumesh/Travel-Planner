@@ -8,6 +8,10 @@ const cards = {//TODO add others
 		// {key : "living" , factory : (house) => createLivingIconElement(house, 400, 160)},
 		{key: "name", factory: (data) => createGenericElement(data, "h2")},
 		{key: "info", factory: (data) => createGenericElement(data, "div")}
+	],
+	poi:[	
+		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
+		{key : "info", factory : (data) => createGenericElement(data, "div")}
 	]
 };
 
