@@ -12,6 +12,10 @@ const cards = {//TODO add others
 	poi:[	
 		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
 		{key : "info", factory : (data) => createGenericElement(data, "div")}
+	],
+	uberlyft:[	
+		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
+		{key : "info", factory : (data) => createGenericElement(data, "div")}
 	]
 };
 
@@ -50,4 +54,9 @@ function chooseTransportation() {
 function chooseLodging()
 {
 	window.location.href = "./lodging.html";
+}
+
+function chooseUberLyft()
+{
+	window.location.href = "./uber-lyft.html";
 }

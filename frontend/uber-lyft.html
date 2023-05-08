@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose UberLyft</title>
+	  <link href="https://fonts.googleapis.com/css?family=Nunito Sans" rel="stylesheet">
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./listings.css">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  </head>
+  <body id="uberlyft">
+    <main>
+		<div>
+			<a class="back-button" href="./cards.html">← Back</a>
+			<h1 class = "logo">Logo</h1>
+		</div>
+        <form id = "start-form">
+            <div class="input-line">
+              <label> 
+                <span>$</span>
+                <input name="remaining-budget" id="budget" type="text" disabled></input>
+                <span>Remaining Budget</span>
+              </label>
+              <label>
+                <input name="people" id="person-count" type="number" disabled></input>
+                <span>Person(s)</span>
+              </label>
+            </div>
+        </form>
+        <div class = "content">
+          <form id = "filters">
+            <fieldset name="price">
+              <legend>Total Price</legend>
+              <label>
+                $<input type="number" name="price" class="range-min" value=0></input>
+                to
+              </label>
+              <label>
+                $<input type="number" name="price" class="range-max"></input>
+              </label>
+            </fieldset>
+            <fieldset name="boarding">
+              <legend>Type of Vehicle</legend>
+              <label>
+                <input type="checkbox" name="board" id="uber-x" value=0></input>
+                UberX
+              </label>
+              <label>
+                <input type="checkbox" name="board" id="uber-xl" value=0></input>
+                UberXL
+              </label>
+              <label>
+                <input type="checkbox" name="board" id="comfort" value=0></input>
+                Comfort
+              </label>
+              <label>
+                <input type="checkbox" name="board" id="uber-pet" value=0></input>
+                Uber Pet
+              </label>
+              <label>
+                <input type="checkbox" name="board" id="lyft" value=0></input>
+               Lyft
+              </label>
+              <label>
+                <input type="checkbox" name="board" id="lyft-xl" value=0></input>
+               Lyft XL
+              </label><br>
+              <button type="button" id="find-rides-button" class="submit-button">Search!</button>
+            </fieldset>
+          </form>
+          <ul id = "listings">
+            Click "Search" to search for rides!
+          </ul>
+        </div>
+    </main>
+    <script src="main.js"></script>    
+    <script src ="uber-lyft.js"></script>
+  </body>
