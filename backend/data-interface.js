@@ -40,7 +40,6 @@ class DataInterface
 
     async createTrip(info)
     {
-        // TODO: Need to change the format of this
         let reformatted = {}
         reformatted['Trips'] = {
             budget: info['budget'],
@@ -72,17 +71,16 @@ class DataInterface
 
     async getTrip(tripID)
     {
-        allInfo = await this.db.getTrip(tripID)
-        trip = allInfo['Trips']
+        let allInfo = await this.db.getTrip(tripID)
+        let trip = allInfo['Trips']
 
         // handle trip
         let one_way = allInfo['Flights']['returning'].length == 0 ? true : false
         
         // ! this doesn't work for multiple flights, assuming one for now
         let flight = allInfo['Flights']['departing'][0]
-        let origin = flight.depature_location
+        let origin = flight.departure_location
         
-
         let response = {
             'budget': trip.budget,
             'depart': trip.depart_date.toISOString().substring(0, 10), // toISOString() returns it in YYYY-MM-DD format, just take first 10 characters
@@ -90,9 +88,9 @@ class DataInterface
             'one-way': one_way,
             'origin': origin,
             'people': trip.num_people,
-            'return': trip.return_date.toISOString().substring(0, 10), // toISOString() returns it in YYYY-MM-DD format, just take first 10 characters
+            'return': (trip.return_date != null) ? trip.return_date.toISOString().substring(0, 10) : null, // toISOString() returns it in YYYY-MM-DD format, just take first 10 characters
             'transportation_iata': flight.airline_iata,
-            'transportation_name': flight.airline,
+            'transportation_name': flight.airline_name,
             'transportation_price': flight.price
         }
 

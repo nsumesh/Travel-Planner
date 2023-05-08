@@ -2,7 +2,20 @@ const cards = {//TODO add others
 	transportation: [
 		{key: "iata", factory: (iata) => createAirlineIconElement(iata, 400, 160)},
 		{key: "name", factory: (data) => createGenericElement(data, "h3")},
+		{key: "info", factory: (data) => createGenericElement(data, "div")}		
+	],
+	lodging : [
+		// {key : "living" , factory : (house) => createLivingIconElement(house, 400, 160)},
+		{key: "name", factory: (data) => createGenericElement(data, "h2")},
 		{key: "info", factory: (data) => createGenericElement(data, "div")}
+	],
+	poi:[	
+		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
+		{key : "info", factory : (data) => createGenericElement(data, "div")}
+	],
+	uberlyft:[	
+		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
+		{key : "info", factory : (data) => createGenericElement(data, "div")}
 	]
 };
 
@@ -36,4 +49,14 @@ function loadCards() {
 function chooseTransportation() {
 	
 	window.location.href="./flights.html"; //TODO change once attached to backend
+}
+
+function chooseLodging()
+{
+	window.location.href = "./lodging.html";
+}
+
+function chooseUberLyft()
+{
+	window.location.href = "./uber-lyft.html";
 }

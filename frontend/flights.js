@@ -6,11 +6,25 @@ const filters = [
 let flights = [];
 let carrierDetails = {};
 
-async function main() 
-{
-	await fetchListings();
-	loadListings();
-	document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", loadListings));
+async function main() {
+
+	let oneWay = localStorage.getItem("one-way") === "true";
+	let storedOrigin = localStorage.getItem(addPage("origin"));
+	(storedOrigin && storedOrigin !== "undefined" ? Promise.resolve(storedOrigin) : closestAirport("origin"))
+		.then(origin => {
+			localStorage.setItem(addPage("origin"), origin);
+			let storedDest = localStorage.getItem(addPage("destination"));
+			timeout(150)
+				.then(() => storedDest && storedDest !== "undefined" ? Promise.resolve(storedDest) : closestAirport("destination"))
+				.then(dest => {
+					localStorage.setItem(addPage("destination"), dest);
+					fetchListings(origin, dest, oneWay)
+						.finally(() => {
+							loadListings(origin, dest, oneWay);
+							document.querySelectorAll(`#filters input`).forEach(element => element.addEventListener("change", event => loadListings(origin, dest, oneWay)));
+						});
+				});
+		});
 }
 
 main();
@@ -26,24 +40,30 @@ function getStopsPredicate() {
 	
 	let value = getRadioValue("stops");
 	if (value >= 2) {
-		return flight => true
+		return flight => true;
 	}
 	return flight => value >= getNumberStops(flight.itineraries[0]);
 }
 
-async function fetchListings() {
+function closestAirport(name) {
+	
+	return amadeusToken().then(token => fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${localStorage.getItem(name + "_latitude")}&longitude=${localStorage.getItem(name + "_longitude")}`, {headers: {'Authorization': token}}))
+		.then(response => response.json())
+		.then(body => body?.data?.[0]?.iataCode)
+}
+
+async function fetchListings(origin, destination, oneWay) {
 	
 	let package = { 
-		originLocationCode: localStorage.getItem("origin"),
-		destinationLocationCode: localStorage.getItem("destination"),
+		originLocationCode: origin,
+		destinationLocationCode: destination,
 		departureDate: localStorage.getItem("depart"),
-		maxPrice: localStorage.getItem("budget"), //TODO price filter
+		maxPrice: localStorage.getItem("budget"),
 		adults: localStorage.getItem("people"),
 		currencyCode: 'USD',
 	};
 
-	// checks user's one-way choice in local storage
-	if (localStorage.getItem("one-way") === "false") {
+	if (!oneWay) {
 		package.returnDate = localStorage.getItem("return");
 	}
 
@@ -67,8 +87,9 @@ async function fetchListings() {
 	}
 }
 
-function loadListings() {
+function loadListings(origin, destination, oneWay) {
 	
+	let route = origin + " → " + destination;
 	let listings = document.querySelector("#listings");
 	if (!listings) {
 		return;
@@ -86,12 +107,12 @@ function loadListings() {
 			let iata = flight.validatingAirlineCodes[0].toLowerCase()
 			listing.appendChild(createAirlineIconElement(iata, 150, 60));
 			let itinerary = flight.itineraries[0];
-			let duration = formatDuration(itinerary.duration) + "<br>" + getAirlineName(iata);
-			listing.appendChild(createGenericElement(duration, "div"));
-			let time = itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
+			let airline = getAirlineName(iata) + "<br>" + route;
+			listing.appendChild(createGenericElement(airline, "div"));
+			let time = formatDuration(itinerary.duration) + "<br>" + itinerary.segments.map(seg => formatTime(seg.departure.at) + " - " + formatTime(seg.arrival.at)).join("<br>");
 			listing.appendChild(createGenericElement(time, "div"));
 			listing.appendChild(createGenericElement(appendUnits(getNumberStops(itinerary), "stop"), "div"));
-			let price = "$" + flight.price.grandTotal + "<br>" + (flight.oneWay ? "one way" : "round trip");
+			let price = "$" + flight.price.grandTotal + "<br>" + (oneWay ? "one way" : "round trip");
 			listing.appendChild(createGenericElement(price, "div"));
 			return container;
 		});
@@ -105,10 +126,10 @@ function loadListings() {
 function selectFlight(listing) {
 	
 	let flight = flights[listing.dataset.index];
-	localStorage.setItem("transportation_iata", flight.validatingAirlineCodes[0].toLowerCase());
-	localStorage.setItem("transportation_name", formatFlightName(flight));
-	localStorage.setItem("transportation_info", formatFlightInfo(flight));
-	localStorage.setItem("transportation_price", flight.price.grandTotal);
+	localStorage.setItem(addPage("iata"), flight.validatingAirlineCodes[0].toLowerCase());
+	localStorage.setItem(addPage("name"), formatFlightName(flight));
+	localStorage.setItem(addPage("info"), formatFlightInfo(flight));
+	localStorage.setItem(addPage("price"), flight.price.grandTotal);
 	window.location.href="./cards.html";
 }
 
@@ -139,15 +160,10 @@ function formatFlightInfo(flight) {
 	let segments = flight.itineraries[0].segments;
 	let numbers = segments.map(seg => seg.number);
 	numbers = (numbers.length > 1 ? "Flights #" :  "Flight #") + numbers.join(", #");
-	let stops = segments.slice(1).map(seg => seg.departure.iataCode);
-	if (stops.length > 0) {
-		stops = appendUnits(stops.length, "stop") + " in " + stops.join(", ");
-	} else {
-		stops = "Nonstop";
-	}
+	let stops = [segments[0].departure.iataCode].concat(segments.map(seg => seg.arrival.iataCode)).join(" → ");
 	let time = formatTime(segments[0].departure.at) + " - " + formatTime(segments[segments.length - 1].arrival.at);
 	let price = "$" + flight.price.grandTotal;
-	return [numbers, time, stops, price].join("<br>");
+	return [numbers, stops, time, price].join("<br>");
 }
 
 function getNumberStops(itinerary) {
