@@ -9,3 +9,49 @@
     <link rel="stylesheet" href="./listings.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
+  <body id="poi_restaurants">
+    <main>
+		<div>
+			<a class="back-button" href="./cards.html">← Back</a>
+			<h1 class = "logo">Logo</h1>
+    </div>
+    <div>
+      <form id = "start-form">
+        <div class = "input-line">
+          <label> 
+            <span>Destination</span>
+            <input name="destination" id="destination" type="text" disabled></input>
+          </label>
+          <span>$</span>
+          <label>
+                <input name="remaining-budget" id="budget" type="text" disabled></input>
+                <span>Remaining Budget</span>
+          </label>
+          <label>
+            <input name="people" id="adult-count" type="number" disabled></input>
+            <span>Person(s)</span>
+          </label>
+        </div>
+      </form>
+      <div class = "content">
+        <form id = "filters">
+          <fieldset name = "Date">
+            <legend>Date</legend>
+            <label>
+              <input name = "date" type = "date">
+            </label>
+          </fieldset>
+          <fieldset name="price">
+            <legend>Total Price</legend>
+            <label>
+              $<input type="number" name="price" class="range-min" value=0></input>
+              to
+            </label>
+            <label>
+              $<input type="number" name="price" class="range-max"></input>
+            </label>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    
