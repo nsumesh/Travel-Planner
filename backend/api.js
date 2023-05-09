@@ -115,7 +115,7 @@ class API {
 
         fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
             .then(response => response.json())
-            .then(response => locationID = response.json().results.data[0].result_object.location_id)
+            .then(response => locationID = response.results.data[0].result_object.location_id)
             .then(() => {
                 delete preferences.city; delete preferences.q;
                 preferences['location_id'] = locationID;
