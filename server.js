@@ -39,6 +39,34 @@ app.post('/lodging-preferences', async (req, res) => {
     }
 });
 
+app.post('/entertainment-preferences', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        let results = await manager.getEntertainment(package);
+        res.send(results);
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
+
+app.post('/restaurant-preferences', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        let results = await manager.getRestaurants(package);
+        res.send(results);
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
+
 app.listen(3000, async () => {
     // await manager.initDatabase()
     console.log("Server started on port 3000");

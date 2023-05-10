@@ -96,6 +96,59 @@ class DataInterface
 
         return response
     }
+    
+    async getFlights(preferences) 
+    {
+        try 
+        {
+            let flights = await this.api.getFlights(preferences);
+            return flights;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING FLIGHTS: ', error);
+        }
+    }
+
+    async getLodging(preferences) 
+    {
+        try 
+        {
+            let lodgingData = await this.api.getLodging(preferences);
+            return lodgingData;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING LODGING DATA: ', error);
+        }
+    }
+
+    async getEntertainment(preferences) 
+    {
+        try 
+        {
+            let entertainmentData = await this.api.getEntertainment(preferences);
+            return entertainmentData;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING ENTERTAINMENT DATA: ', error);
+        }
+    }
+
+    async getRestaurants(preferences) 
+    {
+        try 
+        {
+            let restaurantData = await this.api.getRestaurants(preferences);
+            return restaurantData;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING RESTAURANT DATA: ', error);
+        }
+    }
 }
+
 
 module.exports = DataInterface;

@@ -60,3 +60,8 @@ function chooseUberLyft()
 {
 	window.location.href = "./uber-lyft.html";
 }
+
+function chooseActivity()
+{
+	window.location.href = "./poi_restaurants.html";
+}
