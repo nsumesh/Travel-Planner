@@ -83,7 +83,7 @@ class API {
             radius: '5' // param not required: we can actually set this ourselves, can only be 0 - 20
         }
         */
-        amadeus.shopping.activities.get(preferences)
+        this.amadeus.shopping.activities.get(preferences)
             .then(response => console.log(response.data))
             .catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
