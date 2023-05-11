@@ -43,3 +43,5 @@ class WebScrape {
     // Testing
     //lyftPrices(42.387119, -72.526435, 42.038042, -72.617054);
 }
+
+module.exports = WebScrape;
