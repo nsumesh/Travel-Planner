@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", function() {
         ((radius != null && radius <= 20) ? Promise.resolve(radius) : Promise.resolve(5)).then(rad => 
             {
                 
-                let entList = JSON.parse(fetchEntertainmentListings(rad));
-                let restList = fetchRestaurantListings(); 
+                let entList = fetchEntertainmentListings(rad).results.data;
+                let restList = fetchRestaurantListings().results.data; 
                 // Combining the two JSON data 
                 let listing = {
                     ...entList,
