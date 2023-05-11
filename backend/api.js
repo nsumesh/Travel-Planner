@@ -83,8 +83,9 @@ class API {
             radius: '5' // param not required: we can actually set this ourselves, can only be 0 - 20
         }
         */
-        this.amadeus.shopping.activities.get(preferences)
-            .then(response => console.log(response.data))
+        return this.amadeus.shopping.activities.get(preferences)
+            // .then(response => console.log(response.data))
+            .then(response => response.data)
             .catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
  
@@ -107,7 +108,7 @@ class API {
                     },
                     body: searchParams.toString()
                 };
-                fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
+                await fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
                     .then(response => response.json())
                     .then(response => locationID = response.results.data[0].result_object.location_id)
                     .then(() => {
@@ -118,7 +119,7 @@ class API {
                         const searchParams2 = new URLSearchParams();
                         Object.keys(preferences).forEach(key => searchParams2.append(key, preferences[key]));
                         options.body = searchParams2.toString();
-                        fetch('https://worldwide-restaurants.p.rapidapi.com/search', options)
+                        return fetch('https://worldwide-restaurants.p.rapidapi.com/search', options)
                             .then(response => response.json())
                             .then(response => console.log(response))
                             .catch(err => console.error(err));

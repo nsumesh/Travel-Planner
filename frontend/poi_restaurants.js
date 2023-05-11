@@ -8,7 +8,7 @@ const filters = [
 let activities = [];
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     let button = document.getElementById("poi_search_button");
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
@@ -16,11 +16,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
 
-        ((radius != null && radius <= 20) ? Promise.resolve(radius) : Promise.resolve(5)).then(rad => 
+        ((radius != null && radius <= 20) ? Promise.resolve(radius) : Promise.resolve(5)).then(async rad => 
             {
                 
-                let entList = fetchEntertainmentListings(rad).results.data;
-                let restList = fetchRestaurantListings().results.data; 
+                let entList = await fetchEntertainmentListings(rad);
+                let restList = await fetchRestaurantListings(); 
                 // Combining the two JSON data 
                 let listing = {
                     ...entList,
@@ -101,6 +101,7 @@ async function fetchEntertainmentListings(rad) {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
+		console.log(extracted)
         return extracted; 
 	} 
 	catch(error) 
