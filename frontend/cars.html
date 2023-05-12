@@ -3,19 +3,41 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose UberLyft</title>
+    <title>Choose Rides</title>
 	  <link href="https://fonts.googleapis.com/css?family=Nunito Sans" rel="stylesheet">
     <link rel="stylesheet" href="./main.css">
     <link rel="stylesheet" href="./listings.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
-  <body id="uberlyft">
+  <body id="cars">
     <main>
 		<div>
 			<a class="back-button" href="./cards.html">← Back</a>
 			<h1 class = "logo">Logo</h1>
 		</div>
         <form id = "start-form">
+            <div class ="input-line">
+				      <label> 
+					      <span>Destination</span>
+					      <input name="destination" id="destination" type="text" disabled></input>
+				      </label>
+              <label> 
+					      <span>Pick-up</span>
+					      <input name="pickup" id="pick-up-date" type="date" disabled></input>
+				      </label>
+              <label> 
+                <span>Time</span>
+                <input name="time" id="pick-up-time" type="time"></input> 
+              </label>
+              <label> 
+                <span>Drop-off</span>
+                <input name="dropoff" id="drop-off" type="date" disabled></input>
+              </label>
+              <label> 
+                <span>Time</span>
+                <input name="time" id="drop-off-time" type="time" ></input>
+              </label>
+            </div>
             <div class="input-line">
               <label> 
                 <span>$</span>
@@ -25,6 +47,10 @@
               <label>
                 <input name="people" id="person-count" type="number" disabled></input>
                 <span>Person(s)</span>
+              </label>
+              <label>
+                <input name = "rides" id="ride-count" type="number"></input>
+                <span>Ride(s)</span>
               </label>
             </div>
         </form>
@@ -40,31 +66,34 @@
                 $<input type="number" name="price" class="range-max"></input>
               </label>
             </fieldset>
-            <fieldset name="boarding">
-              <legend>Type of Vehicle</legend>
+            <fieldset name="">
+              <legend>Sort by</legend>
               <label>
-                <input type="checkbox" name="board" id="uber-x" value=0></input>
-                UberX
+                <input type="radio" name="board" id="half-board" value=0 checked></input>
+                Low to High Price
               </label>
               <label>
-                <input type="checkbox" name="board" id="uber-xl" value=0></input>
-                UberXL
+                <input type="radio" name="board" id="half-board" value=0></input>
+                Recommended
+              </label>
+            </fieldset>
+            <fieldset name="vehicle">
+              <legend>Type of Transportation</legend>
+              <label>
+                <input type="checkbox" name="vehicle" id="uber-x" value=0></input>
+                Uber
               </label>
               <label>
-                <input type="checkbox" name="board" id="comfort" value=0></input>
-                Comfort
+                <input type="checkbox" name="vehicle" id="uber-x" value=0></input>
+                Lyft
               </label>
               <label>
-                <input type="checkbox" name="board" id="uber-pet" value=0></input>
-                Uber Pet
+                <input type="checkbox" name="vehicle" id="uber-x" value=0></input>
+                Rental Cars
               </label>
               <label>
-                <input type="checkbox" name="board" id="lyft" value=0></input>
-               Lyft
-              </label>
-              <label>
-                <input type="checkbox" name="board" id="lyft-xl" value=0></input>
-               Lyft XL
+                <input type="checkbox" name="all" id="lyft" value=0></input>
+               All
               </label><br>
               <button type="button" id="find-rides-button" class="submit-button">Search!</button>
             </fieldset>
@@ -75,5 +104,5 @@
         </div>
     </main>
     <script src="main.js"></script>    
-    <script src ="uber-lyft.js"></script>
+    <script src ="cars.js"></script>
   </body>

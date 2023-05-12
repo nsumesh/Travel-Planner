@@ -148,6 +148,36 @@ class DataInterface
             console.error('ERROR IN FETCHING RESTAURANT DATA: ', error);
         }
     }
+
+    async getRentalCars(preferences) 
+    {
+        try 
+        {
+            let rentalCarData = await this.api.getRentalCars(preferences);
+            return rentalCarData;
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING LODGING DATA: ', error);
+        }
+    }
+    
+    async getUberLyft(preferences) 
+    {
+        try 
+        {
+            let uberData = await this.scrape.uberPrices(preferences);
+            let lyftData = await this.scrape.lyftPrices(preferences)
+            return {
+                "Uber": uberData, 
+                "Lyft": lyftData
+            };
+        } 
+        catch(error) 
+        {
+            console.error('ERROR IN FETCHING LODGING DATA: ', error);
+        }
+    }
 }
 
 

@@ -9,6 +9,7 @@ body {
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: space-evenly;
+	gap: 20px;
 }
 
 .card {
@@ -21,7 +22,7 @@ body {
 	flex-flow: column nowrap;
 	justify-content: space-between;
 	padding: 40px;
-	max-width: 280px;
+	max-width: 240px;
 }
 
 .card .card-details {
@@ -35,4 +36,11 @@ body {
 .card img {
 	object-fit: contain;
 	width: 100%;
+}
+
+a.back-button.summary-button {
+	color: #27273F;
+	font-size: 1.5em;
+	float: right;
+	margin-bottom: 20px;
 }

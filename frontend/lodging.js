@@ -131,13 +131,13 @@ function formatLodgingInfo(lodging) {
     let numRooms = numRoomsElem + " room(s)";
     let date = formatDate(lodging["offers"]["0"]["checkInDate"]) + " to " + 
                 formatDate(lodging["offers"]["0"]["checkOutDate"]);
-	let price = "$" + lodging["offers"]["0"]["price"]["total"] + " total";
+	//let price = "$" + lodging["offers"]["0"]["price"]["total"] + " total";
 
     if(beds === "")
     {
-        return [date, numRooms, price].join("<br>");
+        return [date, numRooms].join("<br>");
     }
-	return [date, numRooms, beds, price].join("<br>");
+	return [date, numRooms, beds].join("<br>");
 }
 
 function formatDate(date) {
