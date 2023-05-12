@@ -67,6 +67,21 @@ app.post('/restaurant-preferences', async (req, res) => {
     }
 });
 
+app.post('/uberlyft-preferences', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        // res.send(package);
+        let results = await manager.getUberLyft(package);
+        res.send(results);
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
+
 app.listen(3000, async () => {
     // await manager.initDatabase()
     console.log("Server started on port 3000");

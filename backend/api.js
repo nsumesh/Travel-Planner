@@ -103,9 +103,9 @@ class API {
                 const options = {
                     method: 'POST',
                     headers: {
-                        'content-type': 'application/x-www-form-urlencoded',
-                        'X-RapidAPI-Key': '63f7e51851msh0fb8612b650847fp120ecdjsn0cf6110880fc',
-                        'X-RapidAPI-Host': 'worldwide-restaurants.p.rapidapi.com'
+                            'content-type': 'application/x-www-form-urlencoded',
+                            'X-RapidAPI-Key': '9fdf5a2421msh89f3854d4ff009bp19c388jsn04216009dbff',
+                            'X-RapidAPI-Host': 'worldwide-restaurants.p.rapidapi.com'
                     },
                     body: searchParams.toString()
                 };
