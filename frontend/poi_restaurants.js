@@ -21,19 +21,35 @@ document.addEventListener("DOMContentLoaded", async function() {
                 
                 let entList = await fetchEntertainmentListings(rad);
                 let restList = await fetchRestaurantListings();
-				// let restList = [ "NONE" ];
-                // Combining the two JSON data 
-                let listing = {
-                    "entertainment": entList,
-                    "restaurants": restList
-                };
-                console.log(listing)
+				activities = merge(entList, restList);
+				console.log(activities);
+				activities.forEach((listing, i) => listing.index = i);
             }
         )
 
         //await loadActivties();
     });
 });
+
+function merge(list1, list2)
+{
+	let merged = []
+	let i = 0, j = 0;
+	while(i < list1.length && j < list2.length)
+	{
+		if(list1[i].sortPrice <= list2[j].sortPrice)
+			merged.push(list1[i++]);
+		else
+			merged.push(list2[j++]);
+	}
+	
+	while(i < list1.length)
+		merged.push(list1[i++]);
+	while(j < list2.length)
+		merged.push(list2[j++]);
+
+	return merged;
+}
 
 function getPricePredicate() {
 	
@@ -83,11 +99,24 @@ async function fetchRestaurantListings() {
 			},
 			body: JSON.stringify(package)
 		});
-		// return response;
-		// console.log(response);
 		let extracted = await response.json();
-		// console.log(extracted);
-        return extracted;
+		extracted = extracted.filter(listing => listing["price"])
+		extracted.forEach((listing) => {
+			let format = listing["price"].replace(/\$|\s/g, '')
+			let range = format.split('-');
+			range = range.map(val => parseFloat(val))
+			if(range.length == 1)
+			{
+				listing.sortPrice = range[0];
+			}
+			else
+			{
+				let avg = (range[0] + range[1]) / 2;
+				listing.sortPrice = avg;
+			}
+		});
+		let sorted = extracted.sort((a, b) => a.sortPrice - b.sortPrice);
+        return sorted;
 	}
 	catch(error) 
 	{
@@ -114,8 +143,9 @@ async function fetchEntertainmentListings(rad) {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
-		// console.log(extracted)
-        return extracted; 
+		let sorted = extracted.sort((a, b) => parseFloat(a["price"]["amount"]) - parseFloat(b["price"]["amount"]));
+		sorted.forEach((listing) => listing.sortPrice = parseFloat(listing["price"]["amount"]));
+        return sorted;
 	} 
 	catch(error) 
 	{
