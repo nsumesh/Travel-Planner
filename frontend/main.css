@@ -9,6 +9,10 @@ body {
 	color: #27273F;
 	min-height: 90%;
 	background-color: #F8F8F8;
+	
+	background-image: url("./background.png");
+	background-size: cover;
+	background-repeat: no-repeat;
 }
 
 main {
