@@ -67,6 +67,21 @@ app.post('/restaurant-preferences', async (req, res) => {
     }
 });
 
+app.post('/rentalCar-preferences', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        // res.send(package);
+        let results = await manager.getRentalCars(package);
+        res.send(results);
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
+
 app.post('/uberlyft-preferences', async (req, res) => {
     try 
     {
