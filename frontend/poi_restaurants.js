@@ -1,33 +1,27 @@
 const filters = [
-	getPricePredicate,
-	getRatingPredicate, 
-    getTagPredicate,
-
+	getPricePred,
+	// getRatingPredicate, 
+    // getTagPredicate,
 ];
 
 let activities = [];
 
-
 document.addEventListener("DOMContentLoaded", async function() {
     let button = document.getElementById("poi_search_button");
+
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
-        
-
         let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
 
-        ((radius != null && radius <= 20) ? Promise.resolve(radius) : Promise.resolve(5)).then(async rad => 
-            {
-                
-                let entList = await fetchEntertainmentListings(rad);
-                let restList = await fetchRestaurantListings();
-				activities = merge(entList, restList);
-				console.log(activities);
-				activities.forEach((listing, i) => listing.index = i);
-            }
-        )
-
-        //await loadActivties();
+        ((radius != null && radius <= 20) ? Promise.resolve(radius) : Promise.resolve(5)).then(async rad => { 
+			let entList = await fetchEntertainmentListings(rad);
+			let restList = await fetchRestaurantListings();
+			activities = merge(entList, restList);
+			console.log(activities);
+			activities.forEach((listing, i) => listing.index = i);
+		});
+		
+        await loadActivities(parseInt(document.getElementById("budget").value));
     });
 });
 
@@ -51,8 +45,7 @@ function merge(list1, list2)
 	return merged;
 }
 
-function getPricePredicate() {
-	
+function getPricePred(budget) {
 	let values = getDoubleRangeValues("price");
 	if(!values.min)
     {
@@ -62,29 +55,11 @@ function getPricePredicate() {
     {
         values.max = budget;
     }
-	return activity => values.min <= activity.price.grandTotal && activity.price.grandTotal <= values.max;
-}
-
-function getRatingPredicate() {
-	
-	let value = getRadioValue("rating");
-	// if (value >= 2) {
-	// 	return flight => true
-	// }
-	// return flight => value >= getNumberStops(flight.itineraries[0]);
-}
-function getTagPredicate() {
-	
-	let value = getDoubleRangeValues("tag");
-	// if (value >= 2) {
-	// 	return flight => true
-	// }
-	// return flight => value >= getNumberStops(flight.itineraries[0]);
+	return activity => values.min <= activity.sortPrice && activity.sortPrice <= values.max;
 }
 
 //console.log(localStorage.getItem("destination").split(", ")[0])
 async function fetchRestaurantListings() {
-	
 	let package = {
         language: "en_US",
         q: localStorage.getItem("destination").split(", ")[0]
@@ -125,11 +100,10 @@ async function fetchRestaurantListings() {
 }
 
 async function fetchEntertainmentListings(rad) {
-	
 	let package = {
         latitude: localStorage.getItem("destination_latitude"),
         longitude: localStorage.getItem("destination_longitude"), 
-        radius: rad,
+        radius: rad
     };
     // console.log(package)
 
@@ -153,23 +127,38 @@ async function fetchEntertainmentListings(rad) {
 	}
 }
 
-function loadActivties(){
-    return 0; 
+function loadActivities(budget) {
+	let listings = document.querySelector("#listings");
+	if (!listings) {
+		return;
+	}
+
+	let elements = activities;
+    let predicates = filters.map(supplier => supplier(budget));
+    elements = elements.filter(elem => predicates.every(p => p(elem)))
+        .map((elem) => {
+            let container = document.createElement("li");
+            container.classList.add("listing-container");
+            let listing = document.createElement("div");
+            // container.addEventListener("click", () => selectLodging(listing));
+            listing.classList.add("listing");
+            container.appendChild(listing);
+            listing.dataset.index = elem.index;
+            return container;
+        });
+
+	if (elements.length > 0) {
+		listings.replaceChildren(...elements);
+	} else {
+		listings.innerHTML = "No results found!";
+	}
 }
-// function selectActivity(listing) {
-	
-// 	let activity = activities[listing.dataset.index];
-// 	localStorage.setItem("activity_name", ______);
-// 	window.location.href="./cards.html";
-// }
 
 function formatDuration(raw) {
-	
 	return [...raw.matchAll(/\d+[A-Z]/g)].join(" ").toLowerCase();
 }
 
 function formatTime(time) {
-	
 	time = new Date(time);
 	let hours = time.getHours();
 	let suffix = hours >= 12 ? " PM" : " AM";
@@ -179,15 +168,3 @@ function formatTime(time) {
 	minutes = minutes < 10 ? "0" + minutes : minutes;
 	return hours + ":" + minutes + suffix;
 }
-
-// function appendUnits(value, units) {
-	
-// 	let out = value + " " + units;
-// 	if (value != 1) {
-// 		out += "s";
-// 	}
-// 	return out;
-// }
-
-
-
