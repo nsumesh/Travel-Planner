@@ -20,12 +20,13 @@ document.addEventListener("DOMContentLoaded", async function() {
             {
                 
                 let entList = await fetchEntertainmentListings(rad);
-                let restList = await fetchRestaurantListings(); 
+                let restList = await fetchRestaurantListings();
+				// let restList = [ "NONE" ];
                 // Combining the two JSON data 
                 let listing = {
-                    ...entList,
-                    ...restList
-                }
+                    "entertainment": entList,
+                    "restaurants": restList
+                };
                 console.log(listing)
             }
         )
@@ -37,6 +38,14 @@ document.addEventListener("DOMContentLoaded", async function() {
 function getPricePredicate() {
 	
 	let values = getDoubleRangeValues("price");
+	if(!values.min)
+    {
+        values.min = 0;
+    }
+    if(!values.max)
+    {
+        values.max = budget;
+    }
 	return activity => values.min <= activity.price.grandTotal && activity.price.grandTotal <= values.max;
 }
 
@@ -74,8 +83,12 @@ async function fetchRestaurantListings() {
 			},
 			body: JSON.stringify(package)
 		});
-        return response;
-	} 
+		// return response;
+		// console.log(response);
+		let extracted = await response.json();
+		// console.log(extracted);
+        return extracted;
+	}
 	catch(error) 
 	{
 		console.error('ERROR IN FETCHING DATA: ', error);
@@ -89,7 +102,7 @@ async function fetchEntertainmentListings(rad) {
         longitude: localStorage.getItem("destination_longitude"), 
         radius: rad,
     };
-    console.log(package)
+    // console.log(package)
 
 	try 
 	{
@@ -101,7 +114,7 @@ async function fetchEntertainmentListings(rad) {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
-		console.log(extracted)
+		// console.log(extracted)
         return extracted; 
 	} 
 	catch(error) 

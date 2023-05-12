@@ -1,4 +1,5 @@
 const Amadeus = require('amadeus');
+const fetch = require('node-fetch');
 
 class API {
 	constructor() {
@@ -103,15 +104,15 @@ class API {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        'X-RapidAPI-Key': '70a48ae6a2msh9956415a52882fcp136856jsn70e67b4d6229',
+                        'X-RapidAPI-Key': '63f7e51851msh0fb8612b650847fp120ecdjsn0cf6110880fc',
                         'X-RapidAPI-Host': 'worldwide-restaurants.p.rapidapi.com'
                     },
                     body: searchParams.toString()
                 };
-                await fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
+                return await fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
                     .then(response => response.json())
                     .then(response => locationID = response.results.data[0].result_object.location_id)
-                    .then(() => {
+                    .then(async () => {
                         delete preferences.q;
                         preferences['location_id'] = locationID;
                         preferences["currency"] = "USD";
@@ -119,9 +120,9 @@ class API {
                         const searchParams2 = new URLSearchParams();
                         Object.keys(preferences).forEach(key => searchParams2.append(key, preferences[key]));
                         options.body = searchParams2.toString();
-                        return fetch('https://worldwide-restaurants.p.rapidapi.com/search', options)
+                        return await fetch('https://worldwide-restaurants.p.rapidapi.com/search', options)
                             .then(response => response.json())
-                            .then(response => console.log(response))
+                            .then(response => response.results.data)
                             .catch(err => console.error(err));
                     }) .catch(err => console.error(err));
             }
