@@ -162,8 +162,7 @@ function formatFlightInfo(flight) {
 	numbers = (numbers.length > 1 ? "Flights #" :  "Flight #") + numbers.join(", #");
 	let stops = [segments[0].departure.iataCode].concat(segments.map(seg => seg.arrival.iataCode)).join(" → ");
 	let time = formatTime(segments[0].departure.at) + " - " + formatTime(segments[segments.length - 1].arrival.at);
-	let price = "$" + flight.price.grandTotal;
-	return [numbers, stops, time, price].join("<br>");
+	return [numbers, stops, time].join("<br>");
 }
 
 function getNumberStops(itinerary) {

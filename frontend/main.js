@@ -25,15 +25,20 @@ function loadStartData() {
 	}
 }
 
-function getRemainingBudget() {
+function getTotalSpending() {
 	
-	let total = parseFloat(localStorage.getItem("budget") ?? "0");
+	let total = 0;
 	for (const [name, value] of Object.entries(localStorage)) {
 		if (name.endsWith("_price") && !name.startsWith(page)) {
-			total -= parseFloat(value);
+			total += parseFloat(value);
 		}
 	}
 	return total;
+}
+
+function getRemainingBudget() {
+	
+	return parseFloat(localStorage.getItem("budget") ?? "0") - getTotalSpending();
 }
 
 function amadeusInit() {

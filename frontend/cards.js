@@ -2,20 +2,24 @@ const cards = {//TODO add others
 	transportation: [
 		{key: "iata", factory: (iata) => createAirlineIconElement(iata, 400, 160)},
 		{key: "name", factory: (data) => createGenericElement(data, "h3")},
-		{key: "info", factory: (data) => createGenericElement(data, "div")}		
+		{key: "info", factory: (data) => createGenericElement(data, "div")},
+		{key: "price", factory: (data) => createGenericElement("$" + data, "div")}		
 	],
 	lodging : [
 		// {key : "living" , factory : (house) => createLivingIconElement(house, 400, 160)},
 		{key: "name", factory: (data) => createGenericElement(data, "h2")},
-		{key: "info", factory: (data) => createGenericElement(data, "div")}
+		{key: "info", factory: (data) => createGenericElement(data, "div")},
+		{key: "price", factory: (data) => createGenericElement("$" + data, "div")}
 	],
 	poi:[	
 		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
-		{key : "info", factory : (data) => createGenericElement(data, "div")}
+		{key : "info", factory : (data) => createGenericElement(data, "div")},
+		{key: "price", factory: (data) => createGenericElement("$" + data, "div")}
 	],
 	cars:[	
 		{key : "name", factory: (data)=> createGenericElement(data, "h2")},
-		{key : "info", factory : (data) => createGenericElement(data, "div")}
+		{key : "info", factory : (data) => createGenericElement(data, "div")},
+		{key: "price", factory: (data) => createGenericElement("$" + data, "div")}
 	]
 };
 
