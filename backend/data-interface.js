@@ -1,5 +1,6 @@
 const API = require('./api.js');
 const Database = require('./database.js');
+const WebScrape = require('./web-scrape.js');
 
 class DataInterface 
 {
@@ -9,6 +10,7 @@ class DataInterface
         this.db = new Database();
         // to get data from APIs
         this.api = new API();
+        this.scrape = new WebScrape();
     }
 
     async initDatabase()
@@ -158,7 +160,7 @@ class DataInterface
         } 
         catch(error) 
         {
-            console.error('ERROR IN FETCHING LODGING DATA: ', error);
+            console.error('ERROR IN FETCHING RENTAL CAR DATA: ', error);
         }
     }
     
@@ -175,10 +177,9 @@ class DataInterface
         } 
         catch(error) 
         {
-            console.error('ERROR IN FETCHING LODGING DATA: ', error);
+            console.error('ERROR IN FETCHING UBER/LYFT DATA: ', error);
         }
     }
 }
-
 
 module.exports = DataInterface;

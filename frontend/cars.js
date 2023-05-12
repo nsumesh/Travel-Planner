@@ -40,7 +40,7 @@ async function fetchRentalCars() {
         drop_off_datetime: "2023-06-30 16:00:00", // user input
         sort_by:"price_low_to_high", // user filter
         pick_up_latitude: localStorage.getItem("destination_latitude"), // destination airport location
-        pick_up_longitude:localStorage.getItem("destination_longitude"), // destination airport location
+        pick_up_longitude: localStorage.getItem("destination_longitude"), // destination airport location
         pick_up_datetime:"2023-06-29 16:00:00", // arrival date from flight or user input??
         from_country: "it", // get from flight destination
     };
@@ -54,14 +54,16 @@ async function fetchRentalCars() {
         },
         body: JSON.stringify(package)
     });
+    console.log(response.body);
     let extracted = await response.json();
 	//sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
     console.log(extracted);
 
     return extracted;
 }
-debugger;
-//fetchRentalCars();
+// debugger;
+// fetchRentalCars()
+
 
 
 // let location = {
@@ -109,6 +111,7 @@ async function fetchUberLyft() {
 	}
 }
 
+// debugger;
 // fetchUberLyft();
 
 function formatDate(date) { 
@@ -160,20 +163,20 @@ async function loadRentalCars(budget)
 }
 
 //console.log(formatTime('02:12 AM'))
-document.addEventListener("DOMContentLoaded", function() {
-    let button = document.getElementById("find-rides-button");
-    button.addEventListener("click", async function() {
-        document.getElementById("listings").innerText = "Loading listings...";
+// document.addEventListener("DOMContentLoaded", function() {
+//     let button = document.getElementById("find-rides-button");
+//     button.addEventListener("click", async function() {
+//         document.getElementById("listings").innerText = "Loading listings...";
 
         
-        if(rentalCarData.length === 0)
-        {
-            console.log("GETTING DATA FROM API");
-            rentalCarData = await fetchRentalCars();
-        }
+//         if(rentalCarData.length === 0)
+//         {
+//             console.log("GETTING DATA FROM API");
+//             rentalCarData = await fetchRentalCars();
+//         }
 
-        rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
+//         rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
 
-        await loadRentalCars(parseInt(document.getElementById("budget").value));
-    });
-});
+//         await loadRentalCars(parseInt(document.getElementById("budget").value));
+//     });
+// });

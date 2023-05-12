@@ -7,8 +7,8 @@ class API {
 	constructor() {
 		// Amadeus API connection
 		this.amadeus = new Amadeus({
-			clientId: 'SYFdAtOqjAvrARH4Hn9J9i6SMfWYm38D',
-			clientSecret: 'FBk1wTva5JpRYf0O'
+			clientId: 'Z9O05HX1QEZuUVKFvsFqMMOSn6D00YUV',
+			clientSecret: '3jF4mEB1T9kHl7O2'
 		});
 	}
     
@@ -133,7 +133,7 @@ class API {
         return rest_data;
     }
 
-    async getRentalCars(preferences){
+    async getRentalCars(preferences) {
 
         // ALL THE PARAMETRS WE NEED 
         // let preferences = {
@@ -161,9 +161,9 @@ class API {
           }
         };
         
-        fetch(url, options)
-		.then(res => res.json())
-		.then(data => console.log(data))
+        return await fetch(url, options)
+		.then(response => response.json())
+        .then(res => res.search_results)
 		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
     
@@ -188,5 +188,21 @@ class API {
         return data; 
     }
 }
+
+let preferences = {
+    currency: "USD",
+    drop_off_datetime: "2023-06-30 16:00:00",
+    drop_off_latitude: "42.36528",
+    drop_off_longitude: "-71.01777",
+    from_country: "it",
+    locale: "en-us",
+    pick_up_datetime: "2023-06-29 16:00:00",
+    pick_up_latitude: "42.36528",
+    pick_up_longitude: "-71.01777",
+    sort_by: "price_low_to_high"
+}
+
+// const test3 = new API;
+// console.log(test3.getRentalCars(preferences))
 
 module.exports = API;
