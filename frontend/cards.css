@@ -36,3 +36,10 @@ body {
 	object-fit: contain;
 	width: 100%;
 }
+
+a.back-button.summary-button {
+	color: #27273F;
+	font-size: 1.5em;
+	float: right;
+	margin-bottom: 20px;
+}

@@ -1,8 +1,11 @@
+#summary {
+	border-bottom: 1px solid var(--line-color);
+}
+
 ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	border-bottom: 1px solid var(--line-color);
 }
 
 li {

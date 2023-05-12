@@ -2,7 +2,7 @@ const components = {
 	transportation: basicFactory("transportation"),
 	lodging: basicFactory("lodging"),
 	poi: activitiesFactory(),
-	uberlyft: rideFactory()
+	cars: carsFactory()
 };
 
 loadSummary();
@@ -38,22 +38,10 @@ function activitiesFactory() {
 	};
 }
 
-function totalFactory() {
+function carsFactory() {
 	
 	return () => {
-		
-		let container = document.createElement("div");
-		container.appendChild(document.createElement("div"));
-		container.appendChild(document.createElement("div"));
-		
-		return container;
-	};
-}
-
-function rideFactory() {
-	
-	return () => {
-		return createGenericElement("TODO uber/lyft", "div");
+		return createGenericElement("TODO cars", "div");
 	};
 }
 
