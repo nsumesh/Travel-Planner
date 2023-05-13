@@ -148,8 +148,15 @@ async function loadRentalCars(budget)
             listing.classList.add("listing");
             container.appendChild(listing);
             listing.dataset.index = rentalCar.index;
-            
-            let price = "$" + rentalCar["search_results"]["pricing_info"]["price"] + "<br>" + "total";
+            listing.appendChild(createImageElement(rentalCar.vehicle_info.image_thumbnail_url));
+            let img=document.querySelectorAll('img');
+            img.forEach(elem => {
+                elem['src'].overflow_x = 150;
+                elem['src'].overflow_y = 60;    
+            })
+            // img['src'].overflow_x = 150;
+            // img['src'].overflow_y = 60;          
+            let price = "$" + rentalCar["pricing_info"]["price"] + "<br>";
             listing.appendChild(createGenericElement(price, "div"));
 
             return container;
@@ -163,20 +170,26 @@ async function loadRentalCars(budget)
 }
 
 //console.log(formatTime('02:12 AM'))
-// document.addEventListener("DOMContentLoaded", function() {
-//     let button = document.getElementById("find-rides-button");
-//     button.addEventListener("click", async function() {
-//         document.getElementById("listings").innerText = "Loading listings...";
-
+document.addEventListener("DOMContentLoaded", function() {
+    let button = document.getElementById("find-rides-button");
+    button.addEventListener("click", async function() {
+        document.getElementById("listings").innerText = "Loading listings...";
         
-//         if(rentalCarData.length === 0)
-//         {
-//             console.log("GETTING DATA FROM API");
-//             rentalCarData = await fetchRentalCars();
-//         }
+        if(rentalCarData.length === 0)
+        {
+            console.log("GETTING DATA FROM API");
+            rentalCarData = await fetchRentalCars();
+        }
 
-//         rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
+        rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
 
-//         await loadRentalCars(parseInt(document.getElementById("budget").value));
-//     });
-// });
+        await loadRentalCars(parseInt(document.getElementById("budget").value));
+    });
+});
+
+// let iata = flight.validatingAirlineCodes[0].toLowerCase()
+// 			listing.appendChild(createAirlineIconElement(iata, 150, 60));
+// function createAirlineIconElement(iata, width, height) {
+
+// 	return createImageElement(`https://daisycon.io/images/airline/?iata=${iata}&width=${width}&height=${height}`);
+// }
