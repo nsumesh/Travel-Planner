@@ -140,10 +140,21 @@ function loadActivities(budget) {
             let container = document.createElement("li");
             container.classList.add("listing-container");
             let listing = document.createElement("div");
-            // container.addEventListener("click", () => selectLodging(listing));
+            container.addEventListener("click", () => selectActivity(listing));
             listing.classList.add("listing");
             container.appendChild(listing);
             listing.dataset.index = elem.index;
+			let name = activities.name;
+			if("type" in elem)
+			{
+				let n = elem.name
+				let shortdes = elem.shortDescription
+				let listing = n + " " + shortdes
+				name = "<br>" + name + listing
+			}
+			listing.appendChild(createGenericElement(name, "div"))
+			let price = "$" + activities["price"]["total"];
+			listing.appendChild(createGenericElement(price, "div"))
             return container;
         });
 
@@ -153,6 +164,9 @@ function loadActivities(budget) {
 		listings.innerHTML = "No results found!";
 	}
 }
+
+function selectActivity(listing)
+{}
 
 function formatDuration(raw) {
 	return [...raw.matchAll(/\d+[A-Z]/g)].join(" ").toLowerCase();
