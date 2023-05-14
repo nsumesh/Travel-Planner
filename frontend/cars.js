@@ -31,6 +31,29 @@ let dropOffTime = document.getElementById('drop-off-time');
 // console.log(pickUpTime.value);
 // console.log(dropOffTime.value);
 
+// const uberRideType = {
+//     "UberXL": 6, 
+//     "SUV": 6, 
+//     "Connect": 1, 
+//     "Black SUV Hourly": 5,
+//     "UberX Share": 1, 
+//     default: 4, 
+// }
+const lyftRideType = {
+    "Lux": 4, 
+    "Lux Black": 4, 
+    "Lux XL": 6, 
+    "Lux Black XL": 6,
+    "Scooter": 1, 
+    "Bikes": 1,
+}
+
+const filters = [
+	filterBySeats,
+    filterByPrice,
+
+];
+
 async function fetchRentalCars() {
     let package = {
         currency: 'USD',
@@ -114,6 +137,61 @@ async function fetchUberLyft() {
 // debugger;
 // fetchUberLyft();
 
+// price, sortby (low-high, recommend), type
+
+
+// function filterByAccessibility(){
+//     let checkboxes = document.querySelectorAll('input[name="accessibility"]:checked'); 
+//     let numSeat = [];
+//     checkboxes.forEach((checkbox) => { numSeat.push(checkbox.value)})
+
+//     return vehicle => {
+//         if(Array.isArray(vehicle)){
+//             return numSeat <= vehicle[2]
+//         }
+//         else{
+//             return numSeat <= rentalCar["accessibility"]["seats"]
+//         }
+//     }
+// }
+
+
+function filterBySeats(){
+    let numSeat = getRadioValue("seats"); 
+    return vehicle => {
+        if(Array.isArray(vehicle)){
+            return numSeat <= vehicle[2]
+        }
+        else{
+            return numSeat <= rentalCar["vehicle_info"]["seats"]
+        }
+    }
+}
+
+function filterByPrice(){
+    let values = getDoubleRangeValues("price");
+    if(!values.min)
+    {
+        values.min = 0;
+    }
+    if(!values.max)
+    {
+        values.max = localStorage.getItem("budget");
+    }
+
+    return vehicle => {
+        if(Array.isArray(vehicle)){
+            let min = (vehicle[1].includes("-"))? Number(vehicle[1].spilt("$")[0]) : Number(vehicle[1].spilt("-")[0].substring(1))
+            let max = (vehicle[1].includes("-"))? Number(vehicle[1].split("-")[1]): Number(localStorage.getItem("budget"))
+
+            return values.min <= max <= values.max || values.min <= min <= values.max;
+        }
+        else{
+            return values.min <= rentalCar["pricing_info"]["price"] <= values.max
+        }
+    }
+}
+
 function formatDate(date) { 
     let elems = date.split("/");
     return elems[2] + "-" + elems[0] + "-" + elems[1];
@@ -138,8 +216,8 @@ async function loadRentalCars(budget)
 	}
 
     let elements = rentalCarData;
-    //let predicates = filters.map(supplier => supplier(budget));
-    elements = elements
+    let predicates = filters.map(supplier => supplier(budget));
+    elements = elements.filter(car => predicates.every(p => p(car)))
         .map((rentalCar) => {
             let container = document.createElement("li");
             container.classList.add("listing-container");
@@ -175,13 +253,17 @@ document.addEventListener("DOMContentLoaded", function() {
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
         
+        
         if(rentalCarData.length === 0)
         {
             console.log("GETTING DATA FROM API");
             rentalCarData = await fetchRentalCars();
+            
         }
 
         rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
+
+        //Sorting 
 
         await loadRentalCars(parseInt(document.getElementById("budget").value));
     });
