@@ -1,10 +1,3 @@
-// For lots of options in uber and lyft, I need to get possible locations: 
-// airport to hotel, hotel to airport (leaving)
-// hotel to restaurants (2-way)
-// hotel to entertainments (2-way)
-
-
-
 //Rental car preferences
 // let preferences = {
         //   currency:"USD",
@@ -60,16 +53,17 @@ const filters = [
 ];
 
 async function fetchRentalCars() {
+    debugger;
     let package = {
         currency: 'USD',
         locale:"en-us",
         drop_off_latitude: localStorage.getItem("destination_latitude"), // airport or hotel location or user input??
         drop_off_longitude: localStorage.getItem("destination_longitude"), // airport or hotel location or user input??
-        drop_off_datetime: "2023-06-30 16:00:00", // user input
+        drop_off_datetime: document.getElementById("drop-off-date").value + " " + document.getElementById("drop-off-time").value + ":00", //"2023-06-30 16:00:00", // user input
         sort_by:"price_low_to_high", // user filter
         pick_up_latitude: localStorage.getItem("destination_latitude"), // destination airport location
         pick_up_longitude: localStorage.getItem("destination_longitude"), // destination airport location
-        pick_up_datetime:"2023-06-29 16:00:00", // arrival date from flight or user input??
+        pick_up_datetime: document.getElementById("pick-up-date").value + " " + document.getElementById("pick-up-time").value + ":00", // arrival date from flight or user input??
         from_country: "it", // get from flight destination
     };
 
@@ -106,8 +100,8 @@ async function fetchRentalCars() {
 // }
 
 async function fetchUberLyft() {
-	
-	let package = {
+
+    let package = {
         "origin": {
             "latitude": Number(localStorage.getItem("destination_latitude")),
             "longitude": Number(localStorage.getItem("destination_longitude")), 
@@ -117,6 +111,7 @@ async function fetchUberLyft() {
             "longitude": Number(localStorage.getItem("destination_longitude")), // need to change based on user inputs
         }
     };
+	
     let type = typeof package.origin.latitude;
     //console.log(package)
 
@@ -199,21 +194,28 @@ function filterByPrice(){
     }
 }
 
-function formatDate(date) { 
-    let elems = date.split("/");
-    return elems[2] + "-" + elems[0] + "-" + elems[1];
+function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
+    let icon = document.createElement("img");
+    icon.src = src;
+    icon.width = 150
+    icon.height = 100;
+    listing.appendChild(icon);
+
+    let label = document.createElement("div");
+    label.innerHTML = labelHTML;
+    label.style.fontSize = 'large';
+    label.style.fontWeight = 'bold';
+    listing.appendChild(label);
+
+    let seats = document.createElement("div");
+    seats.innerHTML = seatsHTML;
+    listing.appendChild(seats);
+    
+    let price = document.createElement("div");
+    price.innerHTML = priceHTML;
+    listing.appendChild(price);
 }
 
-function formatTime(time) {
-    if (time.includes("PM")) {
-        let elems = time.replace(" PM", "").split(":");
-        elems[0] = (parseInt(elems[0]) + 12).toString(); 
-        return elems[0] + ":" + elems[1] + ":00";
-    } else if (time.includes("AM")) {
-        time = time.replace(" AM", "");
-        return time + ":00"
-    }
-}
 
 function merge(array1, array2) {
     result = [array1, array2]
@@ -243,48 +245,14 @@ async function loadCars(budget)
             listing.style.display = "flex";
             listing.style.alignItems = "center";
 
-            if (!Array.isArray(car)) {
-                //console.log(car);
-                let icon = document.createElement("img");
-                icon.src = car.vehicle_info.image_thumbnail_url;
-                icon.width = 150
-                icon.height = 100;
-                listing.appendChild(icon);
-                let label = document.createElement("div");
-                label.innerHTML = car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>";
-                label.style.fontSize = 'large';
-                label.style.fontWeight = 'bold';
-                listing.appendChild(label);
-                let seats = document.createElement("div");
-                seats.innerHTML = car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + " mileage" + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>";
-                listing.appendChild(seats);
-                
-                let price = document.createElement("div");
-                price.innerHTML = "$" + car["pricing_info"]["price"] + "<br>";
-                listing.appendChild(price);
+            if (!Array.isArray(car)) { 
+                formatData(listing,
+                car.vehicle_info.image_thumbnail_url, car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>", 
+                car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + " mileage" + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>", 
+                "$" + car["pricing_info"]["price"] + "<br>");             
             } else {
-                let icon = document.createElement("img");
-                icon.src = car[3];
-                icon.width = 150
-                icon.height = 100;
-                listing.appendChild(icon);
-
-                let label = document.createElement("div");
-                label.innerHTML = car[0] + "<br>";
-                label.style.fontSize = 'large';
-                label.style.fontWeight = 'bold';
-                listing.appendChild(label);
-
-                let seats = document.createElement("div");
-                seats.innerHTML = car[2] + " seats"+ "<br>";
-                listing.appendChild(seats);
-                
-
-                let price = document.createElement("div");
-                price.innerHTML = car[1] + "<br>";
-                listing.appendChild(price);
+                formatData(listing, car[3], car[0] + "<br>", car[2] + " seats"+ "<br>", car[1] + "<br>");
             }
-
             return container;
         });
 
@@ -334,31 +302,17 @@ document.addEventListener("DOMContentLoaded", function() {
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
 
-        console.log("GETTING DATA FROM RENTAL CAR API");
-        //debugger;
         if (document.getElementById("rental").checked) {
+            console.log("GETTING DATA FROM RENTAL CAR API");
             rentalCarData = await fetchRentalCars();
         }
         
-
-        //console.log("GETTING DATA FROM UBER/LYFT API"); 
-        //debugger;
+        console.log("GETTING DATA FROM UBER/LYFT API"); 
         uberLyftData = await fetchUberLyft();
-        
-        
 
-        //debugger;
-        console.log(rentalCarData);
-        console.log(uberLyftData);
         carData = merge(rentalCarData, uberLyftData);
-        //console.log(carData);
-
         carData.forEach((car, i) => car.index = i);
 
-
-        // rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
-        // uberLyftData.forEach((uberLyftCar, i) => uberLyftCar.index = i);
-        //debugger;
         await loadCars(parseInt(document.getElementById("budget").value));
     });
 });

@@ -47,6 +47,7 @@ async function getLodging()
         body: JSON.stringify(package)
     });
     let extracted = await response.json();
+
 	sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
     console.log(sorted);
 
@@ -105,10 +106,13 @@ async function loadLodging(budget)
 function selectLodging(listing) {
 	
 	let lodging = lodgingData[listing.dataset.index];
+    debugger;
     console.log(lodging);
 	localStorage.setItem("lodging_name", lodging["hotel"]["name"]);
     localStorage.setItem("lodging_info", formatLodgingInfo(lodging));
 	localStorage.setItem("lodging_price", lodging["offers"]["0"]["price"]["total"]);
+    localStorage.setItem("lodging_latitude", lodging["hotel"]["latitude"]);
+    localStorage.setItem("lodging_longitude", lodging["hotel"]["longitude"]);
 	window.location.href="./cards.html";
 }
 
