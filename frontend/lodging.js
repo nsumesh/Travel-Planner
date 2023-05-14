@@ -23,6 +23,7 @@ function getPricePred(budget) {
 
 async function getLodging()
 {
+
     let package = {
         location: { 
             latitude: localStorage.getItem("destination_latitude"),
@@ -163,11 +164,32 @@ function formatDate(date) {
     return months[parseInt(elems[1]) - 1] + " " + elems[2] + ", " + elems[0];
 }
 
+function formatNewDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-').toString();
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-lodging-button");
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
         
+        localStorage.setItem("return",  document.getElementById("check-out").value)
+        if(localStorage.getItem("one-way") && localStorage.getItem("return") < localStorage.getItem("depart")){
+            let next_date = new Date(localStorage.getItem("depart"))
+            next_date.setDate(next_date.getDate() + 5)
+            localStorage.setItem("return", formatNewDate(next_date))     
+        }
+
         let radios = document.querySelectorAll('input[name="board"]');
         for(let i in radios)
         {

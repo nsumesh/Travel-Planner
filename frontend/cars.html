@@ -66,35 +66,39 @@
                 $<input type="number" name="price" class="range-max"></input>
               </label>
             </fieldset>
-            <fieldset name="">
-              <legend>Sort by</legend>
+            <fieldset name="seats">
+              <legend>Number of Seats</legend>
               <label>
-                <input type="radio" name="board" id="half-board" value=0 checked></input>
-                Low to High Price
+                <input type="radio" name="seats" id="one" value=1></input>
+                1
               </label>
               <label>
-                <input type="radio" name="board" id="half-board" value=0></input>
-                Recommended
+                <input type="radio" name="seats" id="two" value=2></input>
+                2+
+              </label>
+              <label>
+                <input type="radio" name="seats" id="four" value=4 checked></input>
+                4+
+              </label>
+              <label>
+                <input type="radio" name="seats" id="six" value=6></input>
+                6+
               </label>
             </fieldset>
             <fieldset name="vehicle">
               <legend>Type of Transportation</legend>
               <label>
-                <input type="checkbox" name="vehicle" id="uber-x" value=0></input>
+                <input type="checkbox" name="vehicle" id="uber" value=0 checked></input>
                 Uber
               </label>
               <label>
-                <input type="checkbox" name="vehicle" id="uber-x" value=0></input>
+                <input type="checkbox" name="vehicle" id="lyft" value=0 checked></input>
                 Lyft
               </label>
               <label>
-                <input type="checkbox" name="vehicle" id="uber-x" value=0></input>
+                <input type="checkbox" name="vehicle" id="rental" value=0 checked></input>
                 Rental Cars
               </label>
-              <label>
-                <input type="checkbox" name="all" id="lyft" value=0></input>
-               All
-              </label><br>
               <button type="button" id="find-rides-button" class="submit-button">Search!</button>
             </fieldset>
           </form>

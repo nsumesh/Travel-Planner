@@ -15,7 +15,7 @@ class WebScrape {
         })
         .then(response => response.json())
         // getting only necessary data and putting it in a nested array
-        .then(res => (res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString] : console.log("Specified keys not found")))
+        .then(res => (res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString, obj.capacity] : console.log("Specified keys not found")))
         .catch(err => console.log(`UBER API error: ${err}`));
     }
     // Testing
@@ -38,4 +38,18 @@ class WebScrape {
     //lyftPrices(42.387119, -72.526435, 42.038042, -72.617054);
 }
 
+// let location = {
+//     "origin": {
+//         "latitude": 42.385150,
+//         "longitude": -72.525290
+//     },
+//     "destination": {
+//         "latitude": 42.039370,
+//         "longitude": -72.613620
+//     },
+// }
+
+
+// const test3 = new WebScrape;
+// console.log(test3.uberPrices(location))
 module.exports = WebScrape;
