@@ -127,8 +127,9 @@ async function fetchUberLyft() {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
+        console.log(extracted);
 
-        (extracted.Uber).map(el => el.splice(2, 0, "https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png"));
+        (extracted.Uber).map(el => el.splice(2, 0, "https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png") );
         (extracted.Lyft).map(el => el.push("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Lyft_logo.svg/2560px-Lyft_logo.svg.png"));
 
         if (document.getElementById("uber").checked && !(document.getElementById("lyft").checked)) {
@@ -179,7 +180,7 @@ function filterBySeats(){
             return numSeat <= vehicle[2]
         }
         else{
-            return numSeat <= rentalCar["vehicle_info"]["seats"]
+            return numSeat <= vehicle["vehicle_info"]["seats"]
         }
     }
 }
@@ -197,13 +198,13 @@ function filterByPrice(){
 
     return vehicle => {
         if(Array.isArray(vehicle)){
-            let min = (vehicle[1].includes("-"))? Number(vehicle[1].spilt("$")[0]) : Number(vehicle[1].spilt("-")[0].substring(1))
+            let min = (vehicle[1].includes("-"))?  Number(vehicle[1].split("-")[0].substring(1)) : Number(vehicle[1].split("$")[0]) 
             let max = (vehicle[1].includes("-"))? Number(vehicle[1].split("-")[1]): Number(localStorage.getItem("budget"))
 
             return values.min <= max <= values.max || values.min <= min <= values.max;
         }
         else{
-            return values.min <= rentalCar["pricing_info"]["price"] <= values.max
+            return values.min <= vehicle["pricing_info"]["price"] <= values.max
         }
     }
 }

@@ -15,7 +15,10 @@ class WebScrape {
         })
         .then(response => response.json())
         // getting only necessary data and putting it in a nested array
-        .then(res => (res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString, obj.capacity] : console.log("Specified keys not found")))
+        .then(
+            res => (res.data.prices).map(obj => Object.hasOwn(obj, 'vehicleViewDisplayName') && Object.hasOwn(obj, 'fareString') ? [obj.vehicleViewDisplayName, obj.fareString, obj.capacity] : null)
+            .filter(el =>  el != null && el !== undefined)
+        )
         .catch(err => console.log(`UBER API error: ${err}`));
     }
     // Testing

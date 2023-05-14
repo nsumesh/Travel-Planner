@@ -138,7 +138,7 @@ class API {
         //   pick_up_latitude:"50.08773",
         //   pick_up_longitude:"14.421133",
         //   pick_up_datetime:"2023-06-29 16:00:00",
-        //   from_country: "us"
+        //   from_country: "pl"
         // };
     
         let query =  new URLSearchParams(preferences);
@@ -155,6 +155,8 @@ class API {
         
         return await fetch(url, options)
 		.then(res => res.json())
+        .then(res => res.search_results)
+        // .then(data => console.log(data))
 		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
     
@@ -180,6 +182,7 @@ class API {
     }
 }
 
-// let some = new API();
+// let some = new API;
 // some.getRentalCars()
+
 module.exports = API;
