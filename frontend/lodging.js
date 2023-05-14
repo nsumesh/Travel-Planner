@@ -182,10 +182,20 @@ function formatNewDate(date) {
     return [year, month, day].join('-').toString();
 }
 
+function createElementFromHTML(htmlString) {
+    var div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+
+    // Change this to div.childNodes to support multiple top-level nodes.
+    return div.firstChild;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-lodging-button");
     button.addEventListener("click", async function() {
-        document.getElementById("listings").innerText = "Loading listings...";
+        let loading = '<img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gifz" style="padding: 3.5em" alt="Loading listings..." width="50" height="50">'
+        let element = createElementFromHTML(loading)
+        document.getElementById("listings").replaceChildren(element)
         
         localStorage.setItem("return",  document.getElementById("check-out").value)
         if(localStorage.getItem("one-way") && localStorage.getItem("return") < localStorage.getItem("depart")){

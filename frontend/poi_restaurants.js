@@ -10,26 +10,37 @@ if(localStorage.hasOwnProperty("chosenPOI") && JSON.parse(localStorage.getItem("
 	chosen = JSON.parse(localStorage.getItem("chosenPOI"));
 }
 
+function createElementFromHTML(htmlString) {
+    var div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+
+    // Change this to div.childNodes to support multiple top-level nodes.
+    return div.firstChild;
+}
+
 document.addEventListener("DOMContentLoaded", async function() {
     let button = document.getElementById("poi_search_button");
 
     button.addEventListener("click", async function() {
-        document.getElementById("listings").innerText = "Loading listings...";
-        let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
-		let rad = null;
-		if(radius != null && radius <= 20)
-			rad = radius;
-		else
-			rad = 5;
+			let loading = '<img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gifz" style="padding: 3.5em" alt="Loading listings..." width="50" height="50">'
+			let element = createElementFromHTML(loading)
+			document.getElementById("listings").replaceChildren(element)
 
-		let entList = await fetchEntertainmentListings(rad);
-		let restList = await fetchRestaurantListings();
-		activities = restList.concat(entList);
-		activities = activities.slice(0, Math.min(100, activities.length))
-		console.log(activities);
-		activities.forEach((listing, i) => listing.index = i);
-		
-        await loadActivities(parseInt(document.getElementById("budget").value));
+			let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
+			let rad = null;
+			if(radius != null && radius <= 20)
+				rad = radius;
+			else
+				rad = 5;
+
+			let entList = await fetchEntertainmentListings(rad);
+			let restList = await fetchRestaurantListings();
+			activities = restList.concat(entList);
+			activities = activities.slice(0, Math.min(100, activities.length))
+			console.log(activities);
+			activities.forEach((listing, i) => listing.index = i);
+			
+			await loadActivities(parseInt(document.getElementById("budget").value));
     });
 });
 
