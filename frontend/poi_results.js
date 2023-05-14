@@ -1,14 +1,19 @@
 let listContainer = document.querySelector("#listings");
+let chosen = [];
+if(localStorage.hasOwnProperty("chosenPOI") && JSON.parse(localStorage.getItem("chosenPOI")).length !== 0)
+{
+	chosen = JSON.parse(localStorage.getItem("chosenPOI"));
+}
 
-window.addEventListener("load", () => {
-    // console.log(localStorage.getItem("chosenPOI"));
-    if(localStorage.hasOwnProperty("chosenPOI") && JSON.parse(localStorage.getItem("chosenPOI")).length !== 0)
+function loadResults()
+{
+    if(chosen.length !== 0)
     {
-        let elements = JSON.parse(localStorage.getItem("chosenPOI"));
+        let elements = chosen;
         elements = elements.map((elem) => {
             let container = document.createElement("li");
             container.classList.add("listing-container");
-            // container.addEventListener("click", () => removeActivity(listing));
+            container.addEventListener("click", () => removeActivity(listing));
             let listing = document.createElement("div");
             listing.classList.add("listing");
             container.appendChild(listing);
@@ -50,11 +55,19 @@ window.addEventListener("load", () => {
 			if(!elem.type)
 			{
 				let rankDetails = elem.ranking + "<br>";
-				rankDetails += "Price (per person): " + elem.price_level
+				rankDetails += "Price (per person): " + elem.price_level + "<br><br>"
+                rankDetails += `<span style="opacity: 0.5;">(Click to remove)</span>`
 				rankPack = createGenericElement(rankDetails, "div")
 				rankPack.classList.add("rank-pack");
 				listing.appendChild(rankPack);
 			}
+            else
+            {
+                let rankDetails = `<span style="opacity: 0.5;">(Click to remove)</span>`
+				rankPack = createGenericElement(rankDetails, "div")
+				rankPack.classList.add("rank-pack");
+				listing.appendChild(rankPack);
+            }
 			listing.appendChild(img);
 
             return container;
@@ -66,21 +79,14 @@ window.addEventListener("load", () => {
     {
         listContainer.innerText = "No activities selected!";
     }
-});
+}
 
-// async function loadResults()
-// {
+async function removeActivity(listing)
+{
+	chosen.splice(listing.dataset.index, 1);
+	chosen.forEach((listing, i) => listing.index = i);
+    localStorage.setItem("chosenPOI", JSON.stringify(chosen));
+	loadResults();
+}
 
-// }
-
-// async function removeActivity(listing)
-// {
-//     let poiElem = activities[listing.dataset.index];
-//     // console.log(poiElem);
-// 	if(!chosen.some(obj => obj.name === poiElem.name))
-// 		chosen.push(poiElem);
-// 	// console.log(chosen);
-// 	chosen.splice(listing.dataset.index, 1);
-// 	chosen.forEach((listing, i) => listing.index = i);
-// 	await loadResults();
-// }
+loadResults();

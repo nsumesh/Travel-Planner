@@ -218,10 +218,8 @@ function loadActivities(budget) {
 async function selectActivity(listing)
 {
 	let poiElem = activities[listing.dataset.index];
-    // console.log(poiElem);
 	if(!chosen.some(obj => obj.name === poiElem.name))
 		chosen.push(poiElem);
-	// console.log(chosen);
 	activities.splice(listing.dataset.index, 1);
 	activities.forEach((listing, i) => listing.index = i);
 	await loadActivities(parseInt(document.getElementById("budget").value));
@@ -231,19 +229,4 @@ function backUpdate()
 {
 	chosen.forEach((listing, i) => listing.index = i);
 	localStorage.setItem("chosenPOI", JSON.stringify(chosen));
-}
-
-function formatDuration(raw) {
-	return [...raw.matchAll(/\d+[A-Z]/g)].join(" ").toLowerCase();
-}
-
-function formatTime(time) {
-	time = new Date(time);
-	let hours = time.getHours();
-	let suffix = hours >= 12 ? " PM" : " AM";
-	hours = hours % 12;
-	hours = hours ? hours : 12;
-	let minutes = time.getMinutes();
-	minutes = minutes < 10 ? "0" + minutes : minutes;
-	return hours + ":" + minutes + suffix;
 }
