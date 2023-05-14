@@ -99,3 +99,12 @@ fieldset > label > input {
 	margin: 2px;
 	padding: 0 2px;
 }
+
+.small-pic {
+	width: 150px;
+	height: 90px;
+}
+
+.poi-name {
+	color: green;
+}

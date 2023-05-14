@@ -12,14 +12,17 @@ document.addEventListener("DOMContentLoaded", async function() {
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
         let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
+		let rad = null;
+		if(radius != null && radius <= 20)
+			rad = radius;
+		else
+			rad = 5;
 
-        ((radius != null && radius <= 20) ? Promise.resolve(radius) : Promise.resolve(5)).then(async rad => { 
-			let entList = await fetchEntertainmentListings(rad);
-			let restList = await fetchRestaurantListings();
-			activities = merge(entList, restList);
-			console.log(activities);
-			activities.forEach((listing, i) => listing.index = i);
-		});
+		let entList = await fetchEntertainmentListings(rad);
+		let restList = await fetchRestaurantListings();
+		activities = merge(entList, restList);
+		console.log(activities);
+		activities.forEach((listing, i) => listing.index = i);
 		
         await loadActivities(parseInt(document.getElementById("budget").value));
     });
@@ -27,22 +30,24 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 function merge(list1, list2)
 {
-	let merged = []
-	let i = 0, j = 0;
-	while(i < list1.length && j < list2.length)
-	{
-		if(list1[i].sortPrice <= list2[j].sortPrice)
-			merged.push(list1[i++]);
-		else
-			merged.push(list2[j++]);
-	}
+	// let merged = []
+	// let i = 0, j = 0;
+	// while(i < list1.length && j < list2.length)
+	// {
+	// 	if(list1[i].sortPrice <= list2[j].sortPrice)
+	// 		merged.push(list1[i++]);
+	// 	else
+	// 		merged.push(list2[j++]);
+	// }
 	
-	while(i < list1.length)
-		merged.push(list1[i++]);
-	while(j < list2.length)
-		merged.push(list2[j++]);
+	// while(i < list1.length)
+	// 	merged.push(list1[i++]);
+	// while(j < list2.length)
+	// 	merged.push(list2[j++]);
 
-	return merged;
+	// return merged;
+
+	return list2.concat(list1);
 }
 
 function getPricePred(budget) {
@@ -75,8 +80,13 @@ async function fetchRestaurantListings() {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
-		extracted = extracted.filter(listing => listing["price"])
+		// extracted = extracted.filter(listing => listing["price"])
 		extracted.forEach((listing) => {
+			if(!listing["price"])
+			{
+				listing.sortPrice = 0;
+				return;
+			}
 			let format = listing["price"].replace(/\$|\s/g, '')
 			let range = format.split('-');
 			range = range.map(val => parseFloat(val))
@@ -144,17 +154,66 @@ function loadActivities(budget) {
             listing.classList.add("listing");
             container.appendChild(listing);
             listing.dataset.index = elem.index;
-			let name = activities.name;
-			if("type" in elem)
+
+			// let table = document.createElement("table");
+			
+			// // FIRST TABLE ROW
+			// let firstRow = document.createElement("tr");
+
+			// let img = document.createElement("img");
+			// if(elem.type)
+			// 	img.setAttribute("src", elem.pictures[0]);
+			// else
+			// 	img.setAttribute("src", elem.photo.images.original.url);
+			// img.setAttribute("alt", "POI Image");
+			// img.classList.add("small-pic");
+
+			// let p = document.createElement("p");
+			// p.innerText = "Hello World!"
+
+			// firstRow.appendChild(img);
+			// firstRow.appendChild(p);
+
+			// table.appendChild(firstRow);
+			// listing.appendChild(table);
+
+			let details = '';
+			// details += elem.name + "<br>";
+			details += `<span class="poi-name">${elem.name}</span><br>`
+			if(elem.type)
 			{
-				let n = elem.name
-				let shortdes = elem.shortDescription
-				let listing = n + " " + shortdes
-				name = "<br>" + name + listing
+				details += "Categories: " + elem.shortDescription + "<br>";
+				details += `<a href=${elem.bookingLink}>Make Reservation</a>`
 			}
-			listing.appendChild(createGenericElement(name, "div"))
-			let price = "$" + activities["price"]["total"];
-			listing.appendChild(createGenericElement(price, "div"))
+			else
+			{
+				details += elem.address + "<br>"
+				let neighbors = '';
+				for(let obj of elem.neighborhood_info)
+				{
+					neighbors += obj.name + ", "
+				}
+				neighbors = neighbors.substring(0, neighbors.length - 2);
+				details += neighbors + "<br><br>";
+				if(elem.email)
+					details += "Contact: " + elem.email + "<br>";
+				details += `<a href=${elem.website}>Visit Website</a>`
+			}
+			// if(elem.type)
+			// 	details += `<span class="poi-categ">Categories: ${elem.shortDescription}</span><br>`
+			let detailsPack = createGenericElement(details, "div");
+			
+			let img = document.createElement("img");
+			if(elem.type)
+				img.setAttribute("src", elem.pictures[0]);
+			else
+				img.setAttribute("src", elem.photo.images.original.url);
+			img.setAttribute("alt", "POI Image");
+			img.classList.add("small-pic");
+
+			listing.appendChild(detailsPack);
+			listing.appendChild(img);
+
             return container;
         });
 
