@@ -4,6 +4,11 @@ const filters = [
 ];
 
 let activities = [];
+let chosen = [];
+if(localStorage.hasOwnProperty("chosenPOI") && JSON.parse(localStorage.getItem("chosenPOI")).length !== 0)
+{
+	chosen = JSON.parse(localStorage.getItem("chosenPOI"));
+}
 
 document.addEventListener("DOMContentLoaded", async function() {
     let button = document.getElementById("poi_search_button");
@@ -20,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 		let entList = await fetchEntertainmentListings(rad);
 		let restList = await fetchRestaurantListings();
 		activities = restList.concat(entList);
+		activities = activities.slice(0, Math.min(100, activities.length))
 		console.log(activities);
 		activities.forEach((listing, i) => listing.index = i);
 		
@@ -209,8 +215,23 @@ function loadActivities(budget) {
 	}
 }
 
-function selectActivity(listing)
-{}
+async function selectActivity(listing)
+{
+	let poiElem = activities[listing.dataset.index];
+    // console.log(poiElem);
+	if(!chosen.some(obj => obj.name === poiElem.name))
+		chosen.push(poiElem);
+	// console.log(chosen);
+	activities.splice(listing.dataset.index, 1);
+	activities.forEach((listing, i) => listing.index = i);
+	await loadActivities(parseInt(document.getElementById("budget").value));
+}
+
+function backUpdate()
+{
+	chosen.forEach((listing, i) => listing.index = i);
+	localStorage.setItem("chosenPOI", JSON.stringify(chosen));
+}
 
 function formatDuration(raw) {
 	return [...raw.matchAll(/\d+[A-Z]/g)].join(" ").toLowerCase();

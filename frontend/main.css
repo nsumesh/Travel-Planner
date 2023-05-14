@@ -132,6 +132,14 @@ a.back-button {
 	margin-top: 1.4em;
 }
 
+a.next-button {
+	color: #6E7491;
+	font-size: 1.2em;
+	text-decoration: none;
+	float: right;
+	margin-top: 1.4em;
+}
+
 a.back-button:hover {
 	text-decoration: underline;
 }

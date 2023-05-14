@@ -67,5 +67,5 @@ function chooseCars()
 
 function chooseActivity()
 {
-	window.location.href = "./poi_restaurants.html";
+	window.location.href = "./poi_results.html";
 }
