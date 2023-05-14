@@ -7,7 +7,7 @@ loadStartData();
 const amadeusToken = amadeusInit();
 
 function loadStartData() {
-	
+	//localStorage.clear();
 	for (const field of startFields) {
 		let value = localStorage.getItem(field) ?? "";
 		const input = document.querySelector(`#start-form input[name='${field}']`);

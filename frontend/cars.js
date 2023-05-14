@@ -41,7 +41,9 @@ let dropOffTime = document.getElementById('drop-off-time');
 //     "UberX Share": 1, 
 //     default: 4, 
 // }
-const lyftRideType = {
+let lyftRideType = {
+    "Lyft": 4,
+    "Lyft XL": 6,
     "Lux": 4, 
     "Lux Black": 4, 
     "Lux XL": 6, 
@@ -49,6 +51,7 @@ const lyftRideType = {
     "Scooter": 1, 
     "Bikes": 1,
 }
+let lyftType = Object.keys(lyftRideType)
 
 const filters = [
 	filterBySeats,
@@ -70,7 +73,7 @@ async function fetchRentalCars() {
         from_country: "it", // get from flight destination
     };
 
-    console.log(package);
+    //console.log(package);
 
     let response = await fetch('/rentalCar-preferences', {
         method: 'POST',
@@ -79,10 +82,10 @@ async function fetchRentalCars() {
         },
         body: JSON.stringify(package)
     });
-    console.log(response.body);
+    //console.log(response.body);
     let extracted = await response.json();
 	//sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
-    console.log(extracted);
+    //console.log(extracted);
 
     return extracted;
 }
@@ -115,7 +118,7 @@ async function fetchUberLyft() {
         }
     };
     let type = typeof package.origin.latitude;
-    console.log(package)
+    //console.log(package)
 
 	try 
 	{
@@ -127,10 +130,13 @@ async function fetchUberLyft() {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
-        console.log(extracted);
+        //console.log(extracted);
 
-        (extracted.Uber).map(el => el.splice(2, 0, "https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png") );
-        (extracted.Lyft).map(el => el.push("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Lyft_logo.svg/2560px-Lyft_logo.svg.png"));
+        (extracted.Uber).map(el => el.push("https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png"));
+        (extracted.Lyft).map(el => {
+            el.push((lyftType.includes(el[0])) ? lyftRideType[el[0]] : 4 )
+            el.push("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Lyft_logo.svg/2560px-Lyft_logo.svg.png")       
+         });
 
         if (document.getElementById("uber").checked && !(document.getElementById("lyft").checked)) {
             extracted = extracted.Uber;
@@ -142,7 +148,7 @@ async function fetchUberLyft() {
 
         //sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
 
-        console.log(extracted);
+        //console.log(extracted);
         return extracted; 
 	} 
 	catch(error) 
@@ -155,22 +161,6 @@ async function fetchUberLyft() {
 // fetchUberLyft();
 
 // price, sortby (low-high, recommend), type
-
-
-// function filterByAccessibility(){
-//     let checkboxes = document.querySelectorAll('input[name="accessibility"]:checked'); 
-//     let numSeat = [];
-//     checkboxes.forEach((checkbox) => { numSeat.push(checkbox.value)})
-
-//     return vehicle => {
-//         if(Array.isArray(vehicle)){
-//             return numSeat <= vehicle[2]
-//         }
-//         else{
-//             return numSeat <= rentalCar["accessibility"]["seats"]
-//         }
-//     }
-// }
 
 
 function filterBySeats(){
@@ -246,7 +236,7 @@ async function loadCars(budget)
             let container = document.createElement("li");
             container.classList.add("listing-container");
             let listing = document.createElement("div");
-            //container.addEventListener("click", () => selectLodging(listing));
+            container.addEventListener("click", () => selectVehicle(listing));
             listing.classList.add("listing");
             container.appendChild(listing);
             listing.dataset.index = car.index;
@@ -254,7 +244,7 @@ async function loadCars(budget)
             listing.style.alignItems = "center";
 
             if (!Array.isArray(car)) {
-                console.log(car);
+                //console.log(car);
                 let icon = document.createElement("img");
                 icon.src = car.vehicle_info.image_thumbnail_url;
                 icon.width = 150
@@ -274,7 +264,7 @@ async function loadCars(budget)
                 listing.appendChild(price);
             } else {
                 let icon = document.createElement("img");
-                icon.src = car[2];
+                icon.src = car[3];
                 icon.width = 150
                 icon.height = 100;
                 listing.appendChild(icon);
@@ -286,7 +276,7 @@ async function loadCars(budget)
                 listing.appendChild(label);
 
                 let seats = document.createElement("div");
-                seats.innerHTML = car[3] + " seats"+ "<br>";
+                seats.innerHTML = car[2] + " seats"+ "<br>";
                 listing.appendChild(seats);
                 
 
@@ -305,6 +295,39 @@ async function loadCars(budget)
 	}
 }
 
+function selectVehicle(listing) {
+	
+	let vehicle = carData[listing.dataset.index];
+    // console.log("VEHICLE"+vehicle);
+
+    console.log(localStorage.getItem("cars_name"));
+    console.log(localStorage.getItem("cars_price"));
+
+    var name = !!localStorage.getItem('cars_name') ? JSON.parse(localStorage.getItem('cars_name')) : [];
+    var price = !!localStorage.getItem('cars_price') ? JSON.parse(localStorage.getItem('cars_price')) : [];
+
+    if(Array.isArray(vehicle)){
+        name.push(vehicle[0])
+        price.push(vehicle[1])
+    }
+    else{
+        name.push(vehicle["vehicle_info"]["label"].replace(" with:", "") + " similar to " + vehicle["vehicle_info"]["v_name"])
+        price.push(vehicle["pricing_info"]["price"])
+    }
+
+    localStorage.setItem(addPage("name"), JSON.stringify(name))
+    localStorage.setItem(addPage("price"), JSON.stringify(price))
+    // else if(Array.isArray(vehicle) && localStorage.getItem("cars_name") == null){
+    //     localStorage.setItem(addPage("name"), [vehicle[0]])
+    //     localStorage.setItem(addPage("price"), [vehicle[1]])
+    // }
+
+    console.log(localStorage.getItem("cars_name"));
+    console.log(localStorage.getItem("cars_price"));
+
+	window.location.href="./cards.html";
+}
+
 //console.log(formatTime('02:12 AM'))
 document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-rides-button");
@@ -318,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
 
-        console.log("GETTING DATA FROM UBER/LYFT API"); 
+        //console.log("GETTING DATA FROM UBER/LYFT API"); 
         //debugger;
         uberLyftData = await fetchUberLyft();
         
@@ -328,14 +351,14 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log(rentalCarData);
         console.log(uberLyftData);
         carData = merge(rentalCarData, uberLyftData);
-        console.log(carData);
+        //console.log(carData);
 
         carData.forEach((car, i) => car.index = i);
 
 
         // rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
         // uberLyftData.forEach((uberLyftCar, i) => uberLyftCar.index = i);
-        debugger;
+        //debugger;
         await loadCars(parseInt(document.getElementById("budget").value));
     });
 });
