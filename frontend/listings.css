@@ -108,3 +108,8 @@ fieldset > label > input {
 .poi-name {
 	color: green;
 }
+
+.details-pack,.rank-pack {
+  flex: 1;
+  margin-right: 20px; /* Adjust this value to set the desired distance */
+}

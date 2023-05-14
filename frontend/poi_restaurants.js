@@ -20,35 +20,13 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 		let entList = await fetchEntertainmentListings(rad);
 		let restList = await fetchRestaurantListings();
-		activities = merge(entList, restList);
+		activities = restList.concat(entList);
 		console.log(activities);
 		activities.forEach((listing, i) => listing.index = i);
 		
         await loadActivities(parseInt(document.getElementById("budget").value));
     });
 });
-
-function merge(list1, list2)
-{
-	// let merged = []
-	// let i = 0, j = 0;
-	// while(i < list1.length && j < list2.length)
-	// {
-	// 	if(list1[i].sortPrice <= list2[j].sortPrice)
-	// 		merged.push(list1[i++]);
-	// 	else
-	// 		merged.push(list2[j++]);
-	// }
-	
-	// while(i < list1.length)
-	// 	merged.push(list1[i++]);
-	// while(j < list2.length)
-	// 	merged.push(list2[j++]);
-
-	// return merged;
-
-	return list2.concat(list1);
-}
 
 function getPricePred(budget) {
 	let values = getDoubleRangeValues("price");
@@ -155,30 +133,7 @@ function loadActivities(budget) {
             container.appendChild(listing);
             listing.dataset.index = elem.index;
 
-			// let table = document.createElement("table");
-			
-			// // FIRST TABLE ROW
-			// let firstRow = document.createElement("tr");
-
-			// let img = document.createElement("img");
-			// if(elem.type)
-			// 	img.setAttribute("src", elem.pictures[0]);
-			// else
-			// 	img.setAttribute("src", elem.photo.images.original.url);
-			// img.setAttribute("alt", "POI Image");
-			// img.classList.add("small-pic");
-
-			// let p = document.createElement("p");
-			// p.innerText = "Hello World!"
-
-			// firstRow.appendChild(img);
-			// firstRow.appendChild(p);
-
-			// table.appendChild(firstRow);
-			// listing.appendChild(table);
-
 			let details = '';
-			// details += elem.name + "<br>";
 			details += `<span class="poi-name">${elem.name}</span><br>`
 			if(elem.type)
 			{
@@ -199,9 +154,8 @@ function loadActivities(budget) {
 					details += "Contact: " + elem.email + "<br>";
 				details += `<a href=${elem.website}>Visit Website</a>`
 			}
-			// if(elem.type)
-			// 	details += `<span class="poi-categ">Categories: ${elem.shortDescription}</span><br>`
 			let detailsPack = createGenericElement(details, "div");
+			detailsPack.classList.add("details-pack");
 			
 			let img = document.createElement("img");
 			if(elem.type)
@@ -212,6 +166,14 @@ function loadActivities(budget) {
 			img.classList.add("small-pic");
 
 			listing.appendChild(detailsPack);
+			if(!elem.type)
+			{
+				let rankDetails = elem.ranking + "<br>";
+				rankDetails += "Price (per person): " + elem.price_level
+				rankPack = createGenericElement(rankDetails, "div")
+				rankPack.classList.add("rank-pack");
+				listing.appendChild(rankPack);
+			}
 			listing.appendChild(img);
 
             return container;
