@@ -1,4 +1,7 @@
 const Amadeus = require('amadeus');
+const fetch = require('node-fetch');
+const poi_data = require("./poi_data.js")
+const rest_data = require("./rest_data.js")
 
 class API {
 	constructor() {
@@ -76,53 +79,55 @@ class API {
     }
 
     async getEntertainment(preferences) {
-        /*
-        preferences = {
-            latitude: '41.397158', // required
-            longitude: '2.160873', // required
-            radius: '5' // param not required: we can actually set this ourselves, can only be 0 - 20
-        }
-        */
-        this.amadeus.shopping.activities.get(preferences)
-            .then(response => response.data)
-            .catch(err => console.error("ERROR IN FETCHING DATA:", err));
+        // /*
+        // preferences = {
+        //     latitude: '41.397158', // required
+        //     longitude: '2.160873', // required
+        //     radius: '5' // param not required: we can actually set this ourselves, can only be 0 - 20
+        // }
+        // */
+        // this.amadeus.shopping.activities.get(preferences)
+        //     .then(response => response.data)
+        //     .catch(err => console.error("ERROR IN FETCHING DATA:", err));
+        return poi_data;
     }
  
     async getRestaurants(preferences) {
-                // let preferences = {
-                //     // ALL REQUIRED
-                //     q: 'PAR',
-                //     language: "en_US",
-                // };
-                //location_id: "297704", 
-                let locationID = '';
-                const searchParams = new URLSearchParams();
-                Object.keys(preferences).forEach(key => (key == 'q' || key == 'language') ? searchParams.append(key, preferences[key]) : null);
-                const options = {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/x-www-form-urlencoded',
-                        'X-RapidAPI-Key': 'adea984d2cmshb8af0223d0f51a1p1c9f96jsn2b539adf98e1',
-                        'X-RapidAPI-Host': 'worldwide-restaurants.p.rapidapi.com'
-                    },
-                    body: searchParams.toString()
-                };
-                fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
-                    .then(response => response.json())
-                    .then(response => locationID = response.results.data[0].result_object.location_id)
-                    .then(() => {
-                        delete preferences.q;
-                        preferences['location_id'] = locationID;
-                        preferences["currency"] = "USD";
-                        preferences["limit"] = "30";
-                        const searchParams2 = new URLSearchParams();
-                        Object.keys(preferences).forEach(key => searchParams2.append(key, preferences[key]));
-                        options.body = searchParams2.toString();
-                        fetch('https://worldwide-restaurants.p.rapidapi.com/search', options)
-                            .then(response => response.json())
-                            .then(response => console.log(response))
-                            .catch(err => console.error(err));
-                    }) .catch(err => console.error(err));
+        //         // let preferences = {
+        //         //     // ALL REQUIRED
+        //         //     q: 'PAR',
+        //         //     language: "en_US",
+        //         // };
+        //         //location_id: "297704", 
+        //         let locationID = '';
+        //         const searchParams = new URLSearchParams();
+        //         Object.keys(preferences).forEach(key => (key == 'q' || key == 'language') ? searchParams.append(key, preferences[key]) : null);
+        //         const options = {
+        //             method: 'POST',
+        //             headers: {
+        //                 'content-type': 'application/x-www-form-urlencoded',
+        //                 'X-RapidAPI-Key': 'adea984d2cmshb8af0223d0f51a1p1c9f96jsn2b539adf98e1',
+        //                 'X-RapidAPI-Host': 'worldwide-restaurants.p.rapidapi.com'
+        //             },
+        //             body: searchParams.toString()
+        //         };
+        //         fetch('https://worldwide-restaurants.p.rapidapi.com/typeahead', options)
+        //             .then(response => response.json())
+        //             .then(response => locationID = response.results.data[0].result_object.location_id)
+        //             .then(() => {
+        //                 delete preferences.q;
+        //                 preferences['location_id'] = locationID;
+        //                 preferences["currency"] = "USD";
+        //                 preferences["limit"] = "30";
+        //                 const searchParams2 = new URLSearchParams();
+        //                 Object.keys(preferences).forEach(key => searchParams2.append(key, preferences[key]));
+        //                 options.body = searchParams2.toString();
+        //                 fetch('https://worldwide-restaurants.p.rapidapi.com/search', options)
+        //                     .then(response => response.json())
+        //                     .then(response => console.log(response))
+        //                     .catch(err => console.error(err));
+        //             }) .catch(err => console.error(err));
+        return rest_data;
          }
 
     async getRentalCars(preferences) {

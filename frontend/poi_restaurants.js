@@ -1,7 +1,6 @@
 const filters = [
 	getPricePred,
-	// getRatingPredicate, 
-    // getTagPredicate,
+	getRatingPredicate
 ];
 
 let activities = [];
@@ -39,6 +38,30 @@ function getPricePred(budget) {
         values.max = budget;
     }
 	return activity => values.min <= activity.sortPrice && activity.sortPrice <= values.max;
+}
+
+function getRatingPredicate(budget)
+{
+	let radios = document.querySelectorAll('input[name="rating"]');
+	let ratingThreshold = -1;
+	for(let radio of radios)
+	{
+		if(radio.checked)
+		{
+			ratingThreshold = parseInt(radio.value);
+			break;
+		}
+	}
+	return activity => {
+		if(!activity.type)
+		{
+			return parseInt(activity.rating) >= ratingThreshold;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }
 
 //console.log(localStorage.getItem("destination").split(", ")[0])
@@ -134,7 +157,7 @@ function loadActivities(budget) {
             listing.dataset.index = elem.index;
 
 			let details = '';
-			details += `<span class="poi-name">${elem.name}</span><br>`
+			details += `<span class="poi-name">${elem.name.toUpperCase()}</span><br>`
 			if(elem.type)
 			{
 				details += "Categories: " + elem.shortDescription + "<br>";
