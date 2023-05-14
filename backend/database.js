@@ -186,13 +186,14 @@ class Database
           'trip_id': tripID
         }
       })
-      // get the lodging_id
-      let lodging_id = trip_lodging_instance[0].lodging_id
-      // go through Lodgings Table, search by that id
-      let lodging_instance = await Lodgings.findByPk(lodging_id)
-      // return the information from lodgings
-      result['Lodgings'] = lodging_instance.dataValues
-
+      if (trip_lodging_instance.length != 0) {
+        // get the lodging_id
+        let lodging_id = trip_lodging_instance[0].lodging_id
+        // go through Lodgings Table, search by that id
+        let lodging_instance = await Lodgings.findByPk(lodging_id)
+        // return the information from lodgings
+        result['Lodgings'] = lodging_instance.dataValues
+      }
       return result
     }
 

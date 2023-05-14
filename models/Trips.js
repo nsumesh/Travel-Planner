@@ -42,6 +42,10 @@ module.exports = function(sequelize, DataTypes) {
     num_people: {
       type: DataTypes.BIGINT,
       allowNull: false
+    },
+    chosenPOI: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

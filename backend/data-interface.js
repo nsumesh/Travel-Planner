@@ -50,31 +50,38 @@ class DataInterface
             location: info['destination'],
             num_people: info['people']
         }
-
-        reformatted['Flights'] = {
-            'departing': [
-                {
-                    airline_name: info['transportation_name'],
-                    airline_iata: info['transportation_iata'],
-                    flight_number: info['transportation_number'], 
-                    // flight_number: '3',
-                    departure_time: this.make_datetime_object(info['depart']), // these might be different in the future
-                    arrival_time: this.make_datetime_object(info['return']), //
-                    departure_location: info['origin'],
-                    arrival_location: info['destination'],
-                    price: info['transportation_price']
-                }
-            ],
-            'returning': [
-                // How can I tell if there are returning flights?
-                // TODO STILL DO THIS
-            ]
+        if (Object.keys(info).includes('transportation_name')) {
+            reformatted['Flights'] = {
+                'departing': [
+                    {
+                        airline_name: info['transportation_name'],
+                        airline_iata: info['transportation_iata'],
+                        flight_number: info['transportation_number'], 
+                        // flight_number: '3',
+                        departure_time: this.make_datetime_object(info['depart']), // these might be different in the future
+                        arrival_time: this.make_datetime_object(info['return']), //
+                        departure_location: info['origin'],
+                        arrival_location: info['destination'],
+                        price: info['transportation_price']
+                    }
+                ],
+                'returning': [
+                    // How can I tell if there are returning flights?
+                    // no returning
+                ]
+            }
+        }
+        
+        if (Object.keys(info).includes('lodging_info')) {
+            reformatted['Lodgings'] = {
+                name: info['lodging_name'],
+                lodging_info: info['lodging_info'],
+                price: info['lodging_price']
+            }
         }
 
-        reformatted['Lodgings'] = {
-            name: info['lodging_name'],
-            lodging_info: info['lodging_info'],
-            price: info['lodging_price']
+        if (Object.keys(info).includes('chosenPOI')) {
+            reformatted['Trips']['chosenPOI'] = info['chosenPOI']
         }
 
         let result = await this.db.createTrip(reformatted)
@@ -98,8 +105,6 @@ class DataInterface
         // ! this doesn't work for multiple flights, assuming one for now
         let flight = allInfo['Flights']['departing'][0]
         let origin = flight.departure_location
-
-        let lodging = allInfo['Lodgings']
         
         let response = {
             'budget': trip.budget,
@@ -112,9 +117,16 @@ class DataInterface
             'transportation_iata': flight.airline_iata,
             'transportation_name': flight.airline_name,
             'transportation_price': flight.price,
-            'lodging_price': lodging.price,
-            'lodging_name': lodging.name,
-            'lodging_info': lodging.lodging_info
+        }
+
+        if (Object.keys(allInfo).includes('Lodgings')) {
+            let lodging = allInfo['Lodgings']
+            response['lodging_price'] = lodging.price
+            response['lodging_name'] = lodging.name
+            response['lodging_info'] = lodging.lodging_info
+        }
+        if (Object.keys(trip).includes('chosenPOI')) {
+            response['chosenPOI'] = trip['chosenPOI']
         }
 
         return response
