@@ -97,8 +97,40 @@ app.post('/uberlyft-preferences', async (req, res) => {
     }
 });
 
+app.post('/load-summary', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        let tripID = package.id
+        let results = await manager.getTrip(tripID)
+        res.send(JSON.stringify(results));
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
+
+app.post('/create-trip', async (req, res) => {
+    try 
+    {
+        let package = req.body;
+        let results = await manager.createTrip(package);
+        if (results == false) {
+            throw Error()
+        }
+        let string = JSON.stringify({'id': results})
+        res.send(string);
+    } 
+    catch(error) 
+    {
+        console.error("ERROR IN FETCHING DATA: ", error);
+        res.status(500).send("ERROR IN FETCHING DATA!");
+    }
+});
+
 app.listen(3000, async () => {
     // await manager.initDatabase()
-    
     console.log("Server started on port 3000");
 });

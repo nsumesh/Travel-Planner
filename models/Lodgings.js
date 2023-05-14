@@ -11,18 +11,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    location: {
+    lodging_info: {
       type: DataTypes.STRING(255),
       allowNull: false
     },
     price: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.FLOAT,
       allowNull: false
     },
-    num_bedrooms: {
-      type: DataTypes.BIGINT,
-      allowNull: false
-    }
   }, {
     sequelize,
     tableName: 'Lodgings',

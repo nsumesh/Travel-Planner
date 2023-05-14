@@ -1,4 +1,4 @@
-const { sequelize, Trips, Lodgings, Transportation, Flights, GroupedFlights } =  require('../models')
+const { sequelize, Trips, Lodgings, Transportation, Flights, GroupedFlights, TripLodgings } =  require('../models')
 class Database 
 {
 
@@ -111,13 +111,23 @@ class Database
           case "Transportation":
             break
           case "Lodgings":
+            // format JSON correctly
+            let info = tripInformation['Lodgings']
+            // make call to create lodging listing
+            let new_lodging = await Lodgings.create(info)
+            // create the TripLodgings
+            let trip_lodging_info = {
+              "trip_id": tripID,
+              "lodging_id": new_lodging.id,
+            }
+            await TripLodgings.create(trip_lodging_info)
             break
           case "Trips":
             // trips table was already made, can skip
             continue
         }
       }
-      return true
+      return {"success": true, "value": tripID}
     }
 
     // flights is array of flights
@@ -168,6 +178,20 @@ class Database
         'departing': departing_flights.map((flight) => flight.dataValues), 
         'returning': returning_flights.map((flight) => flight.dataValues)
       }
+
+      // get the Lodging information
+      // find the PK in TripLodging
+      let trip_lodging_instance = await TripLodgings.findAll({
+        where: {
+          'trip_id': tripID
+        }
+      })
+      // get the lodging_id
+      let lodging_id = trip_lodging_instance[0].lodging_id
+      // go through Lodgings Table, search by that id
+      let lodging_instance = await Lodgings.findByPk(lodging_id)
+      // return the information from lodgings
+      result['Lodgings'] = lodging_instance.dataValues
 
       return result
     }

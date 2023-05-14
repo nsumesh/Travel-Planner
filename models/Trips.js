@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     budget: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.FLOAT,
       allowNull: false
     },
     departing_grouped_flights_id: {

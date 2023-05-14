@@ -36,7 +36,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     price: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.FLOAT,
       allowNull: false
     },
     airline_iata: {

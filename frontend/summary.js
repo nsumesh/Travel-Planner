@@ -51,11 +51,10 @@ function capitalizeFirstLetter(string) {
 }
 
 function loadSummary() {
-	
 	let params = new URLSearchParams(window.location.search);
 	if (params.has("id")) {
 		Promise.resolve(params.get("id"))
-		.then(id => fetch('TODO endpoint', {
+		.then(id => fetch('/load-summary', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -90,13 +89,14 @@ function share(element) {
 	for (const [name, value] of Object.entries(localStorage)) {
 		package[name] = value;
 	}
-	fetch('TODO endpoint', {
+	fetch('/create-trip', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(package)
-	}).then(response => response.json())
+	})
+	.then(response => response.json())
 	.then(data => data.id)
 	.then(id => navigator.clipboard.writeText(window.location.href + "?id=" + id))
 	.then(() => element.innerHTML = "Link copied to clipboard!");
