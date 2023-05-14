@@ -127,6 +127,7 @@ function selectFlight(listing) {
 	
 	let flight = flights[listing.dataset.index];
 	localStorage.setItem(addPage("iata"), flight.validatingAirlineCodes[0].toLowerCase());
+	localStorage.setItem(addPage("number"), flight.itineraries[0].segments.map(seg => seg.number).join(","));
 	localStorage.setItem(addPage("name"), formatFlightName(flight));
 	localStorage.setItem(addPage("info"), formatFlightInfo(flight));
 	localStorage.setItem(addPage("price"), flight.price.grandTotal);
