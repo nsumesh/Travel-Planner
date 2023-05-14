@@ -24,6 +24,8 @@
 // let departDate = document.getElementById('depart-date');
 // let returnDate = document.getElementById('return-date');
 let rentalCarData = [];
+let carData = [];
+let uberLyftData = [];
 
 let pickUpTime = document.getElementById('pick-up-time');
 let dropOffTime = document.getElementById('drop-off-time');
@@ -125,6 +127,20 @@ async function fetchUberLyft() {
 			body: JSON.stringify(package)
 		});
 		let extracted = await response.json();
+
+        (extracted.Uber).map(el => el.splice(2, 0, "https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png"));
+        (extracted.Lyft).map(el => el.push("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Lyft_logo.svg/2560px-Lyft_logo.svg.png"));
+
+        if (document.getElementById("uber").checked && !(document.getElementById("lyft").checked)) {
+            extracted = extracted.Uber;
+        } else if (!(document.getElementById("uber").checked) && document.getElementById("lyft").checked) {
+            extracted = extracted.Lyft;
+        } else{
+            extracted = (extracted.Uber).concat(extracted.Lyft);
+        }
+
+        //sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
+
         console.log(extracted);
         return extracted; 
 	} 
@@ -208,34 +224,75 @@ function formatTime(time) {
     }
 }
 
-async function loadRentalCars(budget)
+function merge(array1, array2) {
+    result = [array1, array2]
+        .reduce((res, cur) => (cur.forEach((cur, i) => (res[i] = res[i] || []).push(cur)), res), [])
+        .reduce((a, b) => a.concat(b));
+    return result;
+}
+
+async function loadCars(budget)
 {
 	let listings = document.querySelector("#listings");
 	if (!listings) {
 		return;
 	}
 
-    let elements = rentalCarData;
+    let elements = carData;
     let predicates = filters.map(supplier => supplier(budget));
     elements = elements.filter(car => predicates.every(p => p(car)))
-        .map((rentalCar) => {
+        .map((car) => {
             let container = document.createElement("li");
             container.classList.add("listing-container");
             let listing = document.createElement("div");
             //container.addEventListener("click", () => selectLodging(listing));
             listing.classList.add("listing");
             container.appendChild(listing);
-            listing.dataset.index = rentalCar.index;
-            listing.appendChild(createImageElement(rentalCar.vehicle_info.image_thumbnail_url));
-            let img=document.querySelectorAll('img');
-            img.forEach(elem => {
-                elem['src'].overflow_x = 150;
-                elem['src'].overflow_y = 60;    
-            })
-            // img['src'].overflow_x = 150;
-            // img['src'].overflow_y = 60;          
-            let price = "$" + rentalCar["pricing_info"]["price"] + "<br>";
-            listing.appendChild(createGenericElement(price, "div"));
+            listing.dataset.index = car.index;
+            listing.style.display = "flex";
+            listing.style.alignItems = "center";
+
+            if (!Array.isArray(car)) {
+                console.log(car);
+                let icon = document.createElement("img");
+                icon.src = car.vehicle_info.image_thumbnail_url;
+                icon.width = 150
+                icon.height = 100;
+                listing.appendChild(icon);
+                let label = document.createElement("div");
+                label.innerHTML = car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>";
+                label.style.fontSize = 'large';
+                label.style.fontWeight = 'bold';
+                listing.appendChild(label);
+                let seats = document.createElement("div");
+                seats.innerHTML = car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + " mileage" + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>";
+                listing.appendChild(seats);
+                
+                let price = document.createElement("div");
+                price.innerHTML = "$" + car["pricing_info"]["price"] + "<br>";
+                listing.appendChild(price);
+            } else {
+                let icon = document.createElement("img");
+                icon.src = car[2];
+                icon.width = 150
+                icon.height = 100;
+                listing.appendChild(icon);
+
+                let label = document.createElement("div");
+                label.innerHTML = car[0] + "<br>";
+                label.style.fontSize = 'large';
+                label.style.fontWeight = 'bold';
+                listing.appendChild(label);
+
+                let seats = document.createElement("div");
+                seats.innerHTML = car[3] + " seats"+ "<br>";
+                listing.appendChild(seats);
+                
+
+                let price = document.createElement("div");
+                price.innerHTML = car[1] + "<br>";
+                listing.appendChild(price);
+            }
 
             return container;
         });
@@ -252,26 +309,24 @@ document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-rides-button");
     button.addEventListener("click", async function() {
         document.getElementById("listings").innerText = "Loading listings...";
-        
-        
-        if(rentalCarData.length === 0)
-        {
-            console.log("GETTING DATA FROM API");
-            rentalCarData = await fetchRentalCars();
-            
-        }
 
-        rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
+        console.log("GETTING DATA FROM RENTAL CAR API");
+        rentalCarData = await fetchRentalCars();
 
-        //Sorting 
+        console.log("GETTING DATA FROM UBER/LYFT API"); 
+        //debugger;
+        uberLyftData = await fetchUberLyft();
 
-        await loadRentalCars(parseInt(document.getElementById("budget").value));
+    
+        carData = merge(rentalCarData, uberLyftData);
+        console.log(carData);
+
+        carData.forEach((car, i) => car.index = i);
+
+
+        // rentalCarData.forEach((rentalCar, i) => rentalCar.index = i);
+        // uberLyftData.forEach((uberLyftCar, i) => uberLyftCar.index = i);
+        debugger;
+        await loadCars(parseInt(document.getElementById("budget").value));
     });
 });
-
-// let iata = flight.validatingAirlineCodes[0].toLowerCase()
-// 			listing.appendChild(createAirlineIconElement(iata, 150, 60));
-// function createAirlineIconElement(iata, width, height) {
-
-// 	return createImageElement(`https://daisycon.io/images/airline/?iata=${iata}&width=${width}&height=${height}`);
-// }
