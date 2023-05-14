@@ -198,8 +198,8 @@ function filterByPrice(){
 
     return vehicle => {
         if(Array.isArray(vehicle)){
-            let min = (vehicle[1].includes("-"))?  Number(vehicle[1].split("-")[0].substring(1)) : Number(vehicle[1].split("$")[0]) 
-            let max = (vehicle[1].includes("-"))? Number(vehicle[1].split("-")[1]): Number(localStorage.getItem("budget"))
+            let min = (vehicle[1].includes("-")) ? Number(vehicle[1].split("-")[0].substring(1)) : Number(vehicle[1].split("$")[0]);
+            let max = (vehicle[1].includes("-")) ? Number(vehicle[1].split("-")[1]): Number(localStorage.getItem("budget"))
 
             return values.min <= max <= values.max || values.min <= min <= values.max;
         }
@@ -312,13 +312,21 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("listings").innerText = "Loading listings...";
 
         console.log("GETTING DATA FROM RENTAL CAR API");
-        rentalCarData = await fetchRentalCars();
+        //debugger;
+        if (document.getElementById("rental").checked) {
+            rentalCarData = await fetchRentalCars();
+        }
+        
 
         console.log("GETTING DATA FROM UBER/LYFT API"); 
         //debugger;
         uberLyftData = await fetchUberLyft();
+        
+        
 
-    
+        //debugger;
+        console.log(rentalCarData);
+        console.log(uberLyftData);
         carData = merge(rentalCarData, uberLyftData);
         console.log(carData);
 

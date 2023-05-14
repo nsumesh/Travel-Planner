@@ -125,7 +125,7 @@ class API {
                     }) .catch(err => console.error(err));
          }
 
-    async getRentalCars(preferences){
+    async getRentalCars(preferences) {
 
         //ALL THE PARAMETRS WE NEED 
         // let preferences = {
@@ -154,9 +154,8 @@ class API {
         };
         
         return await fetch(url, options)
-		.then(res => res.json())
+		.then(response => response.json())
         .then(res => res.search_results)
-        // .then(data => console.log(data))
 		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
     
@@ -181,8 +180,5 @@ class API {
         return data; 
     }
 }
-
-// let some = new API;
-// some.getRentalCars()
 
 module.exports = API;
