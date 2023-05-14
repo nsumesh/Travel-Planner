@@ -55,7 +55,7 @@ function loadResults()
 			if(!elem.type)
 			{
 				let rankDetails = elem.ranking + "<br>";
-				rankDetails += "Price (per person): " + elem.price_level + "<br><br>"
+				rankDetails += "Price: " + elem.price_level + "<br><br>"
                 rankDetails += `<span style="opacity: 0.5;">(Click to remove)</span>`
 				rankPack = createGenericElement(rankDetails, "div")
 				rankPack.classList.add("rank-pack");

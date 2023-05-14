@@ -106,6 +106,7 @@ async function fetchRestaurantListings() {
 				let avg = (range[0] + range[1]) / 2;
 				listing.sortPrice = avg;
 			}
+			listing.sortPrice = listing.sortPrice * parseFloat(document.getElementById("adult-count").value);
 		});
 		let sorted = extracted.sort((a, b) => a.sortPrice - b.sortPrice);
         return sorted;
@@ -135,7 +136,7 @@ async function fetchEntertainmentListings(rad) {
 		});
 		let extracted = await response.json();
 		let sorted = extracted.sort((a, b) => parseFloat(a["price"]["amount"]) - parseFloat(b["price"]["amount"]));
-		sorted.forEach((listing) => listing.sortPrice = parseFloat(listing["price"]["amount"]));
+		sorted.forEach((listing) => listing.sortPrice = parseFloat(listing["price"]["amount"]) * parseFloat(document.getElementById("adult-count").value));
         return sorted;
 	} 
 	catch(error) 
@@ -198,7 +199,7 @@ function loadActivities(budget) {
 			if(!elem.type)
 			{
 				let rankDetails = elem.ranking + "<br>";
-				rankDetails += "Price (per person): " + elem.price_level
+				rankDetails += "Price: " + elem.price_level
 				rankPack = createGenericElement(rankDetails, "div")
 				rankPack.classList.add("rank-pack");
 				listing.appendChild(rankPack);
