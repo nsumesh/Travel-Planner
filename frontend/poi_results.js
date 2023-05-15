@@ -83,10 +83,13 @@ function loadResults()
 
 async function removeActivity(listing)
 {
-	chosen.splice(listing.dataset.index, 1);
+	let index = listing.dataset.index;
+	localStorage.setItem("poi_price", parseFloat(localStorage.getItem("poi_price") ?? "0") - chosen[index].sortPrice);
+	chosen.splice(index, 1);
 	chosen.forEach((listing, i) => listing.index = i);
     localStorage.setItem("chosenPOI", JSON.stringify(chosen));
 	loadResults();
+	loadStartData();
 }
 
 loadResults();

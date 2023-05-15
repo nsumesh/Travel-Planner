@@ -10,6 +10,8 @@ if(localStorage.hasOwnProperty("chosenPOI") && JSON.parse(localStorage.getItem("
 	chosen = JSON.parse(localStorage.getItem("chosenPOI"));
 }
 
+let priceMapping = [5, 10, 25, 50];
+
 function createElementFromHTML(htmlString) {
     var div = document.createElement('div');
     div.innerHTML = htmlString.trim();
@@ -22,25 +24,25 @@ document.addEventListener("DOMContentLoaded", async function() {
     let button = document.getElementById("poi_search_button");
 
     button.addEventListener("click", async function() {
-			let loading = '<img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gifz" style="padding: 3.5em" alt="Loading listings..." width="50" height="50">'
-			let element = createElementFromHTML(loading)
-			document.getElementById("listings").replaceChildren(element)
+		let loading = '<img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gifz" style="padding: 3.5em" alt="Loading listings..." width="50" height="50">'
+		let element = createElementFromHTML(loading)
+		document.getElementById("listings").replaceChildren(element)
 
-			let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
-			let rad = null;
-			if(radius != null && radius <= 20)
-				rad = radius;
-			else
-				rad = 5;
+		let radius = document.querySelectorAll(`#filters input`)[0].valueAsNumber;
+		let rad = null;
+		if(radius != null && radius <= 20)
+			rad = radius;
+		else
+			rad = 5;
 
-			let entList = await fetchEntertainmentListings(rad);
-			let restList = await fetchRestaurantListings();
-			activities = restList.concat(entList);
-			activities = activities.slice(0, Math.min(100, activities.length))
-			console.log(activities);
-			activities.forEach((listing, i) => listing.index = i);
-			
-			await loadActivities(parseInt(document.getElementById("budget").value));
+		let entList = await fetchEntertainmentListings(rad);
+		let restList = await fetchRestaurantListings();
+		activities = restList.concat(entList);
+		activities = activities.slice(0, Math.min(100, activities.length))
+		//console.log(activities);
+		activities.forEach((listing, i) => listing.index = i);
+		
+		await loadActivities(parseInt(document.getElementById("budget").value));
     });
 });
 
@@ -100,24 +102,22 @@ async function fetchRestaurantListings() {
 		let extracted = await response.json();
 		// extracted = extracted.filter(listing => listing["price"])
 		extracted.forEach((listing) => {
-			if(!listing["price"])
-			{
-				listing.sortPrice = 0;
-				return;
+			let price = 0
+			if (listing.price && typeof listing.price === "string") {
+				let range = listing.price.replace(/\$|\s/g, '').split('-').map(parseFloat);
+				if (range.length == 1)
+				{
+					price = range[0];
+				}
+				else
+				{
+					price = (range[0] + range[1]) / 2;
+				}
+			} else if (listing.price_level) {
+				let estimate = listing.price_level.split(" - ").map(p => priceMapping[p.length - 1]);
+				price = estimate.reduce((a, b) => a + b) / estimate.length;
 			}
-			let format = listing["price"].replace(/\$|\s/g, '')
-			let range = format.split('-');
-			range = range.map(val => parseFloat(val))
-			if(range.length == 1)
-			{
-				listing.sortPrice = range[0];
-			}
-			else
-			{
-				let avg = (range[0] + range[1]) / 2;
-				listing.sortPrice = avg;
-			}
-			listing.sortPrice = listing.sortPrice * parseFloat(document.getElementById("adult-count").value);
+			listing.sortPrice = price * parseFloat(document.getElementById("adult-count").value);
 		});
 		let sorted = extracted.sort((a, b) => a.sortPrice - b.sortPrice);
         return sorted;
@@ -234,6 +234,8 @@ async function selectActivity(listing)
 		chosen.push(poiElem);
 	activities.splice(listing.dataset.index, 1);
 	activities.forEach((listing, i) => listing.index = i);
+	localStorage.setItem("poi_price", poiElem.sortPrice + parseFloat(localStorage.getItem("poi_price") ?? "0"));
+	loadStartData();
 	await loadActivities(parseInt(document.getElementById("budget").value));
 }
 
