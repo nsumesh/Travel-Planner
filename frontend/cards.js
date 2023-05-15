@@ -62,7 +62,7 @@ function chooseLodging()
 
 function chooseCars()
 {
-	window.location.href = "./cars.html";
+	window.location.href = "./cars_result.html";
 }
 
 function chooseActivity()

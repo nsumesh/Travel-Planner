@@ -46,6 +46,12 @@ let lyftRideType = {
 }
 let lyftType = Object.keys(lyftRideType)
 
+let chosen = [];
+if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
+{
+	chosen = JSON.parse(localStorage.getItem("chosenVehicle"));
+}
+
 const filters = [
 	filterBySeats,
     filterByPrice,
@@ -53,7 +59,7 @@ const filters = [
 ];
 
 async function fetchRentalCars() {
-    debugger;
+    //debugger;
     let package = {
         currency: 'USD',
         locale:"en-us",
@@ -76,8 +82,8 @@ async function fetchRentalCars() {
         },
         body: JSON.stringify(package)
     });
-    //console.log(response.body);
-    let extracted = await response.json();
+    //console.log(response);
+    let extracted = await response.json()
 	//sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
     //console.log(extracted);
 
@@ -263,37 +269,55 @@ async function loadCars(budget)
 	}
 }
 
-function selectVehicle(listing) {
+async function selectVehicle(listing) {
+    let vehicle = carData[listing.dataset.index];
 	
-	let vehicle = carData[listing.dataset.index];
+    if(Array.isArray(vehicle) && !chosen.some(obj => obj[0] === vehicle[0] && obj[1] === vehicle[1]))
+		chosen.push(vehicle);
+    if(!Array.isArray(vehicle) && !chosen.some(obj => obj["vehicle_info"]["label"] === vehicle["vehicle_info"]["label"] && obj["pricing_info"]["price"] === vehicle["pricing_info"]["price"]))
+		chosen.push(vehicle);
+    carData.splice(listing.dataset.index, 1);
+    carData.forEach((listing, i) => listing.index = i);
+	await loadCars(parseInt(document.getElementById("budget").value));
+	
+    
+    //let vehicle = carData[listing.dataset.index];
     // console.log("VEHICLE"+vehicle);
 
-    console.log(localStorage.getItem("cars_name"));
-    console.log(localStorage.getItem("cars_price"));
+    // console.log(localStorage.getItem("cars_name"));
+    // console.log(localStorage.getItem("cars_price"));
 
-    var name = !!localStorage.getItem('cars_name') ? JSON.parse(localStorage.getItem('cars_name')) : [];
-    var price = !!localStorage.getItem('cars_price') ? JSON.parse(localStorage.getItem('cars_price')) : [];
+    // var name = !!localStorage.getItem('cars_name') ? JSON.parse(localStorage.getItem('cars_name')) : [];
+    // var price = !!localStorage.getItem('cars_price') ? JSON.parse(localStorage.getItem('cars_price')) : [];
 
-    if(Array.isArray(vehicle)){
-        name.push(vehicle[0])
-        price.push(vehicle[1])
-    }
-    else{
-        name.push(vehicle["vehicle_info"]["label"].replace(" with:", "") + " similar to " + vehicle["vehicle_info"]["v_name"])
-        price.push(vehicle["pricing_info"]["price"])
-    }
-
-    localStorage.setItem(addPage("name"), JSON.stringify(name))
-    localStorage.setItem(addPage("price"), JSON.stringify(price))
-    // else if(Array.isArray(vehicle) && localStorage.getItem("cars_name") == null){
-    //     localStorage.setItem(addPage("name"), [vehicle[0]])
-    //     localStorage.setItem(addPage("price"), [vehicle[1]])
+    // if(){
+    //     name.push(vehicle[0])
+    //     price.push(vehicle[1])
+    // }
+    // else{
+    //     name.push(vehicle["vehicle_info"]["label"].replace(" with:", "") + " similar to " + vehicle["vehicle_info"]["v_name"])
+    //     price.push(vehicle["pricing_info"]["price"])
     // }
 
-    console.log(localStorage.getItem("cars_name"));
-    console.log(localStorage.getItem("cars_price"));
+    // localStorage.setItem(addPage("name"), JSON.stringify(name))
+    // localStorage.setItem(addPage("price"), JSON.stringify(price))
+    // // else if(Array.isArray(vehicle) && localStorage.getItem("cars_name") == null){
+    // //     localStorage.setItem(addPage("name"), [vehicle[0]])
+    // //     localStorage.setItem(addPage("price"), [vehicle[1]])
+    // // }
 
-	window.location.href="./cards.html";
+    // console.log(localStorage.getItem("cars_name"));
+    // console.log(localStorage.getItem("cars_price"));
+
+	//window.location.href="./cards.html";
+}
+function getMinDate(){
+    return localStorage.getItem("depart-date")
+}
+function backUpdate()
+{
+	chosen.forEach((listing, i) => listing.index = i);
+	localStorage.setItem("chosenVehicle", JSON.stringify(chosen));
 }
 function createElementFromHTML(htmlString) {
     var div = document.createElement('div');
@@ -311,6 +335,8 @@ document.addEventListener("DOMContentLoaded", function() {
         let element = createElementFromHTML(loading)
         document.getElementById("listings").replaceChildren(element)
 
+        console.log("GETTING DATA FROM RENTAL CAR API");
+        //debugger;
         if (document.getElementById("rental").checked) {
             console.log("GETTING DATA FROM RENTAL CAR API");
             rentalCarData = await fetchRentalCars();
