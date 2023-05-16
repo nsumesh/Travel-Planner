@@ -89,6 +89,7 @@ function submit() {
 		getGeoData("origin")
 			.then(() => timeout(500))
 			.then(() => getGeoData("destination"))
+			.then(() => timeout(50))
 			.then(() => window.location.href = "./cards.html")
 			.catch(console.log);
 	} else {
