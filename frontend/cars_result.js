@@ -77,7 +77,17 @@ function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
 async function removeActivity(listing)
 {
     let index = listing.dataset.index;
-    localStorage.setItem("cars_price", parseFloat(localStorage.getItem("cars_price") ?? "0") - chosen[index].price);
+
+    if(Array.isArray(chosen[index])){
+        let val1 = (chosen[index][1].includes("-")) ? Number(chosen[index][1].split("-")[0].substring(1)) : Number(chosen[index][1].split("$")[1]);
+        let val2 = (chosen[index][1].includes("-")) ? Number(chosen[index][1].split("-")[1]): Number(chosen[index][1].split("$")[1])
+        let avg = (val1 + val2)/2
+        localStorage.setItem("cars_price", parseFloat(localStorage.getItem("cars_price") ?? "0") - parseFloat(avg));
+    }
+    else{
+        localStorage.setItem("cars_price", parseFloat(localStorage.getItem("cars_price") ?? "0") - parseFloat(chosen[index]["pricing_info"]["price"]));
+    }
+        
     chosen.splice(index, 1);
 
     chosen.forEach((listing, i) => listing.index = i);
