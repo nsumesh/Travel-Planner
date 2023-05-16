@@ -40,7 +40,7 @@ function loadResults()
     }
     else
     {
-        listContainer.innerText = "No activities selected!";
+        listContainer.innerText = "No cars selected!";
     }
 }
 
