@@ -48,7 +48,8 @@ class DataInterface
             depart_date: this.make_datetime_object(info['depart']),
             return_date: this.make_datetime_object(info['return']),
             location: info['destination'],
-            num_people: info['people']
+            num_people: info['people'],
+            transportation_info: info['transportation_info']
         }
         if (Object.keys(info).includes('transportation_name')) {
             reformatted['Flights'] = {
@@ -84,6 +85,14 @@ class DataInterface
             reformatted['Trips']['chosenPOI'] = info['chosenPOI']
         }
 
+        if (Object.keys(info).includes('cars_price')) {
+            reformatted['Trips']['cars_price'] = info['cars_price']
+        }
+
+        if (Object.keys(info).includes('chosenVehicle')) {
+            reformatted['Trips']['chosenVehicle'] = info['chosenVehicle']
+        }
+
         let result = await this.db.createTrip(reformatted)
 
         // if it was successful
@@ -117,6 +126,7 @@ class DataInterface
             'transportation_iata': flight.airline_iata,
             'transportation_name': flight.airline_name,
             'transportation_price': flight.price,
+            'transportation_info': trip.transportation_info,
         }
 
         if (Object.keys(allInfo).includes('Lodgings')) {
@@ -127,6 +137,14 @@ class DataInterface
         }
         if (Object.keys(trip).includes('chosenPOI')) {
             response['chosenPOI'] = trip['chosenPOI']
+        }
+
+        if (Object.keys(trip).includes('cars_price')) {
+            response['cars_price'] = trip['cars_price']
+        }
+
+        if (Object.keys(trip).includes('chosenVehicle')) {
+            response['chosenVehicle'] = trip['chosenVehicle']
         }
 
         return response

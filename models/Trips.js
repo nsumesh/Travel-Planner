@@ -46,6 +46,18 @@ module.exports = function(sequelize, DataTypes) {
     chosenPOI: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    cars_price: {
+      type: DataTypes.BIGINT,
+      allowNull: true
+    },
+    chosenVehicle: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    transportation_info: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,
