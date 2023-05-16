@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 class WebScrape {
     async uberPrices(preferences) {
         return await fetch("https://www.uber.com/api/loadFEEstimates?localeCode=en", {

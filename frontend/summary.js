@@ -51,8 +51,8 @@ function activitiesFactory() {
 					linkString += `<a href=${activity.website}>Visit Website</a>`;
 				let toWebsite = createGenericElement(linkString, "div");
 				container.appendChild(name);
-                container.appendChild(price);
 				container.appendChild(toWebsite);
+				container.appendChild(price);
             });
         } 
 		else 
@@ -67,6 +67,7 @@ function activitiesFactory() {
 
 
 function carsFactory() {
+	let chosen = [];
 	if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
 	{
 		chosen = JSON.parse(localStorage.getItem("chosenVehicle"));
@@ -74,28 +75,26 @@ function carsFactory() {
 
 	return () => {
 		let container = document.createElement("div");
-		if(chosen.length!==0){
-			container.style.display = "flex";
-			container.style.flexWrap = "wrap";
+		if(chosen.length !== 0){
 			chosen.forEach((car) => {
-				let subContainer = document.createElement("div");
 				let image = document.createElement("img");
 				image.src = car.vehicle_info.image_thumbnail_url;
 				image.width = 150;
 				image.height = 100;
-				let name = createGenericElement(car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>", "div");
-				let seats = createGenericElement(car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>", "div");
+				let imgdiv = document.createElement("div");
+				imgdiv.appendChild(image);
+				let name = car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>";
+				let seats = car["vehicle_info"]["seats"] + " seats" + "<br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + "<br>" + car["vehicle_info"]["transmission"] + "<br>";
+				let info = createGenericElement(name + seats, "div");
 				let price = createGenericElement("$" + car["pricing_info"]["price"] + "<br>", "div");
-				subContainer.appendChild(image);
-				subContainer.appendChild(name);
-				subContainer.appendChild(seats);
-				subContainer.appendChild(price);
-				container.appendChild(subContainer);
+				container.appendChild(imgdiv);
+				container.appendChild(info);
+				container.appendChild(price);
 			});
 		}
 		else
 		{
-			container.innerHTML = "No Cars Selected !";
+			container.innerHTML = "No Cars Selected!";
 		}
 		return container;
 	};
