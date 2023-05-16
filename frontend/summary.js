@@ -39,19 +39,25 @@ function activitiesFactory() {
 
     return () => {
 		let container = document.createElement("div");
-        if (chosen.length !== 0) {
-			container.style.display = "flex";
-			container.style.flexWrap = "wrap";
+        if(chosen.length !== 0) 
+		{
             chosen.forEach((activity) => {
-                let subContainer = document.createElement("div");
                 let name = createGenericElement(activity.name, "div");
-                let price = createGenericElement("$"+activity.sortPrice, "div");
-                subContainer.appendChild(name);
-                subContainer.appendChild(price);
-                container.appendChild(subContainer);
+                let price = createGenericElement("$" + activity.sortPrice, "div");
+				let linkString = '';
+				if(activity.type)
+					linkString += `<a href=${activity.bookingLink}>Make Reservation</a>`;
+				else
+					linkString += `<a href=${activity.website}>Visit Website</a>`;
+				let toWebsite = createGenericElement(linkString, "div");
+				container.appendChild(name);
+                container.appendChild(price);
+				container.appendChild(toWebsite);
             });
-        } else {
-            container.innerHTML = "No Activities Selected !";
+        } 
+		else 
+		{
+            container.innerHTML = "No Activities Selected!";
         }
 		return container;
     };

@@ -26,13 +26,13 @@ li > div div {
 	padding: 20px;
 }
 
-li > div div:first-child {
+/* li > div div:first-child {
 	text-align: left;
 }
 
 li > div div:last-child {
 	text-align: right;
-}
+} */
 
 #grand-total, #remaining-budget {
 	text-align: right;
