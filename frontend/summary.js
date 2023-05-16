@@ -4,7 +4,7 @@ const components = {
 	poi: activitiesFactory(),
 	cars: carsFactory()
 };
-
+debugger;
 loadSummary();
 
 function retrieve(card, entry) {
@@ -67,6 +67,7 @@ function activitiesFactory() {
 
 
 function carsFactory() {
+	debugger;
 	let chosen = [];
 	if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
 	{
@@ -75,21 +76,28 @@ function carsFactory() {
 
 	return () => {
 		let container = document.createElement("div");
+		
 		if(chosen.length !== 0){
 			chosen.forEach((car) => {
-				let image = document.createElement("img");
-				image.src = car.vehicle_info.image_thumbnail_url;
-				image.width = 150;
-				image.height = 100;
-				let imgdiv = document.createElement("div");
-				imgdiv.appendChild(image);
-				let name = car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>";
-				let seats = car["vehicle_info"]["seats"] + " seats" + "<br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + "<br>" + car["vehicle_info"]["transmission"] + "<br>";
-				let info = createGenericElement(name + seats, "div");
-				let price = createGenericElement("$" + car["pricing_info"]["price"] + "<br>", "div");
-				container.appendChild(imgdiv);
-				container.appendChild(info);
-				container.appendChild(price);
+				if (Array.isArray(car)) {
+					let name = (car[3].includes('Uber')) ? createGenericElement("UBER" + "<br>", "div") : createGenericElement("LYFT" + "<br>", "div");
+					container.appendChild(name)			
+					let vehicleName = car[0] + "<br>";
+					let seats = car[2] + " seats" + "<br>";
+					let info = createGenericElement(vehicleName + seats, "div");
+					container.appendChild(info)
+					let price = createGenericElement(car[1] + "<br>", "div");
+					container.appendChild(price)
+				} else {
+					let name = createGenericElement("Rental Cars" + "<br>", "div")
+					container.appendChild(name)
+					let vehicleName = car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>";
+					let seats = car["vehicle_info"]["seats"] + " seats" + "<br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + "<br>" + car["vehicle_info"]["transmission"] + "<br>";
+					let info = createGenericElement(vehicleName + seats, "div");
+					container.appendChild(info)
+					let price = createGenericElement("$" + car["pricing_info"]["price"] + "<br>", "div");
+					container.appendChild(price)
+				}
 			});
 		}
 		else

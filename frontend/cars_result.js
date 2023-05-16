@@ -1,7 +1,7 @@
 //to do
-debugger;
 let listContainer = document.querySelector("#listings");
 let chosen = [];
+let check = true;
 if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
 {
 	chosen = JSON.parse(localStorage.getItem("chosenVehicle"));
@@ -11,6 +11,10 @@ function loadResults()
 {
     if(chosen.length !== 0)
     {
+        if (check || !(chosen[0].index)) {
+            chosen.forEach((car, i) => car.index = i);
+            check = false;
+        }
         
         let elements = chosen;
         elements = elements.map((car) => {
@@ -20,12 +24,12 @@ function loadResults()
                 container.addEventListener("click", () => removeActivity(listing));
                 listing.classList.add("listing");
                 container.appendChild(listing);
+
                 listing.dataset.index = car.index;
                 listing.style.display = "flex";
                 listing.style.alignItems = "center";
     
                 if (!Array.isArray(car)) { 
-                    //debugger;
                     formatData(listing,
                     car.vehicle_info.image_thumbnail_url, car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>", 
                     car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + " mileage" + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>", 
@@ -35,7 +39,7 @@ function loadResults()
                 }
                 return container;
             });
-        console.log(localStorage.getItem("chosenVehicle"))
+        //console.log(localStorage.getItem("chosenVehicle"))
         listContainer.replaceChildren(...elements);
     }
     else
@@ -72,14 +76,13 @@ function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
 
 async function removeActivity(listing)
 {
-	let index = listing.dataset.index;
-	localStorage.setItem("cars_price", parseFloat(localStorage.getItem("cars_price") ?? "0") - chosen[index].price);
-	chosen.splice(index, 1);
-	
-	chosen.forEach((listing, i) => listing.index = i);
+    let index = listing.dataset.index;
+    localStorage.setItem("cars_price", parseFloat(localStorage.getItem("cars_price") ?? "0") - chosen[index].price);
+    chosen.splice(index, 1);
+
+    chosen.forEach((listing, i) => listing.index = i);
     localStorage.setItem("chosenVehicle", JSON.stringify(chosen));
-	loadResults();
-	loadStartData();
+    loadResults();
+    loadStartData();
 }
-debugger;
 loadResults();

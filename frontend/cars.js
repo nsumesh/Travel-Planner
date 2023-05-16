@@ -247,7 +247,7 @@ async function loadCars(budget)
 
     let elements = carData;
     let predicates = filters.map(supplier => supplier(budget));
-    debugger;
+
     elements = elements.filter(car => predicates.every(p => p(car)))
         .map((car) => {
             let container = document.createElement("li");
@@ -287,7 +287,7 @@ function airportGeoLoc(name) {
 }
 
 async function selectVehicle(listing) {
-    debugger;
+
     let vehicle = carData[listing.dataset.index];
 	let price = vehicle.pricing_info?.price;
 	if (!price) {
@@ -369,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("GETTING DATA FROM RENTAL CAR API");
             rentalCarData = await fetchRentalCars();
         }
-        debugger;
+
         console.log("GETTING DATA FROM UBER/LYFT API");
 
         let preferences = {
@@ -414,7 +414,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (rentalCarData.length !== 0 && uberLyftData.length === 0) {
             carData = rentalCarData;
         }
-
+        //debugger;
         carData.forEach((car, i) => car.index = i);
 
         await loadCars(parseInt(document.getElementById("budget").value));
