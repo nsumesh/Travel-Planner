@@ -69,9 +69,31 @@ function carsFactory() {
 	return () => {
 		let container = document.createElement("div");
 		if(chosen.length!==0){
+			container.style.display = "flex";
+			container.style.flexWrap = "wrap";
+			chosen.forEach((car) => {
+				let subContainer = document.createElement("div");
+				let image = document.createElement("img");
+				image.src = car.vehicle_info.image_thumbnail_url;
+				image.width = 150;
+				image.height = 100;
 
+				let name = createGenericElement(car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>", "div");
+				let seats = createGenericElement(car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>", "div");
+				let price = createGenericElement("$" + car["pricing_info"]["price"] + "<br>", "div");
+
+				subContainer.appendChild(image);
+				subContainer.appendChild(name);
+				subContainer.appendChild(seats);
+				subContainer.appendChild(price);
+				container.appendChild(subContainer);
+			});
 		}
-		return createGenericElement("TODO cars", "div");
+		else
+		{
+			container.innerHTML = "No Cars Selected !";
+		}
+		return container;
 	};
 }
 
