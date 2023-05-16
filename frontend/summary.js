@@ -4,7 +4,6 @@ const components = {
 	poi: activitiesFactory(),
 	cars: carsFactory()
 };
-debugger;
 loadSummary();
 
 function retrieve(card, entry) {
@@ -67,7 +66,6 @@ function activitiesFactory() {
 
 
 function carsFactory() {
-	debugger;
 	let chosen = [];
 	if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
 	{
@@ -80,8 +78,14 @@ function carsFactory() {
 		if(chosen.length !== 0){
 			chosen.forEach((car) => {
 				if (Array.isArray(car)) {
-					let name = (car[3].includes('Uber')) ? createGenericElement("UBER" + "<br>", "div") : createGenericElement("LYFT" + "<br>", "div");
-					container.appendChild(name)			
+					let name = (car[3].includes('Uber')) ? "UBER" + "<br>" : "LYFT" + "<br>";
+					let label = document.createElement("div");
+					if (car.length === 5 && car[4].includes("Airport ↔ Hotel")) {
+						label.innerHTML = name + car[4] + '<br>';
+					} else {
+						label.innerHTML = labelHTML;
+					}
+					container.appendChild(label)	
 					let vehicleName = car[0] + "<br>";
 					let seats = car[2] + " seats" + "<br>";
 					let info = createGenericElement(vehicleName + seats, "div");

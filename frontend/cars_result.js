@@ -13,9 +13,13 @@ function loadResults()
     {
         if (check || !(chosen[0].index)) {
             chosen.forEach((car, i) => car.index = i);
+            chosen.forEach((car, i) => car.index = i);
+            check = false;
+        } else {
+        chosen.forEach((car, i) => car.index = i);
             check = false;
         }
-        
+
         let elements = chosen;
         elements = elements.map((car) => {
                 let container = document.createElement("li");
@@ -30,12 +34,12 @@ function loadResults()
                 listing.style.alignItems = "center";
     
                 if (!Array.isArray(car)) { 
-                    formatData(listing,
+                    formatData(car, listing,
                     car.vehicle_info.image_thumbnail_url, car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>", 
                     car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + " mileage" + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>", 
                     "$" + car["pricing_info"]["price"] + "<br>");             
                 } else {
-                    formatData(listing, car[3], car[0] + "<br>", car[2] + " seats"+ "<br>", car[1] + "<br>");
+                    formatData(car, listing, car[3], car[0] + "<br>", car[2] + " seats"+ "<br>", car[1] + "<br>");
                 }
                 return container;
             });
@@ -48,7 +52,7 @@ function loadResults()
     }
 }
 
-function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
+function formatData(car, listing, src, labelHTML, seatsHTML, priceHTML) {
     let icon = document.createElement("img");
     icon.src = src;
     icon.width = 150
@@ -56,7 +60,12 @@ function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
     listing.appendChild(icon);
 
     let label = document.createElement("div");
-    label.innerHTML = labelHTML;
+    console.log(car.length)
+    if (car.length === 5 && car[4].includes("Airport ↔ Hotel")) {
+        label.innerHTML = labelHTML + '<br>' + car[4] + '<br>';
+    } else {
+        label.innerHTML = labelHTML;
+    }
     label.style.fontSize = 'large';
     label.style.fontWeight = 'bold';
     listing.appendChild(label);

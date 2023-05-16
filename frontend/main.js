@@ -37,8 +37,16 @@ function getTotalSpending() {
 }
 
 function getRemainingBudget() {
-	
-	return parseFloat(localStorage.getItem("budget") ?? "0") - getTotalSpending();
+
+	// if (removed) {
+	// 	removed = false
+	// 	if (localStorage.getItem("cars_price")) {
+	// 		return parseFloat(localStorage.getItem("budget") ?? "0") - getTotalSpending() + localStorage.getItem("cars_price");
+	// 	}
+	// } else {
+	// 	removed = false;
+		return parseFloat(localStorage.getItem("budget") ?? "0") - getTotalSpending();
+	// }
 }
 
 function amadeusInit() {
