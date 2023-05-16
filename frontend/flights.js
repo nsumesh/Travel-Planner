@@ -68,6 +68,8 @@ async function fetchListings(origin, destination, oneWay) {
 		package.returnDate = localStorage.getItem("return");
 	}
 
+	console.log(package);
+
 	try 
 	{
 		let response = await fetch('/initial-preferences', {

@@ -7,8 +7,8 @@ class API {
 	constructor() {
 		// Amadeus API connection
 		this.amadeus = new Amadeus({
-			clientId: 'ODJVrJiDj4NQj84caAHx46HZMkSpvNjp',
-			clientSecret: 'LKwawE3ar5szHAx8'
+			clientId: 'L0PYIWuAN6UBzWjGOAkb8E3TEOjXiK1d',
+			clientSecret: 'nidA0G2pYptHaOLB'
 		});
 	}
     
