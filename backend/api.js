@@ -107,7 +107,7 @@ class API {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded',
-                        'X-RapidAPI-Key': '2c6c2eb443msh480181c2458bcdbp10edb5jsn81e8919e6c2b',
+                        'X-RapidAPI-Key': '3913f922damsh21be555b5ec619bp13c54ejsna210b0e6c0c1',
                         'X-RapidAPI-Host': 'worldwide-restaurants.p.rapidapi.com'
                     },
                     body: searchParams.toString()
