@@ -128,6 +128,7 @@ function loadSummary() {
 		.then(data => {
 			Object.entries(data).forEach(([key, value]) => localStorage.setItem(key, value));
 			displaySummary();
+			loadStartData();
 		});
 	} else {
 		displaySummary();
