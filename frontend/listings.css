@@ -109,7 +109,11 @@ fieldset > label > input {
 	color: green;
 }
 
-.details-pack,.rank-pack {
-  flex: 1;
-  margin-right: 20px; /* Adjust this value to set the desired distance */
+.details-pack {
+  	flex: 1;
+  	margin-right: 20px;
+}
+
+.rank-pack {
+	flex: 1;
 }

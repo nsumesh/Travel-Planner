@@ -35,12 +35,17 @@ document.addEventListener("DOMContentLoaded", async function() {
 		else
 			rad = 5;
 
-		let entList = await fetchEntertainmentListings(rad);
-		let restList = await fetchRestaurantListings();
-		activities = restList.concat(entList);
-		activities = activities.slice(0, Math.min(100, activities.length))
-		//console.log(activities);
-		activities.forEach((listing, i) => listing.index = i);
+		if(activities.length === 0)
+		{
+			let entList = await fetchEntertainmentListings(rad);
+			let restList = await fetchRestaurantListings();
+			console.log(entList);
+			console.log(restList);
+			activities = restList.concat(entList);
+			activities = activities.slice(0, Math.min(100, activities.length))
+			//console.log(activities);
+			activities.forEach((listing, i) => listing.index = i);
+		}
 		
 		await loadActivities(parseInt(document.getElementById("budget").value));
     });
@@ -184,13 +189,17 @@ function loadActivities(budget) {
 			else
 			{
 				details += elem.address + "<br>"
-				let neighbors = '';
-				for(let obj of elem.neighborhood_info)
+				if(elem.neighborhood_info)
 				{
-					neighbors += obj.name + ", "
+					let neighbors = '';
+					for(let obj of elem.neighborhood_info)
+					{
+						neighbors += obj.name + ", "
+					}
+					neighbors = neighbors.substring(0, neighbors.length - 2);
+					details += neighbors + "<br>";
 				}
-				neighbors = neighbors.substring(0, neighbors.length - 2);
-				details += neighbors + "<br><br>";
+				details += "<br>";
 				if(elem.email)
 					details += "Contact: " + elem.email + "<br>";
 				details += `<a href=${elem.website}>Visit Website</a>`

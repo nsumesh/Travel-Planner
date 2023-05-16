@@ -29,13 +29,17 @@ function loadResults()
 			else
 			{
 				details += elem.address + "<br>"
-				let neighbors = '';
-				for(let obj of elem.neighborhood_info)
+				if(elem.neighborhood_info)
 				{
-					neighbors += obj.name + ", "
+					let neighbors = '';
+					for(let obj of elem.neighborhood_info)
+					{
+						neighbors += obj.name + ", "
+					}
+					neighbors = neighbors.substring(0, neighbors.length - 2);
+					details += neighbors + "<br>";
 				}
-				neighbors = neighbors.substring(0, neighbors.length - 2);
-				details += neighbors + "<br><br>";
+				details += "<br>";
 				if(elem.email)
 					details += "Contact: " + elem.email + "<br>";
 				details += `<a href=${elem.website}>Visit Website</a>`
