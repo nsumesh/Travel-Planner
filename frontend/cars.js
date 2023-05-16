@@ -19,6 +19,8 @@
 let rentalCarData = [];
 let carData = [];
 let uberLyftData = [];
+let uberLyftHotel = [];
+let uberLyftPOI = [];
 
 let pickUpTime = document.getElementById('pick-up-time');
 let dropOffTime = document.getElementById('drop-off-time');
@@ -55,7 +57,6 @@ if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getIt
 const filters = [
 	filterBySeats,
     filterByPrice,
-
 ];
 
 async function fetchRentalCars() {
@@ -73,17 +74,19 @@ async function fetchRentalCars() {
         from_country: "it", // get from flight destination
     };
 
-    //console.log(package);
-
+    console.log(package);
+    //debugger;
     let response = await fetch('/rentalCar-preferences', {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
         },
         body: JSON.stringify(package)
-    });
-    //console.log(response);
-    let extracted = await response.json()
+    })
+    
+    console.log(response.body);
+    let extracted = await response.json();
+    extracted = extracted.search_results;
 	//sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
     //console.log(extracted);
 
@@ -105,21 +108,22 @@ async function fetchRentalCars() {
 //     },
 // }
 
-async function fetchUberLyft() {
+// let preferences = {
+//     "origin": {
+//         "latitude": Number(localStorage.getItem("destination_latitude")),
+//         "longitude": Number(localStorage.getItem("destination_longitude")), 
+//     },
+//     "destination": {
+//         "latitude": Number(localStorage.getItem("destination_latitude")), // need to change based on user inputs
+//         "longitude": Number(localStorage.getItem("destination_longitude")), // need to change based on user inputs
+//     }
+// };
 
-    let package = {
-        "origin": {
-            "latitude": Number(localStorage.getItem("destination_latitude")),
-            "longitude": Number(localStorage.getItem("destination_longitude")), 
-        },
-        "destination": {
-            "latitude": Number(localStorage.getItem("destination_latitude")), // need to change based on user inputs
-            "longitude": Number(localStorage.getItem("destination_longitude")), // need to change based on user inputs
-        }
-    };
+async function fetchUberLyft(preferences) {
+
 	
-    let type = typeof package.origin.latitude;
-    //console.log(package)
+    let type = typeof preferences.origin.latitude;
+    console.log(preferences)
 
 	try 
 	{
@@ -128,26 +132,30 @@ async function fetchUberLyft() {
 			headers: {
 			'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(package)
+			body: JSON.stringify(preferences)
 		});
 		let extracted = await response.json();
         //console.log(extracted);
 
-        (extracted.Uber).map(el => el.push("https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png"));
-        (extracted.Lyft).map(el => {
-            el.push((lyftType.includes(el[0])) ? lyftRideType[el[0]] : 4 )
-            el.push("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Lyft_logo.svg/2560px-Lyft_logo.svg.png")       
-         });
+        if (extracted.Uber) {
+            (extracted.Uber).map(el => el.push("https://logos-world.net/wp-content/uploads/2020/05/Uber-Logo.png"));
+        }
+        if (extracted.Lyft) {
+            (extracted.Lyft).map(el => {
+                el.push((lyftType.includes(el[0])) ? lyftRideType[el[0]] : 4 )
+                el.push("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Lyft_logo.svg/2560px-Lyft_logo.svg.png")       
+            });
+        }
 
-        if (document.getElementById("uber").checked && !(document.getElementById("lyft").checked)) {
+        if (!(document.getElementById("uber").checked) && !(document.getElementById("lyft").checked)) {
+            extracted = [];
+        } else if (document.getElementById("uber").checked && !(document.getElementById("lyft").checked)) {
             extracted = extracted.Uber;
         } else if (!(document.getElementById("uber").checked) && document.getElementById("lyft").checked) {
             extracted = extracted.Lyft;
-        } else{
+        } else {
             extracted = (extracted.Uber).concat(extracted.Lyft);
         }
-
-        //sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
 
         //console.log(extracted);
         return extracted; 
@@ -189,13 +197,13 @@ function filterByPrice(){
 
     return vehicle => {
         if(Array.isArray(vehicle)){
-            let min = (vehicle[1].includes("-")) ? Number(vehicle[1].split("-")[0].substring(1)) : Number(vehicle[1].split("$")[0]);
+            let min = (vehicle[1].includes("-")) ? Number(vehicle[1].split("-")[0].substring(1)) : Number(vehicle[1].split("$")[1]);
             let max = (vehicle[1].includes("-")) ? Number(vehicle[1].split("-")[1]): Number(localStorage.getItem("budget"))
 
-            return values.min <= max <= values.max || values.min <= min <= values.max;
+            return (values.min <= max && max <= values.max) || (values.min <= min && min <= values.max);
         }
         else{
-            return values.min <= vehicle["pricing_info"]["price"] <= values.max
+            return (values.min <= vehicle["pricing_info"]["price"]) && (vehicle["pricing_info"]["price"] <= values.max)
         }
     }
 }
@@ -239,6 +247,7 @@ async function loadCars(budget)
 
     let elements = carData;
     let predicates = filters.map(supplier => supplier(budget));
+    debugger;
     elements = elements.filter(car => predicates.every(p => p(car)))
         .map((car) => {
             let container = document.createElement("li");
@@ -269,7 +278,16 @@ async function loadCars(budget)
 	}
 }
 
+// only use this if you know localStorage.getItem("transportation_destination") exists
+function airportGeoLoc(name) {
+	
+	return amadeusToken().then(token => fetch(`https://test.api.amadeus.com/v1/reference-data/locations/airports?sort=distance&latitude=${localStorage.getItem(name + "_latitude")}&longitude=${localStorage.getItem(name + "_longitude")}`, {headers: {'Authorization': token}}))
+		.then(response => response.json())
+		.then(body => (body?.data).find(item => item.iataCode === localStorage.getItem("transportation_destination"))?.geoCode)
+}
+
 async function selectVehicle(listing) {
+    debugger;
     let vehicle = carData[listing.dataset.index];
 	let price = vehicle.pricing_info?.price;
 	if (!price) {
@@ -282,10 +300,10 @@ async function selectVehicle(listing) {
 	}
 	vehicle.price = price;
 	localStorage.setItem("cars_price", price + parseFloat(localStorage.getItem("cars_price") ?? "0"));
-    if(Array.isArray(vehicle) && !chosen.some(obj => obj[0] === vehicle[0] && obj[1] === vehicle[1]))
-		chosen.push(vehicle);
-    if(!Array.isArray(vehicle) && !chosen.some(obj => obj["vehicle_info"]["label"] === vehicle["vehicle_info"]["label"] && obj["pricing_info"]["price"] === vehicle["pricing_info"]["price"]))
-		chosen.push(vehicle);
+    if (Array.isArray(vehicle) && !chosen.some(obj => (Array.isArray(obj) && obj.length !== 0) ? (obj[0] === vehicle[0] && obj[1] === vehicle[1]) : false))
+            chosen.push(vehicle);
+    if (!Array.isArray(vehicle) && !chosen.some(obj => (!Array.isArray(obj) && obj.length !== 0) ? (obj["vehicle_info"]["label"] === vehicle["vehicle_info"]["label"] && obj["pricing_info"]["price"] === vehicle["pricing_info"]["price"]) : false))
+        chosen.push(vehicle);
     carData.splice(listing.dataset.index, 1);
     carData.forEach((listing, i) => listing.index = i);
 	await loadCars(parseInt(document.getElementById("budget").value));
@@ -337,7 +355,7 @@ function createElementFromHTML(htmlString) {
     return div.firstChild;
 }
 
-//console.log(formatTime('02:12 AM'))
+
 document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-rides-button");
     button.addEventListener("click", async function() {
@@ -351,11 +369,52 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("GETTING DATA FROM RENTAL CAR API");
             rentalCarData = await fetchRentalCars();
         }
-        
-        console.log("GETTING DATA FROM UBER/LYFT API"); 
-        uberLyftData = await fetchUberLyft();
+        debugger;
+        console.log("GETTING DATA FROM UBER/LYFT API");
 
-        carData = merge(rentalCarData, uberLyftData);
+        let preferences = {
+            "origin": {
+                "latitude": Number(localStorage.getItem("destination_latitude")),
+                "longitude": Number(localStorage.getItem("destination_longitude")), 
+            },
+            "destination": {
+                "latitude": Number(localStorage.getItem("destination_latitude")), // need to change based on user inputs
+                "longitude": Number(localStorage.getItem("destination_longitude")), // need to change based on user inputs
+            }
+        };
+
+        //debugger;
+        uberLyftData = await fetchUberLyft(preferences);
+
+        if (localStorage.getItem("transportation_destination") !== null && localStorage.getItem("transportation_iata") !== null) {
+            let airportLongLat = await airportGeoLoc("destination");
+            //debugger;
+            preferences.origin.latitude = Number(airportLongLat.latitude);
+            preferences.origin.longitude = Number(airportLongLat.longitude);
+            
+            if (localStorage.getItem("lodging_latitude") !== null && localStorage.getItem("lodging_longitude") !== null) {
+                preferences.destination.latitude = Number(localStorage.getItem("lodging_latitude"));
+                preferences.destination.longitude = Number(localStorage.getItem("lodging_longitude"));
+
+                uberLyftHotel = await fetchUberLyft(preferences);
+            }
+
+        }
+        
+
+        
+        if (uberLyftHotel.length !== 0) {
+            uberLyftData = uberLyftData.concat(uberLyftHotel)
+        }
+        
+        if (rentalCarData.length !== 0 && uberLyftData.length !== 0) {
+            carData = merge(rentalCarData, uberLyftData);
+        } else if (rentalCarData.length === 0 && uberLyftData.length !== 0) {
+            carData = uberLyftData;
+        } else if (rentalCarData.length !== 0 && uberLyftData.length === 0) {
+            carData = rentalCarData;
+        }
+
         carData.forEach((car, i) => car.index = i);
 
         await loadCars(parseInt(document.getElementById("budget").value));

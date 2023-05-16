@@ -161,7 +161,8 @@ class API {
         
         return await fetch(url, options)
 		.then(response => response.json())
-        .then(res => res.search_results)
+        //.then(res => console.log(res))
+        //.then(res => res.search_results)
 		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
     }
     
@@ -186,5 +187,20 @@ class API {
         return data; 
     }
 }
+// let preferences = { 
+//     currency: 'USD',
+//     drop_off_datetime: '2023-05-25 23:30:00',
+//     drop_off_latitude: '40.71417',
+//     drop_off_longitude: '-74.00583',
+//     from_country: 'it',
+//     locale: 'en-us',
+//     pick_up_datetime: '2023-05-24 19:30:00',
+//     pick_up_latitude: '40.71417',
+//     pick_up_longitude: '-74.00583',
+//     sort_by: 'price_low_to_high'
+// }
+
+// let test5 = new API;
+// console.log(test5.getRentalCars(preferences))
 
 module.exports = API;

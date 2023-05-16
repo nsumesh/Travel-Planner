@@ -1,5 +1,5 @@
 //to do
-
+debugger;
 let listContainer = document.querySelector("#listings");
 let chosen = [];
 if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
@@ -81,5 +81,5 @@ async function removeActivity(listing)
 	loadResults();
 	loadStartData();
 }
-
+debugger;
 loadResults();

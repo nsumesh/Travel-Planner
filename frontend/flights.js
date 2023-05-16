@@ -27,6 +27,7 @@ async function main() {
 		});
 }
 
+
 main();
 priceRangeValidation();
 
@@ -53,7 +54,7 @@ function closestAirport(name) {
 }
 
 async function fetchListings(origin, destination, oneWay) {
-	
+
 	let package = { 
 		originLocationCode: origin,
 		destinationLocationCode: destination,
