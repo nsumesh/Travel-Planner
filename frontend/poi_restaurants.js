@@ -205,7 +205,7 @@ function loadActivities(budget) {
 				details += `<a href=${elem.website}>Visit Website</a>`
 			}
 			let detailsPack = createGenericElement(details, "div");
-			detailsPack.classList.add("details-pack");
+			detailsPack.classList.add("details-pack", "wrap");
 			
 			let img = document.createElement("img");
 			if(elem.type)

@@ -117,3 +117,8 @@ fieldset > label > input {
 .rank-pack {
 	flex: 1;
 }
+
+.wrap {
+	width: 10px;
+	overflow-wrap: break-word;
+}
