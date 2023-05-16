@@ -40,7 +40,6 @@ function activitiesFactory() {
     return () => {
 		let container = document.createElement("div");
         if (chosen.length !== 0) {
-            container.classList.add("activity-list");
 			container.style.display = "flex";
 			container.style.flexWrap = "wrap";
             chosen.forEach((activity) => {
@@ -62,8 +61,16 @@ function activitiesFactory() {
 
 
 function carsFactory() {
+	if(localStorage.hasOwnProperty("chosenVehicle") && JSON.parse(localStorage.getItem("chosenVehicle")).length !== 0)
+	{
+		chosen = JSON.parse(localStorage.getItem("chosenVehicle"));
+	}
 
 	return () => {
+		let container = document.createElement("div");
+		if(chosen.length!==0){
+
+		}
 		return createGenericElement("TODO cars", "div");
 	};
 }
