@@ -52,7 +52,7 @@ function activitiesFactory() {
 				let toWebsite = createGenericElement(linkString, "div");
 				container.appendChild(name);
 				container.appendChild(toWebsite);
-				container.appendChild(price);
+                container.appendChild(price);
             });
         } 
 		else 

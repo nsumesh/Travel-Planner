@@ -271,7 +271,17 @@ async function loadCars(budget)
 
 async function selectVehicle(listing) {
     let vehicle = carData[listing.dataset.index];
-	
+	let price = vehicle.pricing_info?.price;
+	if (!price) {
+		if (vehicle[1]) {
+			let range = vehicle[1].replace(/\$|\s/g, '').split('-').map(parseFloat);
+			price = range.reduce((a, b) => a + b) / range.length;
+		} else {
+			price = 0;
+		}
+	}
+	vehicle.price = price;
+	localStorage.setItem("cars_price", price + parseFloat(localStorage.getItem("cars_price") ?? "0"));
     if(Array.isArray(vehicle) && !chosen.some(obj => obj[0] === vehicle[0] && obj[1] === vehicle[1]))
 		chosen.push(vehicle);
     if(!Array.isArray(vehicle) && !chosen.some(obj => obj["vehicle_info"]["label"] === vehicle["vehicle_info"]["label"] && obj["pricing_info"]["price"] === vehicle["pricing_info"]["price"]))
@@ -279,7 +289,7 @@ async function selectVehicle(listing) {
     carData.splice(listing.dataset.index, 1);
     carData.forEach((listing, i) => listing.index = i);
 	await loadCars(parseInt(document.getElementById("budget").value));
-	
+	loadStartData();
     
     //let vehicle = carData[listing.dataset.index];
     // console.log("VEHICLE"+vehicle);

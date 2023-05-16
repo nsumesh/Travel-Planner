@@ -40,7 +40,7 @@ function loadResults()
     }
     else
     {
-        listContainer.innerText = "No activities selected!";
+        listContainer.innerText = "No cars selected!";
     }
 }
 
@@ -72,10 +72,14 @@ function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
 
 async function removeActivity(listing)
 {
-	chosen.splice(listing.dataset.index, 1);
+	let index = listing.dataset.index;
+	localStorage.setItem("cars_price", parseFloat(localStorage.getItem("cars_price") ?? "0") - chosen[index].price);
+	chosen.splice(index, 1);
+	
 	chosen.forEach((listing, i) => listing.index = i);
     localStorage.setItem("chosenVehicle", JSON.stringify(chosen));
 	loadResults();
+	loadStartData();
 }
 
 loadResults();
