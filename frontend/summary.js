@@ -51,8 +51,8 @@ function activitiesFactory() {
 					linkString += `<a href=${activity.website}>Visit Website</a>`;
 				let toWebsite = createGenericElement(linkString, "div");
 				container.appendChild(name);
-                container.appendChild(price);
 				container.appendChild(toWebsite);
+                container.appendChild(price);
             });
         } 
 		else 
