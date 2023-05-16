@@ -83,7 +83,8 @@ function carsFactory() {
 					if (car.length === 5 && car[4].includes("Airport ↔ Hotel")) {
 						label.innerHTML = name + car[4] + '<br>';
 					} else {
-						label.innerHTML = labelHTML;
+						label.innerHTML = name;
+						// label.innerHTML = 'test';
 					}
 					container.appendChild(label)	
 					let vehicleName = car[0] + "<br>";
