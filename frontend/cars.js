@@ -63,6 +63,7 @@ async function fetchRentalCars() {
         pick_up_datetime: document.getElementById("pick-up-date").value + " " + document.getElementById("pick-up-time").value + ":00", // arrival date from flight or user input??
         from_country: "it", // get from flight destination
     };
+    
 
     console.log(package);
     //debugger;

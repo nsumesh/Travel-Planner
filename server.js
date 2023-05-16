@@ -73,6 +73,7 @@ app.post('/rentalCar-preferences', async (req, res) => {
         let package = req.body;
         // res.send(package);
         let results = await manager.getRentalCars(package);
+        console.log(results);
         res.send(results);
     } 
     catch(error) 

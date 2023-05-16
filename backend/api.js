@@ -160,11 +160,12 @@ class API {
         };
         
         return await fetch(url, options)
-		.then(response => response.json())
-        .then(res => (res.search_results.length >= 151) ? res.search_results.slice(0, 151) : res.search_results)
-        //.then(res => console.log(res))
-        //.then(res => res.search_results)
-		.catch(err => console.error("ERROR IN FETCHING DATA:", err));
+		.then(response => (response.status === 200) ? response.json() : [])
+        .then(res => (res.length !== 0) ? (res.search_results.length >= 301 ? res.search_results.slice(0, 301) : res.search_results) : [])
+		.catch(err => {
+            console.error("ERROR IN FETCHING DATA:", err);
+            return [];
+        });
     }
     
     async getPublicTransit(preferences) {
