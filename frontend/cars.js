@@ -24,18 +24,7 @@ let uberLyftPOI = [];
 
 let pickUpTime = document.getElementById('pick-up-time');
 let dropOffTime = document.getElementById('drop-off-time');
-//debugger;
-// console.log(pickUpTime.value);
-// console.log(dropOffTime.value);
 
-// const uberRideType = {
-//     "UberXL": 6, 
-//     "SUV": 6, 
-//     "Connect": 1, 
-//     "Black SUV Hourly": 5,
-//     "UberX Share": 1, 
-//     default: 4, 
-// }
 let lyftRideType = {
     "Lyft": 4,
     "Lyft XL": 6,
@@ -61,6 +50,7 @@ const filters = [
 
 async function fetchRentalCars() {
     //debugger;
+    let extracted = [];
     let package = {
         currency: 'USD',
         locale:"en-us",
@@ -73,6 +63,7 @@ async function fetchRentalCars() {
         pick_up_datetime: document.getElementById("pick-up-date").value + " " + document.getElementById("pick-up-time").value + ":00", // arrival date from flight or user input??
         from_country: "it", // get from flight destination
     };
+    
 
     console.log(package);
     //debugger;
@@ -83,41 +74,16 @@ async function fetchRentalCars() {
         },
         body: JSON.stringify(package)
     })
-    
+    debugger;
     console.log(response.body);
-    let extracted = await response.json();
-    extracted = extracted.search_results;
-	//sorted = extracted.sort((a, b) => parseFloat(a["offers"]["0"]["price"]["total"]) - parseFloat(b["offers"]["0"]["price"]["total"]));
-    //console.log(extracted);
+    if (response === undefined  || response.body === undefined || response.body.locked) {
+        return extracted
+    } else {
+        extracted = await response.json();
+    }
 
     return extracted;
 }
-// debugger;
-// fetchRentalCars()
-
-
-
-// let location = {
-//     "origin": {
-//         "latitude": 42.385150,
-//         "longitude": -72.525290
-//     },
-//     "destination": {
-//         "latitude": 42.039370,
-//         "longitude": -72.613620
-//     },
-// }
-
-// let preferences = {
-//     "origin": {
-//         "latitude": Number(localStorage.getItem("destination_latitude")),
-//         "longitude": Number(localStorage.getItem("destination_longitude")), 
-//     },
-//     "destination": {
-//         "latitude": Number(localStorage.getItem("destination_latitude")), // need to change based on user inputs
-//         "longitude": Number(localStorage.getItem("destination_longitude")), // need to change based on user inputs
-//     }
-// };
 
 async function fetchUberLyft(preferences) {
 
@@ -208,7 +174,7 @@ function filterByPrice(){
     }
 }
 
-function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
+function formatData(car, listing, src, labelHTML, seatsHTML, priceHTML) {
     let icon = document.createElement("img");
     icon.src = src;
     icon.width = 150
@@ -216,7 +182,13 @@ function formatData(listing, src, labelHTML, seatsHTML, priceHTML) {
     listing.appendChild(icon);
 
     let label = document.createElement("div");
-    label.innerHTML = labelHTML;
+    console.log(car.length)
+    if (car.length === 5 && car[4].includes("Airport ↔ Hotel")) {
+        label.innerHTML = labelHTML + '<br>' + car[4] + '<br>';
+    } else {
+        label.innerHTML = labelHTML;
+    }
+    
     label.style.fontSize = 'large';
     label.style.fontWeight = 'bold';
     listing.appendChild(label);
@@ -261,12 +233,12 @@ async function loadCars(budget)
             listing.style.alignItems = "center";
 
             if (!Array.isArray(car)) { 
-                formatData(listing,
+                formatData(car, listing,
                 car.vehicle_info.image_thumbnail_url, car["vehicle_info"]["label"].replace(" with:", "") + " similar to " + car["vehicle_info"]["v_name"] + "<br>", 
                 car["vehicle_info"]["seats"] + " seats" + "<br><br>"  + car["vehicle_info"]["mileage"].replace(" km", "") + " mileage" + "<br><br>" + car["vehicle_info"]["transmission"] + "<br>", 
                 "$" + car["pricing_info"]["price"] + "<br>");             
             } else {
-                formatData(listing, car[3], car[0] + "<br>", car[2] + " seats"+ "<br>", car[1] + "<br>");
+                formatData(car, listing, car[3], car[0] + "<br>", car[2] + " seats"+ "<br>", car[1] + "<br>");
             }
             return container;
         });
@@ -287,7 +259,7 @@ function airportGeoLoc(name) {
 }
 
 async function selectVehicle(listing) {
-
+debugger;
     let vehicle = carData[listing.dataset.index];
 	let price = vehicle.pricing_info?.price;
 	if (!price) {
@@ -308,45 +280,18 @@ async function selectVehicle(listing) {
     carData.forEach((listing, i) => listing.index = i);
 	await loadCars(parseInt(document.getElementById("budget").value));
 	loadStartData();
-    
-    //let vehicle = carData[listing.dataset.index];
-    // console.log("VEHICLE"+vehicle);
 
-    // console.log(localStorage.getItem("cars_name"));
-    // console.log(localStorage.getItem("cars_price"));
-
-    // var name = !!localStorage.getItem('cars_name') ? JSON.parse(localStorage.getItem('cars_name')) : [];
-    // var price = !!localStorage.getItem('cars_price') ? JSON.parse(localStorage.getItem('cars_price')) : [];
-
-    // if(){
-    //     name.push(vehicle[0])
-    //     price.push(vehicle[1])
-    // }
-    // else{
-    //     name.push(vehicle["vehicle_info"]["label"].replace(" with:", "") + " similar to " + vehicle["vehicle_info"]["v_name"])
-    //     price.push(vehicle["pricing_info"]["price"])
-    // }
-
-    // localStorage.setItem(addPage("name"), JSON.stringify(name))
-    // localStorage.setItem(addPage("price"), JSON.stringify(price))
-    // // else if(Array.isArray(vehicle) && localStorage.getItem("cars_name") == null){
-    // //     localStorage.setItem(addPage("name"), [vehicle[0]])
-    // //     localStorage.setItem(addPage("price"), [vehicle[1]])
-    // // }
-
-    // console.log(localStorage.getItem("cars_name"));
-    // console.log(localStorage.getItem("cars_price"));
-
-	//window.location.href="./cards.html";
 }
-function getMinDate(){
+
+function getMinDate() {
     return localStorage.getItem("depart-date")
 }
-function backUpdate()
-{
+
+function backUpdate() {
 	chosen.forEach((listing, i) => listing.index = i);
 	localStorage.setItem("chosenVehicle", JSON.stringify(chosen));
 }
+
 function createElementFromHTML(htmlString) {
     var div = document.createElement('div');
     div.innerHTML = htmlString.trim();
@@ -354,7 +299,6 @@ function createElementFromHTML(htmlString) {
     // Change this to div.childNodes to support multiple top-level nodes.
     return div.firstChild;
 }
-
 
 document.addEventListener("DOMContentLoaded", function() {
     let button = document.getElementById("find-rides-button");
@@ -398,12 +342,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 uberLyftHotel = await fetchUberLyft(preferences);
             }
-
         }
         
-
-        
         if (uberLyftHotel.length !== 0) {
+            uberLyftHotel.forEach(el => el.push("Airport ↔ Hotel"))
             uberLyftData = uberLyftData.concat(uberLyftHotel)
         }
         
