@@ -43,12 +43,12 @@ function activitiesFactory() {
 			container.style.display = "flex";
 			container.style.flexWrap = "wrap";
             chosen.forEach((activity) => {
-                let subcontainer = document.createElement("div");
+                let subContainer = document.createElement("div");
                 let name = createGenericElement(activity.name, "div");
                 let price = createGenericElement("$"+activity.sortPrice, "div");
-                subcontainer.appendChild(name);
-                subcontainer.appendChild(price);
-                container.appendChild(subcontainer);
+                subContainer.appendChild(name);
+                subContainer.appendChild(price);
+                container.appendChild(subContainer);
             });
         } else {
             container.innerHTML = "No Activities Selected !";
