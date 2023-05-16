@@ -32,14 +32,39 @@ function basicFactory(component) {
 }
 
 function activitiesFactory() {
-	
-	return () => {
-		return createGenericElement("TODO activities", "div");
-	};
+    let chosen = [];
+    if (localStorage.hasOwnProperty("chosenPOI") && JSON.parse(localStorage.getItem("chosenPOI")).length !== 0) {
+        chosen = JSON.parse(localStorage.getItem("chosenPOI"));
+    }
+
+    return () => {
+		let container = document.createElement("div");
+        if (chosen.length !== 0) {
+            container.classList.add("activity-list");
+			container.style.display = "flex";
+			container.style.flexWrap = "wrap";
+            chosen.forEach((activity) => {
+                let subcontainer = document.createElement("div");
+                let name = createGenericElement(activity.name, "div");
+                name.classList.add("activity-name");
+                let price = createGenericElement("$"+activity.sortPrice, "div");
+                price.classList.add("activity-price");
+                subcontainer.appendChild(name);
+                subcontainer.appendChild(price);
+                container.appendChild(subcontainer);
+            });
+        } else {
+            container.innerHTML = "No Activities Selected !";
+        }
+		return container;
+    };
 }
 
+	  
+
+
 function carsFactory() {
-	
+
 	return () => {
 		return createGenericElement("TODO cars", "div");
 	};
