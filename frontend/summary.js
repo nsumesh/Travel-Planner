@@ -46,9 +46,7 @@ function activitiesFactory() {
             chosen.forEach((activity) => {
                 let subcontainer = document.createElement("div");
                 let name = createGenericElement(activity.name, "div");
-                name.classList.add("activity-name");
                 let price = createGenericElement("$"+activity.sortPrice, "div");
-                price.classList.add("activity-price");
                 subcontainer.appendChild(name);
                 subcontainer.appendChild(price);
                 container.appendChild(subcontainer);
